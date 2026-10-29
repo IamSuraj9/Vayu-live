@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Globe Style Lab</title>
+    <meta name="claude:viewport-fit-sides" content="cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="The same real wind, pressure and storm data drawn in eight different looks. Mix the layers to explore visual directions for the storm globe." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+  </head>
+  <body>
+    <main id="app">
+      <div id="stage" aria-hidden="false"><div id="labels"></div></div>
+
+      <header id="title" class="glass">
+        <span class="mark" aria-hidden="true"></span>
+        <div><h1><span class="lg">Globe </span>Style Lab</h1><p>One set of real data, eight looks</p></div>
+      </header>
+
+      <div id="fly" class="glass" role="group" aria-label="Fly to"></div>
+
+      <aside id="panel" class="glass" aria-label="Look details">
+        <button id="fold" type="button" aria-expanded="true" aria-controls="panel-body" aria-label="Show or hide details"><span></span></button>
+        <div id="panel-head">
+          <p class="eyebrow" id="d-eyebrow">Direction</p>
+          <h2 id="d-name"></h2>
+          <p id="d-tag"></p>
+        </div>
+        <div id="panel-body">
+          <dl id="notes"></dl>
+          <section id="mix" aria-labelledby="mix-h">
+            <h3 id="mix-h">Mix it yourself</h3>
+            <div id="mix-controls"></div>
+          </section>
+          <details id="research">
+            <summary>What the research says</summary>
+            <ul>
+              <li>Streamlines with arrowheads and curved barbs are read more accurately than classic straight barbs. <a href="https://journals.ametsoc.org/view/journals/bams/95/10/bams-d-13-00135.1.xml" target="_blank" rel="noreferrer">Ware et al., BAMS 2014</a></li>
+              <li>Weather charts draw isobars every 4 hPa from 1000, and mark highs and lows with H and L. <a href="https://www.noaa.gov/jetstream/analyze-appair-pressure-map" target="_blank" rel="noreferrer">NOAA JetStream</a></li>
+              <li>A wind barb's staff points to where the wind comes from; each long feather is 10 knots, a flag is 50. <a href="https://www.weather.gov/hfo/windbarbinfo" target="_blank" rel="noreferrer">NWS Honolulu</a></li>
+              <li>Rainbow scales mislead because equal steps do not look equal, but a well-designed one can still work. <a href="https://research.google/blog/turbo-an-improved-rainbow-colormap-for-visualization/" target="_blank" rel="noreferrer">Google Turbo</a>, <a href="https://scholars.unh.edu/cgi/viewcontent.cgi?article=2478&amp;context=ccom" target="_blank" rel="noreferrer">Ware 2023</a></li>
+            </ul>
+          </details>
+          <p id="snapshot" class="fine"></p>
+        </div>
+      </aside>
+
+      <div id="legend" class="glass" hidden></div>
+
+      <div id="zoom" class="glass" role="group" aria-label="Zoom">
+        <button type="button" id="zin" aria-label="Zoom in">+</button>
+        <button type="button" id="zout" aria-label="Zoom out">&minus;</button>
+      </div>
+
+      <nav id="strip" aria-label="Directions"></nav>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

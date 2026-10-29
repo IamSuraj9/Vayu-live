@@ -36,6 +36,7 @@ Needs Node 20+.
 | Path | What |
 |---|---|
 | `app/` | The web app (React 19, Vite, Tailwind 4, shadcn/ui). Version 3 of the mock-up |
+| `app/lab/` | Globe Style Lab: eight visual directions drawn from today's real data, with mix-it-yourself controls (`npm run build:lab`). See `docs/research/05-visual-directions.md` |
 | `pipeline/` | Storm data pipeline (Python 3.11+, standard library only), wind field builder (needs eccodes, numpy) and tests |
 | `app/public/data/storms.json` | Live storm file written by the pipeline, refreshed every 3 hours. Also built into the app as the fallback |
 | `app/public/data/wind.json` | 0.5° wind, temperature and pressure field. Built at deploy time, not committed |
