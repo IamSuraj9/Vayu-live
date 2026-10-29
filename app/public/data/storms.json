@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-10-29T06:00:00Z",
- "fetchedAt": "2026-10-29T09:48:40Z",
+ "fetchedAt": "2026-10-29T10:31:17Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -11,8 +11,10 @@
   "gdacs": {
    "ok": true,
    "events": 3,
-   "used": 3,
-   "errors": []
+   "used": 2,
+   "errors": [
+    "ARNAB-26: https://www.gdacs.org/gdacsapi/api/events/getepisodedata?eventtype=TC&eventid=1001345&episodeid=10: The read operation timed out"
+   ]
   },
   "tcvitals": {
    "ok": true,
@@ -639,18 +641,11 @@
      "hpa": 1005
     }
    ],
-   "forecast": [
-    {
-     "h": 12,
-     "lat": 21.9,
-     "lon": 81.6,
-     "kt": 25
-    }
-   ],
-   "forecastIssued": "2026-10-28T06:00:00Z",
-   "forecastBase": "2026-10-29T06:00:00Z",
-   "source": "JTWC via GDACS + NOAA tcvitals",
-   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001345",
+   "forecast": [],
+   "forecastIssued": null,
+   "forecastBase": null,
+   "source": "NOAA tcvitals",
+   "sourceUrl": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261029/06/atmos/gfs.t06z.syndata.tcvitals.tm00",
    "authority": "JTWC",
    "official": [
     "IMD (India Meteorological Department)",
@@ -664,7 +659,7 @@
    },
    "codes": {
     "atcf": "io022026",
-    "gdacs": 1001345,
+    "gdacs": null,
     "code": "02B"
    }
   }
