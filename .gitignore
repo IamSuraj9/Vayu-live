@@ -14,3 +14,4 @@ __pycache__/
 # built at deploy time by pipeline/wind.py (1.4 MB and 340 KB), never committed
 app/public/data/wind.json
 app/public/data/wind-1.json
+.wrangler/

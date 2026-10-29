@@ -33,7 +33,10 @@ FORECAST_MAX_AGE_HOURS = 24  # a forecast older than this (versus the newest pos
 # so a whole refresh stays under about 3 minutes (it used to wait on GDACS for up to 5).
 BUDGET_SECONDS = {"nhc": 40, "gdacs": 80, "tcvitals": 50}
 
-SOURCE_ERRORS = (FetchError, ET.ParseError, ValueError, KeyError, TypeError, json.JSONDecodeError)
+# What a damaged or surprising response can raise while it is being read. LookupError covers KeyError and IndexError
+# and also "unknown encoding" from a corrupted XML header; AttributeError covers valid JSON of the wrong shape;
+# ArithmeticError covers OverflowError from a number written as "inf".
+SOURCE_ERRORS = (FetchError, ET.ParseError, ValueError, LookupError, TypeError, AttributeError, ArithmeticError, json.JSONDecodeError)
 
 
 def iso(t: datetime) -> str:
@@ -184,31 +187,39 @@ def _tcvitals(merge: Merge, fetcher, now: datetime, status: dict) -> None:
 
 
 def _carry_previous(merge: Merge, previous: dict | None, status: dict, now: datetime) -> None:
-    if not previous:
+    """Adds history from the last run. The file is our own, but it may be damaged, so anything unusable is skipped."""
+    if not isinstance(previous, dict) or not isinstance(previous.get("storms"), list):
         return
     any_failed = any(not s.get("ok") for s in status.values())
-    for p in previous.get("storms", []):
-        track = [{**pt, "t": from_iso(pt["t"])} for pt in p.get("track", [])]
-        if not track:
+    for p in previous["storms"]:
+        try:
+            _carry_one(merge, p, any_failed, now)
+        except SOURCE_ERRORS:
             continue
-        codes = p.get("codes") or {}
-        last = track[-1]
-        s = merge.find(atcf=codes.get("atcf"), gdacs_event=codes.get("gdacs"), name=None if p.get("kind") == "disturbance" else p["name"],
-                       lat=last["lat"], lon=last["lon"])
-        if s:  # keep history the sources no longer show
-            for pt in track:
-                s["track"].setdefault(pt["t"], pt)
-            if s["id"].startswith("gdacs-") and codes.get("atcf"):
-                s["id"] = s["atcf"] = codes["atcf"]
-            if s["people"] is None and p.get("people"):
-                s["people"] = p["people"]
-        elif any_failed and now - last["t"] <= timedelta(hours=KEEP_HOURS):
-            fc_issued = from_iso(p["forecastIssued"]) if p.get("forecastIssued") else None
-            fc_base = from_iso(p["forecastBase"]) if p.get("forecastBase") else None
-            merge.add(id=p["id"], atcf=codes.get("atcf"), gdacs=codes.get("gdacs"), name=p.get("rawName") or p["name"],
-                      code=codes.get("code"), invest=p.get("kind") == "disturbance", track=track, forecast=p.get("forecast", []),
-                      issued=fc_issued, fc_base=fc_base, people=p.get("people"), region=p.get("basin"), sources=[p.get("source", "")],
-                      source_url=p.get("sourceUrl"), authority=p.get("authority", ""), stale=True)
+
+
+def _carry_one(merge: Merge, p: dict, any_failed: bool, now: datetime) -> None:
+    track = [{**pt, "t": from_iso(pt["t"])} for pt in p.get("track") or []]
+    if not track:
+        return
+    codes = p.get("codes") or {}
+    last = track[-1]
+    s = merge.find(atcf=codes.get("atcf"), gdacs_event=codes.get("gdacs"), name=None if p.get("kind") == "disturbance" else p["name"],
+                   lat=last["lat"], lon=last["lon"])
+    if s:  # keep history the sources no longer show
+        for pt in track:
+            s["track"].setdefault(pt["t"], pt)
+        if s["id"].startswith("gdacs-") and codes.get("atcf"):
+            s["id"] = s["atcf"] = codes["atcf"]
+        if s["people"] is None and _people(p.get("people")):
+            s["people"] = p["people"]
+    elif any_failed and now - last["t"] <= timedelta(hours=KEEP_HOURS):
+        fc_issued = from_iso(p["forecastIssued"]) if p.get("forecastIssued") else None
+        fc_base = from_iso(p["forecastBase"]) if p.get("forecastBase") else None
+        merge.add(id=p["id"], atcf=codes.get("atcf"), gdacs=codes.get("gdacs"), name=p.get("rawName") or p["name"],
+                  code=codes.get("code"), invest=p.get("kind") == "disturbance", track=track, forecast=p.get("forecast", []),
+                  issued=fc_issued, fc_base=fc_base, people=_people(p.get("people")), region=p.get("basin"), sources=[str(p.get("source", ""))],
+                  source_url=p.get("sourceUrl"), authority=p.get("authority") if isinstance(p.get("authority"), str) else "", stale=True)
 
 
 def _finish(s: dict, now: datetime) -> dict:
@@ -250,34 +261,82 @@ def _finish(s: dict, now: datetime) -> dict:
     }
 
 
+def _num(v, lo: float, hi: float) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) and lo <= v <= hi
+
+
+def _sane(p: object, forecast: bool = False) -> bool:
+    """Is this track or forecast point something the app can draw? Rejects NaN, text, and impossible positions or winds."""
+    if not isinstance(p, dict) or not (_num(p.get("lat"), -90, 90) and _num(p.get("lon"), -180, 360)):
+        return False
+    if p.get("kt") is not None and not _num(p["kt"], 0, 250):
+        return False
+    return _num(p.get("h"), 0, 400) if forecast else True
+
+
+def _sanitize(s: dict) -> None:
+    """Drops unusable points before a storm is written, whichever source (or the previous file) they came from."""
+    s["track"] = {t: p for t, p in s["track"].items() if _sane(p)}
+    for p in s["track"].values():
+        if p.get("hpa") is not None and not _num(p["hpa"], 800, 1100):
+            p.pop("hpa")
+    s["forecast"] = [f for f in (s["forecast"] if isinstance(s["forecast"], list) else []) if _sane(f, forecast=True)]
+
+
+def _people(v: object) -> dict | None:
+    ok = isinstance(v, dict) and _num(v.get("count"), 0, 1e10) and isinstance(v.get("alert"), str) and isinstance(v.get("modified"), str)
+    return v if ok else None
+
+
+def _json_safe(o):
+    """NaN and infinity are not valid JSON, and the app could not read a file that contains one."""
+    if isinstance(o, float):
+        return o if math.isfinite(o) else None
+    if isinstance(o, dict):
+        return {k: _json_safe(v) for k, v in o.items()}
+    if isinstance(o, list):
+        return [_json_safe(v) for v in o]
+    return o
+
+
+def _stage(name: str, status: dict, fetcher, fn, *args) -> None:
+    """Runs one source. Whatever goes wrong inside it, the other sources and the previous data still carry the run."""
+    try:
+        with fetcher.budget(BUDGET_SECONDS[name]):
+            fn(*args)
+    except Exception as e:  # noqa: BLE001 - a source we cannot read must never stop the refresh
+        status[name] = {"ok": False, "error": f"unexpected {type(e).__name__}: {e}"[:300]}
+
+
 def build(fetcher, now: datetime, previous: dict | None = None) -> dict:
     status: dict[str, dict] = {}
     merge = Merge()
-    with fetcher.budget(BUDGET_SECONDS["nhc"]):
-        _nhc(merge, fetcher, status)
-    with fetcher.budget(BUDGET_SECONDS["gdacs"]):
-        _gdacs(merge, fetcher, now, status)
-    with fetcher.budget(BUDGET_SECONDS["tcvitals"]):
-        _tcvitals(merge, fetcher, now, status)
+    _stage("nhc", status, fetcher, _nhc, merge, fetcher, status)
+    _stage("gdacs", status, fetcher, _gdacs, merge, fetcher, now, status)
+    _stage("tcvitals", status, fetcher, _tcvitals, merge, fetcher, now, status)
     _carry_previous(merge, previous, status, now)
     out = []
     for s in merge.storms:
+        _sanitize(s)
         if not s["track"]:
             continue
         newest = max(s["track"])
         if now - newest > timedelta(hours=KEEP_HOURS) or newest > now + timedelta(hours=1):
             continue
-        out.append(_finish(s, now))
+        try:
+            out.append(_finish(s, now))
+        except SOURCE_ERRORS:
+            continue  # one storm we cannot make sense of must not cost the others
     out.sort(key=lambda s: (s["status"] != "active", -(s["track"][-1]["kt"] or 0)))
     newest = max((from_iso(s["updated"]) for s in out), default=now)
-    return {
+    return _json_safe({
         "schema": 1,
         "snapshot": iso(newest),
         "fetchedAt": iso(now),
         "sources": status,
         "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
         "storms": out,
-    }
+    })
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -313,7 +372,7 @@ def main(argv: list[str] | None = None) -> int:
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     tmp = args.out + ".tmp"
     with open(tmp, "w") as fh:
-        json.dump(result, fh, indent=1, ensure_ascii=False)
+        json.dump(result, fh, indent=1, ensure_ascii=False, allow_nan=False)  # a NaN would make the file unreadable for the app
         fh.write("\n")
     os.replace(tmp, args.out)
     return 0
