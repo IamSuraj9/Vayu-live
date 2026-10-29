@@ -211,9 +211,9 @@ export default function App() {
             <div className="absolute top-4 right-[max(16px,env(safe-area-inset-right,0px))]">{toolbar}</div>
             {banner && <div key={mock} className="absolute top-4 left-1/2 w-[min(520px,calc(100%-800px))] min-w-[360px] -translate-x-1/2"><div className="q-pop origin-top">{banner}</div></div>}
             {panelEl && (
-              <section key={selected!.id} className={cn(glass, "q-enter absolute top-[68px] right-[max(16px,env(safe-area-inset-right,0px))] w-[384px] origin-top-right overflow-y-auto")}
-                style={{ maxHeight: "calc(100% - 68px - 16px)" }} aria-label="Storm details">
-                {panelEl}
+              <section key={selected!.id} className={cn(glass, "q-enter absolute top-[68px] right-[max(16px,env(safe-area-inset-right,0px))] w-[384px] origin-top-right flex-col overflow-hidden")}
+                style={{ maxHeight: "calc(100% - 68px - 16px)", display: "flex" }} aria-label="Storm details">
+                <div className="min-h-0 flex-1 overflow-y-auto">{panelEl}</div>
               </section>
             )}
             <div className={cn("absolute bottom-4 flex flex-col items-end gap-3", panelEl ? "right-[416px]" : "right-[max(16px,env(safe-area-inset-right,0px))]")}>
@@ -240,7 +240,9 @@ export default function App() {
             <div className="ui-gutter absolute inset-x-0 bottom-0 flex flex-col gap-2 pb-3">
               {replayBar && <div className="q-rise">{replayBar}</div>}
               {panelEl ? (
-                <section key={selected!.id} className={cn(glass, "q-rise max-h-[52vh] overflow-y-auto")} aria-label="Storm details">{panelEl}</section>
+                <section key={selected!.id} className={cn(glass, "q-rise flex max-h-[52vh] flex-col overflow-hidden")} aria-label="Storm details">
+                  <div className="min-h-0 flex-1 overflow-y-auto">{panelEl}</div>
+                </section>
               ) : (
                 <button type="button" onClick={() => setSheetOpen(true)}
                   className={cn(glass, "lens flex h-12 items-center justify-between rounded-full px-4 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring")}>
@@ -250,12 +252,14 @@ export default function App() {
               )}
             </div>
             <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-              <SheetContent side="bottom" className="max-h-[78vh] gap-0 overflow-y-auto rounded-t-[30px] p-0 pb-3">
+              <SheetContent side="bottom" className="max-h-[78vh] gap-0 overflow-hidden rounded-t-[30px] p-0">
+                <div className="min-h-0 flex-1 overflow-y-auto pb-3">
                 <SheetHeader className="px-4 pt-5 pb-2">
                   <SheetTitle className="text-lg tracking-tight">Storms</SheetTitle>
                   <SheetDescription>Mock-up with a real snapshot. Tap a storm to see it on the globe.</SheetDescription>
                 </SheetHeader>
                 {tabs}
+                </div>
               </SheetContent>
             </Sheet>
           </>

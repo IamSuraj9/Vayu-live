@@ -507,7 +507,8 @@ export function ScaleDialog({ units, open, onOpenChange }: { units: Units; open:
   const range = (a: number, b: number) => b >= 999 ? `${Math.round(windFromKt(a, units.wind))}+ ${WIND_LABEL[units.wind]}` : `${Math.round(windFromKt(a, units.wind))}–${Math.round(windFromKt(b + 0.99, units.wind))} ${WIND_LABEL[units.wind]}`
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] overflow-y-auto rounded-[28px] sm:max-w-lg">
+      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-lg">
+        <div className="grid min-h-0 gap-4 overflow-y-auto p-6">
         <DialogHeader>
           <DialogTitle className="text-xl tracking-tight">How strong is it?</DialogTitle>
           <DialogDescription>One scale for every ocean, based on the steady wind at the centre. Draft wording for review.</DialogDescription>
@@ -527,6 +528,7 @@ export function ScaleDialog({ units, open, onOpenChange }: { units: Units; open:
           The same storm has different names by ocean: <span className="text-foreground">cyclone</span> in the Indian Ocean and South Pacific, <span className="text-foreground">typhoon</span> in the north-west Pacific,
           <span className="text-foreground"> hurricane</span> in the Atlantic and north-east Pacific. Winds are 1-minute averages (JTWC, NHC). India's IMD uses 3-minute averages, so its figures are lower.
         </p>
+        </div>
       </DialogContent>
     </Dialog>
   )
@@ -547,7 +549,8 @@ const TERMS: [string, string][] = [
 export function GlossaryDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] overflow-y-auto rounded-[28px] sm:max-w-lg">
+      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-lg">
+        <div className="grid min-h-0 gap-4 overflow-y-auto p-6">
         <DialogHeader>
           <DialogTitle className="text-xl tracking-tight">What the words mean</DialogTitle>
           <DialogDescription>Plain explanations of the terms on the map.</DialogDescription>
@@ -557,6 +560,7 @@ export function GlossaryDialog({ open, onOpenChange }: { open: boolean; onOpenCh
             <div key={t} className="py-2.5 first:pt-0"><dt className="font-medium">{t}</dt><dd className="mt-0.5 text-[13.5px] leading-relaxed text-muted-foreground">{d}</dd></div>
           ))}
         </dl>
+        </div>
       </DialogContent>
     </Dialog>
   )
