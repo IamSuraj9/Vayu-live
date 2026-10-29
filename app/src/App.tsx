@@ -297,8 +297,8 @@ function ToolButtonSearch({ onOpen }: { onOpen: () => void }) {
 function CreditLine({ onAbout }: { onAbout: () => void }) {
   return (
     <p className="text-[11.5px] text-muted-foreground">
-      {CREDIT_SHORT} · Not an official warning ·{" "}
-      <button type="button" onClick={onAbout} className="rounded underline decoration-white/25 underline-offset-2 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">About</button>
+      {CREDIT_SHORT} ·{" "}
+      <button type="button" onClick={onAbout} className="rounded underline decoration-white/25 underline-offset-2 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">Sources and official alerts</button>
     </p>
   )
 }

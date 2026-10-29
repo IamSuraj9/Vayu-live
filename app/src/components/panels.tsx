@@ -1,6 +1,6 @@
 import { useId, useState } from "react"
 import {
-  ArrowUpRight, BookOpen, ChevronDown, CircleAlert, Compass, Gauge, History, Layers as LayersIcon, MapPin, Minus, Navigation,
+  ArrowUpRight, BookOpen, ChevronDown, Compass, Gauge, History, Layers as LayersIcon, MapPin, Minus, Navigation,
   Info, Pause, Play, Plus, Search, Settings2, Thermometer, Wind, X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -340,7 +340,7 @@ export function StormPanel({ storm, state, live, units, now, replaying, onClose,
         )}
         {storm.official && (
           <Button variant="outline" asChild className="h-9 rounded-full border-white/12 bg-transparent px-4 hover:bg-white/[0.06]">
-            <a href={storm.official[1]} target="_blank" rel="noreferrer">Official warnings<ArrowUpRight /></a>
+            <a href={storm.official[1]} target="_blank" rel="noreferrer">Official alerts<ArrowUpRight /></a>
           </Button>
         )}
       </div>
@@ -386,7 +386,7 @@ export function StormPanel({ storm, state, live, units, now, replaying, onClose,
       <p className="px-4 pt-3 pb-4 text-[11.5px] leading-relaxed text-muted-foreground">
         {isPast ? "Historical track. " : `Updated ${fmtAgo(last.t, now)}. `}Source:{" "}
         {storm.sourceUrl ? <a className="underline decoration-white/25 underline-offset-2 hover:text-foreground" href={storm.sourceUrl} target="_blank" rel="noreferrer">{storm.source}</a> : storm.source}.
-        {!isPast && " Not an official warning."}
+        {!isPast && " For official alerts, follow your local weather agency."}
       </p>
     </div>
   )
@@ -588,7 +588,7 @@ const AGENCIES: [string, string, string][] = [
   ["South Atlantic", "Brazilian Navy Hydrographic Center", "https://www.marinha.mil.br/chm/"],
 ]
 
-export const CREDIT_SHORT = "Data: NOAA, NHC, GDACS (EC JRC)"
+export const CREDIT_SHORT = "Real data: NOAA, NHC, GDACS"
 
 function SourceRow({ ok, name, detail, href }: { ok: boolean | null; name: string; detail: string; href: string }) {
   return (
@@ -617,9 +617,9 @@ export function AboutDialog({ file, live, reachable, now, units, open, onOpenCha
             <DialogDescription>An educational map of the world's tropical storms, built from free public data.</DialogDescription>
           </DialogHeader>
 
-          <div className="flex gap-3 rounded-xl border border-warn/30 bg-warn/10 px-3.5 py-3 text-[13.5px] leading-relaxed">
-            <CircleAlert className="mt-0.5 size-4 shrink-0 text-warn" aria-hidden="true" />
-            <p>This is not an official warning service. For warnings and evacuation orders, follow your national weather agency.</p>
+          <div className="glass-well flex gap-3 rounded-xl px-3.5 py-3 text-[13.5px] leading-relaxed">
+            <Info className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden="true" />
+            <p>Real data from public weather agencies, updated every 3 hours. Good for a quick picture of any storm. For official alerts and evacuation orders, follow your national weather agency.</p>
           </div>
 
           <section>
@@ -644,7 +644,7 @@ export function AboutDialog({ file, live, reachable, now, units, open, onOpenCha
           </section>
 
           <section>
-            <h3 className="text-[13px] font-medium">Official warnings</h3>
+            <h3 className="text-[13px] font-medium">Official alerts</h3>
             <ul className="mt-2 flex flex-col divide-y divide-white/6">
               {AGENCIES.map(([region, name, href]) => (
                 <li key={region} className="flex items-baseline justify-between gap-3 py-2 text-[13px] first:pt-0">
