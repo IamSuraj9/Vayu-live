@@ -1,0 +1,251 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Layout: the globe floats in pure black space; sidebar (left), detail panel (right) and pill controls sit on top as liquid glass. One blue accent marks focus and live state. */
+:root {
+  color-scheme: dark;
+  --font-ui: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-data: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --radius: 0.875rem;
+
+  --background: #000000;
+  --foreground: oklch(0.97 0 0);
+  --card: oklch(0.2 0.004 270 / 0.42);
+  --card-foreground: oklch(0.97 0 0);
+  --popover: oklch(0.2 0.004 270 / 0.55);
+  --popover-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.97 0 0);
+  --primary-foreground: oklch(0.18 0.005 270);
+  --secondary: oklch(0.26 0.006 270);
+  --secondary-foreground: oklch(0.97 0 0);
+  --muted: oklch(0.24 0.006 270);
+  --muted-foreground: oklch(0.69 0.012 270);
+  --accent: oklch(0.27 0.008 270);
+  --accent-foreground: oklch(0.97 0 0);
+  --destructive: oklch(0.66 0.2 22);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.7 0.15 255 / 0.85);
+  --brand: oklch(0.7 0.15 255);
+  --live: oklch(0.8 0.17 152);
+  --warn: oklch(0.85 0.15 85);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-brand: var(--brand);
+  --color-live: var(--live);
+  --color-warn: var(--warn);
+  --font-sans: var(--font-ui);
+  --font-mono: var(--font-data);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  html, body, #root { height: 100%; }
+  body {
+    @apply text-foreground antialiased;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-feature-settings: "ss01", "cv11";
+    overflow: hidden;
+  }
+  h1, h2, h3 { text-wrap: balance; }
+}
+
+.ui-gutter {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+/* Unlayered on purpose so the host page's own reset can never repaint the space behind the globe */
+html, body { background: #000; }
+
+/* ---------- Liquid glass ---------- */
+/* Positioning lives in a layer so Tailwind's absolute/fixed utilities still win */
+@layer components {
+  .glass, [data-slot="popover-content"], [data-slot="dropdown-menu-content"], [data-slot="dialog-content"], [data-slot="sheet-content"], [data-slot="tooltip-content"] {
+    position: relative;
+    isolation: isolate;
+  }
+}
+.glass,
+[data-slot="popover-content"],
+[data-slot="dropdown-menu-content"],
+[data-slot="dialog-content"],
+[data-slot="sheet-content"],
+[data-slot="tooltip-content"] {
+  color: var(--foreground);
+  background:
+    radial-gradient(140% 70% at 10% -20%, oklch(1 0 0 / 0.16), transparent 55%),
+    linear-gradient(180deg, oklch(0.32 0.004 270 / 0.36), oklch(0.16 0.004 270 / 0.5));
+  border: 0;
+  -webkit-backdrop-filter: blur(22px) saturate(190%) brightness(1.06);
+  backdrop-filter: blur(22px) saturate(190%) brightness(1.06);
+  box-shadow:
+    inset 0 1px 0.5px oklch(1 0 0 / 0.42),
+    inset 0 -1px 0.5px oklch(1 0 0 / 0.1),
+    inset 1px 0 0.5px oklch(1 0 0 / 0.08),
+    inset -1px 0 0.5px oklch(1 0 0 / 0.08),
+    inset 0 0 24px oklch(1 0 0 / 0.05),
+    0 18px 50px -12px oklch(0 0 0 / 0.7),
+    0 2px 8px oklch(0 0 0 / 0.35);
+}
+/* gradient rim that catches light on the top-left and bottom-right edges */
+.glass::before,
+[data-slot="popover-content"]::before,
+[data-slot="dropdown-menu-content"]::before,
+[data-slot="dialog-content"]::before,
+[data-slot="sheet-content"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(140deg, oklch(1 0 0 / 0.55), oklch(1 0 0 / 0.12) 28%, oklch(1 0 0 / 0.03) 55%, oklch(1 0 0 / 0.16) 82%, oklch(1 0 0 / 0.42));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+[data-slot="tooltip-content"] { border-radius: 999px; padding: 6px 12px; font-size: 12px; }
+[data-slot="tooltip-content"] svg, [data-slot="tooltip-content"] > span:last-child:empty { display: none; }
+[data-slot="dialog-overlay"], [data-slot="sheet-overlay"] { background: oklch(0 0 0 / 0.45); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+
+/* refraction: bends what is behind small glass controls (Chromium only, switched on from script) */
+[data-lens="on"] .lens {
+  -webkit-backdrop-filter: url(#qellon-lens) blur(10px) saturate(200%) brightness(1.08);
+  backdrop-filter: url(#qellon-lens) blur(10px) saturate(200%) brightness(1.08);
+}
+
+/* glass "thumb" for the selected item of a segmented control */
+[data-slot="toggle-group-item"][data-state="on"],
+.liquid-thumb {
+  background: linear-gradient(180deg, oklch(1 0 0 / 0.22), oklch(1 0 0 / 0.1)) !important;
+  box-shadow: inset 0 1px 0.5px oklch(1 0 0 / 0.5), inset 0 -1px 0.5px oklch(1 0 0 / 0.1), 0 4px 12px -2px oklch(0 0 0 / 0.45) !important;
+  color: var(--foreground) !important;
+}
+[data-slot="tabs-list"] { background: oklch(0 0 0 / 0.22) !important; box-shadow: inset 0 1px 2px oklch(0 0 0 / 0.35), inset 0 -1px 0 oklch(1 0 0 / 0.06); }
+
+/* tinted glass for the main action */
+[data-slot="button"][class*="bg-primary"] {
+  color: #fff;
+  background: linear-gradient(180deg, oklch(0.7 0.16 255 / 0.95), oklch(0.56 0.17 258 / 0.92));
+  box-shadow: inset 0 1px 0.5px oklch(1 0 0 / 0.55), inset 0 -1px 1px oklch(0 0 0 / 0.2), 0 6px 18px -4px oklch(0.6 0.17 255 / 0.55);
+}
+[data-slot="button"][class*="bg-primary"]:hover { filter: brightness(1.08); }
+[data-slot="button"]:active { transform: scale(0.96); }
+[data-slot="button"] { transition: transform 150ms var(--ease-out), filter 150ms ease, background-color 150ms ease; }
+
+/* switches and slider in the same material */
+[data-slot="switch"] { box-shadow: inset 0 1px 2px oklch(0 0 0 / 0.4); }
+[data-slot="switch"][data-state="checked"] { background: oklch(0.72 0.18 150) !important; }
+[data-slot="switch-thumb"] { background: #fff !important; box-shadow: 0 1px 3px oklch(0 0 0 / 0.4); }
+[data-slot="slider-track"] { background: oklch(1 0 0 / 0.14) !important; }
+[data-slot="slider-range"] { background: linear-gradient(90deg, oklch(0.7 0.16 255), oklch(0.8 0.12 240)) !important; }
+[data-slot="slider-thumb"] {
+  width: 22px !important; height: 22px !important; border: 0 !important;
+  background: radial-gradient(circle at 35% 30%, #fff, oklch(0.92 0 0)) !important;
+  box-shadow: 0 2px 8px oklch(0 0 0 / 0.5), inset 0 -1px 1px oklch(0 0 0 / 0.15) !important;
+}
+
+/* small glass pills used for storm labels on the globe */
+.liquid-chip {
+  background: linear-gradient(180deg, oklch(0.3 0.004 270 / 0.55), oklch(0.12 0.004 270 / 0.62));
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  backdrop-filter: blur(10px) saturate(180%);
+  box-shadow: inset 0 1px 0.5px oklch(1 0 0 / 0.4), inset 0 -1px 0.5px oklch(1 0 0 / 0.08), 0 6px 16px -4px oklch(0 0 0 / 0.6);
+}
+.liquid-chip-on {
+  background: linear-gradient(180deg, oklch(1 0 0 / 0.95), oklch(0.9 0 0 / 0.9));
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 1px oklch(0 0 0 / 0.12), 0 6px 18px -4px oklch(0 0 0 / 0.6);
+}
+/* inner tiles sit in the glass like etched wells */
+.glass-well {
+  background: oklch(0 0 0 / 0.2);
+  box-shadow: inset 0 1px 2px oklch(0 0 0 / 0.35), inset 0 -1px 0 oklch(1 0 0 / 0.07);
+}
+
+@keyframes qellon-ccw { to { transform: rotate(-360deg); } }
+@keyframes qellon-cw { to { transform: scaleX(-1) rotate(360deg); } }
+@keyframes qellon-ping { 0% { transform: scale(1); opacity: .7 } 80%, 100% { transform: scale(2.4); opacity: 0 } }
+.qellon-spin-ccw { animation: qellon-ccw 6s linear infinite; }
+.qellon-spin-cw { animation: qellon-cw 6s linear infinite; }
+.qellon-ping { animation: qellon-ping 2s cubic-bezier(0, 0, .2, 1) infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .qellon-spin-ccw, .qellon-spin-cw, .qellon-ping { animation: none; }
+}
+[data-slot="command"] { background: transparent !important; }
+[data-slot="command"] [cmdk-item][data-selected="true"] {
+  background: linear-gradient(180deg, oklch(1 0 0 / 0.16), oklch(1 0 0 / 0.07));
+  box-shadow: inset 0 1px 0.5px oklch(1 0 0 / 0.35);
+  border-radius: 12px;
+}
+
+/* ---------- Motion (Emil Kowalski's interface-animation rules, Apple-style curves) ---------- */
+:root {
+  --ease-out: cubic-bezier(0.32, 0.72, 0, 1);       /* enters: fast start, long gentle settle */
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);          /* quiet exits */
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1); /* things already on screen moving */
+}
+[data-slot="tabs-trigger"][data-state="active"] { color: var(--foreground); background: transparent !important; box-shadow: none !important; }
+[data-slot="tabs-trigger"] { transition: color 200ms ease; }
+.tab-thumb { transition: transform 320ms var(--ease-out); will-change: transform; }
+.meter-glide { transition: transform 320ms var(--ease-in-out); will-change: transform; }
+[data-slot="switch-thumb"] { transition: transform 220ms var(--ease-out) !important; }
+
+/* Radix pop-ups: tw-animate reads these variables. Scale from the trigger, small nudge, exits ~30% faster. */
+[data-slot="popover-content"], [data-slot="dropdown-menu-content"] { --tw-enter-scale: .95; --tw-exit-scale: .97; }
+[data-slot="popover-content"][data-side="bottom"], [data-slot="dropdown-menu-content"][data-side="bottom"] { --tw-enter-translate-y: -4px; --tw-exit-translate-y: -2px; }
+[data-slot="popover-content"][data-state="open"], [data-slot="dropdown-menu-content"][data-state="open"] { --tw-animation-duration: 200ms; --tw-ease: var(--ease-out); }
+[data-slot="popover-content"][data-state="closed"], [data-slot="dropdown-menu-content"][data-state="closed"] { --tw-animation-duration: 140ms; --tw-ease: var(--ease-exit); }
+[data-slot="tooltip-content"] { --tw-enter-scale: .97; --tw-enter-translate-y: 0; --tw-enter-translate-x: 0; --tw-animation-duration: 125ms; --tw-ease: var(--ease-out); }
+[data-slot="tooltip-content"][data-state="instant-open"] { animation: none !important; }
+[data-slot="dialog-content"] { --tw-enter-scale: .97; --tw-exit-scale: .98; }
+[data-slot="dialog-content"][data-state="open"], [data-slot="dialog-overlay"][data-state="open"] { --tw-animation-duration: 240ms; --tw-ease: var(--ease-out); }
+[data-slot="dialog-content"][data-state="closed"], [data-slot="dialog-overlay"][data-state="closed"] { --tw-animation-duration: 170ms; --tw-ease: var(--ease-exit); }
+[data-slot="sheet-content"][data-state="open"], [data-slot="sheet-overlay"][data-state="open"] { animation-duration: 360ms !important; animation-timing-function: var(--ease-out) !important; }
+[data-slot="sheet-content"][data-state="closed"], [data-slot="sheet-overlay"][data-state="closed"] { animation-duration: 240ms !important; animation-timing-function: var(--ease-exit) !important; }
+/* the search palette is opened constantly, so it appears instantly (as in Raycast) */
+.no-motion, [data-slot="dialog-overlay"]:has(+ .no-motion) { animation: none !important; }
+
+/* One-shot entrances for things the user just asked for */
+@keyframes q-enter { from { opacity: 0; transform: translateY(8px) scale(0.985); } to { opacity: 1; transform: none; } }
+@keyframes q-pop { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes q-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes q-ring { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
+.q-enter { animation: q-enter 300ms var(--ease-out) both; }
+.q-pop { animation: q-pop 200ms var(--ease-out) both; }
+.q-rise { animation: q-rise 300ms var(--ease-out) both; }
+.q-ring { animation: q-ring 260ms var(--ease-out) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .q-enter, .q-pop, .q-rise, .q-ring,
+  [data-slot="popover-content"], [data-slot="dropdown-menu-content"], [data-slot="tooltip-content"],
+  [data-slot="dialog-content"], [data-slot="dialog-overlay"], [data-slot="sheet-content"], [data-slot="sheet-overlay"] { animation: none !important; }
+  .tab-thumb, .meter-glide, [data-slot="switch-thumb"], [data-slot="button"] { transition: none !important; }
+  [data-slot="button"]:active { transform: none; }
+}

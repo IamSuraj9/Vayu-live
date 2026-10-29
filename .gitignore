@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+.env
+.env.*
+# large downloads are re-fetched by the tools, never committed
+data/raw/
+data/fixtures/**/NI.csv
+.venv/
+__pycache__/

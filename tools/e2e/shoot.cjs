@@ -1,0 +1,38 @@
+const { chromium } = require('playwright');
+(async () => {
+  const [file, out] = process.argv.slice(2);
+  const b = await chromium.launch();
+  const errs = [];
+  const p = await b.newPage({ viewport: { width: 1440, height: 900 }, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
+  p.on('console', m => { if (m.type() === 'error') errs.push(m.text()) });
+  p.on('pageerror', e => errs.push('PAGEERR ' + e.message));
+  await p.goto('file://' + file); await p.waitForTimeout(2500);
+  await p.screenshot({ path: out + '/d1-home.png' });
+  console.log('lens:', await p.evaluate(() => document.documentElement.dataset.lens), 'bodyBg:', await p.evaluate(() => getComputedStyle(document.body).backgroundColor));
+  await p.getByRole('button', { name: 'Zoom in' }).click();
+  for (const t of [120, 260, 420]) { await p.waitForTimeout(t === 120 ? 120 : 150); await p.screenshot({ path: out + `/z-${t}.png` }) }
+  await p.waitForTimeout(900); await p.screenshot({ path: out + '/z-end.png' });
+  await p.getByRole('button', { name: 'Back to the start view' }).click(); await p.waitForTimeout(1200);
+  await p.locator('aside').getByRole('button', { name: /^In-fa/ }).click(); await p.waitForTimeout(1800);
+  await p.screenshot({ path: out + '/d2-infa.png' });
+  await p.mouse.click(760, 600); await p.waitForTimeout(1200);
+  await p.screenshot({ path: out + '/d3-point.png' });
+  await p.keyboard.press('Control+k'); await p.waitForTimeout(400); await p.keyboard.type('Puri'); await p.waitForTimeout(300);
+  await p.screenshot({ path: out + '/d4-search.png' });
+  await p.keyboard.press('Enter'); await p.waitForTimeout(1500);
+  await p.screenshot({ path: out + '/d5-place.png' });
+  await p.getByRole('tab', { name: /Past/ }).click(); await p.getByRole('button', { name: /Fani/ }).first().click(); await p.waitForTimeout(3000);
+  await p.screenshot({ path: out + '/d6-replay.png' });
+  await p.getByRole('button', { name: 'Map layers' }).click(); await p.waitForTimeout(400);
+  await p.screenshot({ path: out + '/d7-layers.png' });
+  const m = await b.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, locale: 'en-IN', timezoneId: 'Asia/Kolkata' });
+  m.on('pageerror', e => errs.push('M PAGEERR ' + e.message));
+  await m.goto('file://' + file); await m.waitForTimeout(2500);
+  await m.screenshot({ path: out + '/m1-home.png' });
+  await m.getByRole('button', { name: /storms active/ }).click(); await m.waitForTimeout(800);
+  await m.screenshot({ path: out + '/m2-list.png' });
+  await m.getByRole('dialog').getByRole('button', { name: /^Arnab/ }).click(); await m.waitForTimeout(1500);
+  await m.screenshot({ path: out + '/m3-card.png' });
+  console.log('errors:', JSON.stringify(errs.slice(0, 10)));
+  await b.close();
+})().catch(e => { console.error('FAIL', e.message); process.exit(1) });

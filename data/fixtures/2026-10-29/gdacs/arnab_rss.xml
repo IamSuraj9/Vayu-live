@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" xmlns:gdacs="http://www.gdacs.org" xmlns:glide="http://glidenumber.net" xmlns:georss="http://www.georss.org/georss" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>GDACS RSS information</title>
+    <link>http://www.gdacs.org/</link>
+    <copyright>public domain</copyright>
+    <description>Near real-time notification about natural disaster with a potential humanitarian impact</description>
+    <managingEditor>stefano.paris@ext.ec.europa.eu</managingEditor>
+    <!--Records number 1-->
+    <!--Start 10/29/2026 6:39:33 AM-->
+    <!--=Start 10/29/2026 6:39:33 AM-->
+    <webMaster>stefano.paris@ext.ec.europa.eu</webMaster>
+    <pubDate>Thu, 29 Oct 2026 05:39:33 GMT</pubDate>
+    <atom:link href="http://www.gdacs.org/xml/rss_1001345.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Red notification for tropical cyclone ARNAB-26. Population affected by Category 1 (120 km/h) wind speeds or higher is 4.008 million .</title>
+      <description>From 26/10/2026 to 28/10/2026, a Tropical Storm (maximum wind speed of 222 km/h) ARNAB-26 was active in NorthIndian. The cyclone affects these countries: India (vulnerability High). Estimated population affected by category 1 (120 km/h) wind speeds or higher is 4.008 million .</description>
+      <enclosure type="image/png" length="1" url="https://www.gdacs.org/contentdata/resources/imgtemp/gdacs/tc/1001345/1001345_10_tn.png" />
+      <gdacs:temporary>false</gdacs:temporary>
+      <link>http://www.gdacs.org/report.aspx?eventtype=TC&amp;eventid=1001345</link>
+      <pubDate>Mon, 26 Oct 2026 01:51:40 GMT</pubDate>
+      <gdacs:dateadded>Mon, 26 Oct 2026 01:51:40 GMT</gdacs:dateadded>
+      <gdacs:datemodified>Thu, 29 Oct 2026 05:37:59 GMT</gdacs:datemodified>
+      <gdacs:iscurrent>true</gdacs:iscurrent>
+      <gdacs:fromdate>Mon, 26 Oct 2026 00:00:00 GMT</gdacs:fromdate>
+      <gdacs:todate>Wed, 28 Oct 2026 06:00:00 GMT</gdacs:todate>
+      <gdacs:durationinweek>0</gdacs:durationinweek>
+      <gdacs:year>2026</gdacs:year>
+      <dc:subject>TC2</dc:subject>
+      <guid isPermaLink="false">TC1001345</guid>
+      <geo:Point>
+        <geo:lat>16.4</geo:lat>
+        <geo:long>81.8</geo:long>
+      </geo:Point>
+      <!--gdacs:bbox format = lonmin lonmax latmin latmax-->
+      <gdacs:bbox>71.1662404623446 97.1662404623446 3.87574225591638 29.8757422559164</gdacs:bbox>
+      <georss:point>16.4 81.8</georss:point>
+      <gdacs:cap>https://www.gdacs.org/contentdata/resources/TC/1001345/cap_1001345.xml</gdacs:cap>
+      <gdacs:icon>http://www.gdacs.org/Images/gdacs_icons/alerts/Red/TC.png</gdacs:icon>
+      <gdacs:version>10</gdacs:version>
+      <gdacs:eventtype>TC</gdacs:eventtype>
+      <gdacs:alertlevel>Red</gdacs:alertlevel>
+      <gdacs:alertscore>3</gdacs:alertscore>
+      <gdacs:episodealertlevel>Orange</gdacs:episodealertlevel>
+      <gdacs:episodealertscore>2</gdacs:episodealertscore>
+      <gdacs:eventname>ARNAB-26</gdacs:eventname>
+      <gdacs:eventid>1001345</gdacs:eventid>
+      <gdacs:episodeid>10</gdacs:episodeid>
+      <gdacs:calculationtype>tropicalcyclonewithstormsurge</gdacs:calculationtype>
+      <gdacs:severity unit="km/h" value="222.2208">Tropical Storm (maximum wind speed of 102 km/h)</gdacs:severity>
+      <gdacs:population unit="Pop74" value="4007943">Population affected by Category 1 (120 km/h) wind speeds or higher is 4.008 million </gdacs:population>
+      <gdacs:vulnerability value="3">High</gdacs:vulnerability>
+      <gdacs:iso3>IND</gdacs:iso3>
+      <gdacs:country>India</gdacs:country>
+      <gdacs:glide />
+      <gdacs:mapimage />
+      <gdacs:maplink />
+      <gdacs:gtsimage />
+      <gdacs:gtslink />
+      <gdacs:resources>
+        <gdacs:resource id="event_rss" version="0" source="EC-JRC" url="http://www.gdacs.org//datareport/resources/TC/1001345/rss_1001345.xml" type="rss">
+          <gdacs:title>Event in rss format</gdacs:title>
+          <gdacs:description>Joint Research Center of the European Commission</gdacs:description>
+          <gdacs:acknowledgements>Copyright notice: European Union (CC BY 4.0), reuse is allowed, provided appropriate credit to GDACS is given.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="desinventar_disasters_profile" version="0" source="DesInventar" url="https://www.DesInventar.net/DesInventar/profiletab.jsp?countrycode=ind&amp;continue=y" type="link">
+          <gdacs:title>Mizoran Province disaster profile (DesInventar)</gdacs:title>
+          <gdacs:description>This Country Profile shows a set of typical results known as "Preliminary Analysis" comming from the disaster database. Charts, Maps and tables below will provide you with a basic understanding of the effects of many types of natural disasters occurred in the region.</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="desinventar_disasters_profile" version="0" source="DesInventar" url="https://www.DesInventar.net/DesInventar/profiletab.jsp?countrycode=ind&amp;continue=y" type="link">
+          <gdacs:title>Orissa Province disaster profile (DesInventar)</gdacs:title>
+          <gdacs:description>This Country Profile shows a set of typical results known as "Preliminary Analysis" comming from the disaster database. Charts, Maps and tables below will provide you with a basic understanding of the effects of many types of natural disasters occurred in the region.</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="desinventar_disasters_profile" version="0" source="DesInventar" url="https://www.DesInventar.net/DesInventar/profiletab.jsp?countrycode=ind&amp;continue=y" type="link">
+          <gdacs:title>Tamil Nadu Province disaster profile (DesInventar)</gdacs:title>
+          <gdacs:description>This Country Profile shows a set of typical results known as "Preliminary Analysis" comming from the disaster database. Charts, Maps and tables below will provide you with a basic understanding of the effects of many types of natural disasters occurred in the region.</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="desinventar_disasters_profile" version="0" source="DesInventar" url="https://www.DesInventar.net/DesInventar/profiletab.jsp?countrycode=ind&amp;continue=y" type="link">
+          <gdacs:title>Uttar Pradesh Province disaster profile (DesInventar)</gdacs:title>
+          <gdacs:description>This Country Profile shows a set of typical results known as "Preliminary Analysis" comming from the disaster database. Charts, Maps and tables below will provide you with a basic understanding of the effects of many types of natural disasters occurred in the region.</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="link_bom" version="0" source="BOM" url="https://www.bom.gov.au/weather-and-climate/specialised-forecasts-and-observations/tropical-cyclone" type="link">
+          <gdacs:title>Bureau of Meteorology of Australia</gdacs:title>
+          <gdacs:accesslevel>Link</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="link_ptwc" version="0" source="JTWC" url="https://www.cnmoc.usff.navy.mil/usno/" type="link">
+          <gdacs:title>Joint Typhoon Warning Centre</gdacs:title>
+          <gdacs:accesslevel>Link</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="ocha_sitrep" version="0" source="OCHA" url="https://www.reliefweb.int/updates/rss.xml?sl=environment-report_listing%252Ctaxonomy_index_tid_source-1503%252Ctaxonomy_index_tid_content_format-10%252Ctaxonomy_index_tid_disaster_type-4618" type="rss">
+          <gdacs:title>OCHA Situation Reports for Tropical Cyclones</gdacs:title>
+          <gdacs:description>List of most recent OCHA situation reports published on ReliefWeb</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="kml_link" version="0" source="EC-JRC" url="https://www.gdacs.org/kml.aspx?profile=archive&amp;eventid=1001345&amp;eventtype=TC" type="kml">
+          <gdacs:title>KML Event</gdacs:title>
+          <gdacs:description>Joint Research Center of the European Commission</gdacs:description>
+          <gdacs:acknowledgements>Copyright notice: European Union (CC BY 4.0), reuse is allowed, provided appropriate credit to GDACS is given.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cap_link" version="0" source="EC-JRC" url="https://www.gdacs.org/cap.aspx?profile=archive&amp;eventid=1001345&amp;eventtype=TC" type="xml">
+          <gdacs:title>CAP file</gdacs:title>
+          <gdacs:description>Joint Research Center of the European Commission</gdacs:description>
+          <gdacs:acknowledgements>Copyright notice: European Union (CC BY 4.0), reuse is allowed, provided appropriate credit to GDACS is given.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="metoffice" version="0" source="WMO" url="http://www.imd.gov.in" type="link">
+          <gdacs:title>India Meteorological Department</gdacs:title>
+          <gdacs:description>National Weather Service of India</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="jsonEvent" version="0" source="EC-JRC" url="https://www.gdacs.org/contentdata/resources/TC/1001345/geojson_1001345_10.geojson" type="geojson">
+          <gdacs:title>The event in geojson format by static file</gdacs:title>
+          <gdacs:description>The event data information structured in a geojson format</gdacs:description>
+          <gdacs:acknowledgements>Copyright notice: European Union (CC BY 4.0), reuse is allowed, provided appropriate credit to GDACS is given.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_report" version="0" source="INFORM" url="https://web.jrc.ec.europa.eu/dashboard/embed/INFORMRISKCOUNTRYPROFILE2024/index.html?no-header=1&amp;v-vISO3=IND&amp;no-scroll=1" type="link">
+          <gdacs:title>Inform Country Report</gdacs:title>
+          <gdacs:description>The link to inform data by country specified</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="inform_reference" version="0" source="INFORM" url="https://drmkc.jrc.ec.europa.eu/inform-index" type="link">
+          <gdacs:title>Inform Website</gdacs:title>
+          <gdacs:description>The link to inform website</gdacs:description>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_rss" version="0" source="EC-JRC" url="http://www.gdacs.org//datareport/resources/TC/1001345/rss_1001345_10.xml" type="rss">
+          <gdacs:title>Episode in rss format</gdacs:title>
+          <gdacs:description>Joint Research Center of the European Commission</gdacs:description>
+          <gdacs:acknowledgements>Copyright notice: European Union (CC BY 4.0), reuse is allowed, provided appropriate credit to GDACS is given.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="episode_data" version="0" source="EC-JRC" url="https://webcritech.jrc.ec.europa.eu/ModellingOutput/GDACS/cycloneSurgeVM/1001345_JTWC/10/" type="data">
+          <gdacs:title>GIS data and impact analyses (latest episode)</gdacs:title>
+          <gdacs:description>Joint Research Center of the European Commission</gdacs:description>
+          <gdacs:acknowledgements>Copyright notice: European Union (CC BY 4.0), reuse is allowed, provided appropriate credit to GDACS is given.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="impact_data" version="0" source="EC-JRC" url="https://webcritech.jrc.ec.europa.eu/ModellingOutput/GDACS/cycloneSurgeVM/1001345_JTWC/" type="data">
+          <gdacs:title>GIS data and impact analyses</gdacs:title>
+          <gdacs:description>Joint Research Center of the European Commission</gdacs:description>
+          <gdacs:acknowledgements>Copyright notice: European Union (CC BY 4.0), reuse is allowed, provided appropriate credit to GDACS is given.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="latest_impact_hurricane" version="0" source="EC-JRC" url="https://webcritech.jrc.ec.europa.eu/ModellingOutput/GDACS/cycloneSurgeVM/1001345_JTWC/10/buffer74_all.xml" type="xml">
+          <gdacs:title>Impact Hurricane Data</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt</gdacs:xslt>
+          <gdacs:description>Joint Research Center of the European Commission</gdacs:description>
+          <gdacs:acknowledgements>Copyright notice: European Union (CC BY 4.0), reuse is allowed, provided appropriate credit to GDACS is given.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="latest_impact_storm" version="0" source="EC-JRC" url="https://webcritech.jrc.ec.europa.eu/ModellingOutput/GDACS/cycloneSurgeVM/1001345_JTWC/10/buffer39_all.xml" type="xml">
+          <gdacs:title>Impact Tropical Storm Data</gdacs:title>
+          <gdacs:xslt>http://www.gdacs.org/xslt/asgard_summary.xslt</gdacs:xslt>
+          <gdacs:description>Joint Research Center of the European Commission</gdacs:description>
+          <gdacs:acknowledgements>Copyright notice: European Union (CC BY 4.0), reuse is allowed, provided appropriate credit to GDACS is given.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cyclone_timeline" version="0" source="EC-JRC" url="https://webcritech.jrc.ec.europa.eu/ModellingOutput/GDACS/cycloneSurgeVM/1001345_JTWC/10/all_inpData.xml" type="xml">
+          <gdacs:title>Cyclone timeline</gdacs:title>
+          <gdacs:xslt>xslt/cyclone_timeline.xslt</gdacs:xslt>
+          <gdacs:description>Joint Research Center of the European Commission</gdacs:description>
+          <gdacs:acknowledgements>Copyright notice: European Union (CC BY 4.0), reuse is allowed, provided appropriate credit to GDACS is given.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="cyclone_timeline_track" version="0" source="EC-JRC" url="https://webcritech.jrc.ec.europa.eu/ModellingOutput/GDACS/cycloneSurgeVM/1001345_JTWC/10/all_inpData.txt" type="txt">
+          <gdacs:title>Cyclone timeline Track</gdacs:title>
+          <gdacs:xslt>xslt/cyclone_timeline.xslt</gdacs:xslt>
+          <gdacs:description>Joint Research Center of the European Commission</gdacs:description>
+          <gdacs:acknowledgements>Copyright notice: European Union (CC BY 4.0), reuse is allowed, provided appropriate credit to GDACS is given.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="dynamic_map_event" version="0" source="EC-JRC" url="https://www.gdacs.org/gdacsapi/api/polygons/getgeometry?eventtype=TC&amp;eventid=1001345&amp;episodeid=10" type="geojson">
+          <gdacs:title>The event polygons in geojson format by api </gdacs:title>
+          <gdacs:description>The polygon event data information structured in a geojson format</gdacs:description>
+          <gdacs:accesslevel>Private</gdacs:accesslevel>
+        </gdacs:resource>
+        <gdacs:resource id="alertlevels_detail" version="0" source="" url="https://www.gdacs.org/gdacsapi/api/events/getepisodealertlevel?eventtype=TC&amp;eventid=1001345&amp;episodeid=10" type="json">
+          <gdacs:title>Structured files to obtain the detailed alertlevel info</gdacs:title>
+        </gdacs:resource>
+        <gdacs:resource id="eventdatabyapi" version="0" source="EC-JRC" url="https://www.gdacs.org/gdacsapi/api/events/geteventdata?eventtype=TC&amp;eventid=1001345" type="geojson">
+          <gdacs:title>The event data in geojson format by api </gdacs:title>
+          <gdacs:description>The eventdata in json format by api. In the structure there are reference to obtain data in sublevel</gdacs:description>
+          <gdacs:acknowledgements>Copyright notice: European Union (CC BY 4.0), reuse is allowed, provided appropriate credit to GDACS is given.</gdacs:acknowledgements>
+          <gdacs:accesslevel>Public</gdacs:accesslevel>
+        </gdacs:resource>
+      </gdacs:resources>
+      <gdacs:identifiers />
+    </item>
+  </channel>
+</rss><!--End 10/29/2026 6:39:35 AM-->

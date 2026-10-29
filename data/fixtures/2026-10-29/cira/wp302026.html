@@ -1,0 +1,671 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <!-- Start of /templates/html_header.asp (was actually above with
+        DOCTYPE). -->
+
+         
+
+        <!--<link rel="Shortcut Icon" href="/home/www/html/favicon.ico" type="image/x-icon" />
+
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+        <meta http-equiv="Content-Language" content="en-us" />
+        <meta name="robots" content="all" />
+        <meta http-equiv="imagetoolbar" content="false" />
+        <meta name="MSSmartTagsPreventParsing" content="true" /> -->
+
+        <!-- Start of /templates/google_analytics_code.asp -->
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-YX2QTKQHCF"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-YX2QTKQHCF');
+        </script>
+        <!-- End of Google Analytics Code -->
+        <!-- End of /templates/google_analytics_code.asp -->
+
+        <!-- End of /templates/html_header.asp -->
+
+        <!-- Start of section that was specific to each page. -->
+       
+        <!--<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon">-->
+        <link rel="icon" href="/tc_realtime/static/images/favicon.ico" type="image/x-icon">       
+        <meta charset="UTF-8" />       
+        <meta http-equiv="content-language" content="en" />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="RAMMB" />
+        <meta name="Copyright" content="Copyright (c) RAMMB" />
+        <meta name="description" content="Real-time tropical cyclone products developed by NOAA/NESDIS/STAR/RAMMB and CIRA scientists" />
+        <meta name="keywords" content="" />
+
+        <link rel="stylesheet" type="text/css" href="/tc_realtime/static/css/tc_realtime.css">
+        <link rel="stylesheet" type="text/css" href="/tc_realtime/static/css/wordpress_styles.css">
+
+        <script language="JavaScript" type="text/javascript" src="/tc_realtime/static/javascript/includes.js"></script>
+
+        
+    
+            <title>RAMMB: TC Real-Time: WP302026 - Typhoon (&gt;=96 kt) IN-FA</title>
+        
+
+
+
+        
+
+
+    </head>
+    <body>
+        <!-- End of section that was specific to each page. -->
+
+        <!-- Pull in header for WordPress styling using a soft link/symlink to the wordpress-styling repo -->
+        <!-- REQUIRED SCRIPTS AND STYLES      -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans|Open+Sans+Condensed:300" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/790308ae5f.js" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script>
+		jQuery(document).ready(function($) {
+			$('nav ul li a:not(:only-child)').click(function(e){
+				$(this).parent().siblings().find('ul').slideUp(300);
+				$(this).next('ul').stop(true, false, true).slideToggle(300);
+					return false;
+			});
+			$('.nav-mobile').click(function(){
+				$('.nav-1 .nav-list').slideToggle('slow');
+				$(".line").toggleClass("active");
+			});
+		});
+	</script>
+<!-- Header and Navigation Code     -->
+	<header class="wordpress_header">
+		<div class="RAMbrand logo">
+			<a href="https://rammb.cira.colostate.edu/"><img src="/tc_realtime/static/images/rammb_logo.png" alt="RAMMB: Regional and Mesoscale Meteorology Branch logo"  /></a>
+		</div>
+		<div class="centerNav">
+			<h1>Regional and Mesoscale Meteorology Branch</h1>
+			<nav class="nav-1" id="nav-1">
+				<div class="nav-mobile">
+					<p>Show Menu</p>
+				</div>
+				<ul class="nav-list">
+					<li><a href="https://rammb2.cira.colostate.edu">Home</a></li>
+					<li>
+						<a href="#">Real-Time Data</a>
+						<ul class="submenu">
+							<li>
+								<a href="http://rammb-slider.cira.colostate.edu/">SLIDER</a>
+							</li>
+							<li>
+								<a href="https://rammb-data.cira.colostate.edu/tc_realtime/">TC Real-Time</a>
+							</li>
+							<li>
+								<a href="https://rammb2.cira.colostate.edu/ramsdis/">RAMSDIS</a>
+							</li>
+							<li>
+								<a href="https://www.cira.colostate.edu/tropical-cyclones/genesis/">TC Genesis</a>
+							</li>
+						</ul>	
+					</li>
+					<li>
+						<a href="#">Research Projects</a>
+						<ul class="submenu">
+						<li>
+							<a href="https://rammb2.cira.colostate.edu/research/goes-r-research/">GOES-R Research</a>
+						</li>
+						<li>
+							<a href="https://rammb2.cira.colostate.edu/research/calibration_validation_and_visualization/">JPSS VIIRS Calibration/Validation & Visulalization</a>
+						</li>
+						<li>
+							<a href="https://rammb2.cira.colostate.edu/research/tropical-cyclones/">Tropical Cyclones</a>
+						</li>
+						<li>
+							<a href="https://rammb2.cira.colostate.edu/research/ai/">AI/ML</a>
+						</li>
+						</ul>
+					</li>
+					<li>
+						<a href="#">Training/Outreach</a>
+						<ul class="submenu">
+							<li>
+								<a href="https://rammb2.cira.colostate.edu/training/rmtc/">International</a>
+							</li>
+							<li>
+								<a href="https://rammb2.cira.colostate.edu/training/shymet/">SHyMet</a>
+							</li>
+							<li>
+								<a href="https://rammb2.cira.colostate.edu/training/visit/">VISIT</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="#">Resources</a>
+						<ul class="submenu">
+						<li>
+							<a href="https://rammb2.cira.colostate.edu/resources/acronyms/">Acronyms</a>
+						</li>
+						<li>
+							<a href="https://rammb2.cira.colostate.edu/resources/blogs/">Blogs</a>
+						</li>
+						<li>
+							<a href="https://rammb2.cira.colostate.edu/resources/contact-directory/">Contact Directory</a>
+							</li>
+							<li>
+							<a href="https://rammb2.cira.colostate.edu/resources/publications/">Publications</a>
+						</li>
+						<li>
+							<a href="https://rammb2.cira.colostate.edu/resources/personnel/">Personnel</a>
+						</li>
+						<li>
+							<a href="https://rammb2.cira.colostate.edu/intranet/mainpage/">Staff Login</a>
+						</li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<div class="CSUbrand logo">
+			<a href="https://www.cira.colostate.edu/"><img src="/tc_realtime/static/images/cira_logo.png" alt="CIRA: Cooperative Institute for Research in the Atmosphere logo" /></a>
+		</div>
+	</header>
+
+            <div class="subheader">
+                <h1>TC Realtime</h1>
+            </div>
+
+            <h2>WP302026 - Typhoon (&gt;=96 kt) IN-FA</h2>
+<!--            <h2>RAMMB: TC Real-Time: WP302026 - Typhoon (&gt;=96 kt) IN-FA</h2>-->
+
+            <!-- Start of /products/tc_realtime/header.asp. -->
+
+            <!-- Start wrapper -->
+            <div id="wrapper">
+
+                <!-- Start sidebar -->
+                <div id="sidebar">
+                    <ul class="list_level_1">
+                        <!-- <li><a href="http://rammb.cira.colostate.edu/products/tc_realtime">Home</a></li> -->
+                        <li><a href="/tc_realtime/">Current Active Cyclones</a></li>
+                        <li><span class="list_heading_span">Archive</span>
+                            <ul>
+                                
+                                    <li><a href="season.asp?storm_season=2027">2027 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2026">2026 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2025">2025 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2024">2024 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2023">2023 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2022">2022 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2021">2021 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2020">2020 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2019">2019 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2018">2018 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2017">2017 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2016">2016 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2015">2015 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2014">2014 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2013">2013 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2012">2012 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2011">2011 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2010">2010 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2009">2009 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2008">2008 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2007">2007 Season</a></li>
+                                
+                                    <li><a href="season.asp?storm_season=2006">2006 Season</a></li>
+                                
+                            </ul>
+                        </li>
+                        <li><a href="about.asp">Additional Information</a></li>
+                        <li><a href="links.asp">Additional Links</a></li>
+                    </ul>
+                </div>
+                <!-- End sidebar -->
+
+                <!-- End of /products/tc_realtime/header.asp. -->
+
+
+                <!-- Start main content -->
+                <div id="content">
+
+                <!-- Start of Body - ENTER PAGE CONTENTS HERE -->
+
+
+                
+
+        <div class="tab-wrapper">
+        <hr>
+        <div class="tab">
+            <a class="tablinks active-tab" href="storm.asp?storm_identifier=wp302026">Storm Synopsis</a>
+            <a class="tablinks" href="storm_satellite.asp?storm_identifier=wp302026">Satellite</a>
+            <a class="tablinks" href="storm_model_data.asp?storm_identifier=wp302026">Model Data</a>
+            <a class="tablinks" href="storm_wind_speed_probabilities.asp?storm_identifier=wp302026">Wind Hazards</a>
+            <a class="tablinks" href="storm_experimental.asp?storm_identifier=wp302026">Experimental</a>
+        </div>
+        <hr>
+    </div>
+
+	<!--- Taken out 201409291354
+	<p><span style="color: red;">New: </span><a href="#SRSNPPDV"><%=arr_products(con_srsnppdv, con_description)%></a> and <a href="#SRSNPPIR"><%=arr_products(con_srsnppir, con_description)%></a> data is available for storms starting in 2014.</p>
+	-->
+
+    <div class="storm_main_wrapper">
+        <div class="text_product_wrapper">
+
+        <!-- Start of STRMFCST Product -->
+
+                <h3>Forecast Track</h3>
+
+                
+
+                <h4>Time of Latest Forecast: 2026-10-29 00:00</h4>
+                <table>
+                    <tr>
+                        <td>Forecast Hour</td>
+                        <td>Latitude</td>
+                        <td>Longitude</td>
+                        <td>Intensity</td>
+                    </tr>
+
+                    
+                        <tr>
+                            <td>0</td>
+                            <td>15.9</td>
+                            <td>154.6</td>
+                            <td>115</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>12</td>
+                            <td>16.6</td>
+                            <td>151.4</td>
+                            <td>115</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>24</td>
+                            <td>17.6</td>
+                            <td>148.1</td>
+                            <td>115</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>36</td>
+                            <td>19.1</td>
+                            <td>145.2</td>
+                            <td>115</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>48</td>
+                            <td>20.7</td>
+                            <td>143.4</td>
+                            <td>115</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>72</td>
+                            <td>22.1</td>
+                            <td>142.9</td>
+                            <td>100</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>96</td>
+                            <td>21.9</td>
+                            <td>140.2</td>
+                            <td>100</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>120</td>
+                            <td>22.2</td>
+                            <td>137.8</td>
+                            <td>100</td>
+                        </tr>
+                    
+
+                    </table>
+
+                    <p><a href="archive_strmfcst.asp?storm_identifier=wp302026">Forecast Track Archive</a></p>
+
+                    <p><a href="about.asp#strmfcst">About Forecast Track</a></p>
+
+                
+
+                </table>
+
+        <!-- End of STRMFCST Product -->
+
+        <!-- Start of STRMSTAT Product -->
+
+                <h3>Track History</h3>
+
+                
+                    <table>
+                        <tr>
+                            <td>Synoptic Time</td>
+                            <td>Latitude</td>
+                            <td>Longitude</td>
+                            <td>Intensity</td>
+                        </tr>
+
+                    
+                        <tr>
+                            <td>2026-10-29 00:00</td>
+                            <td>15.9</td>
+                            <td>154.6</td>
+                            <td>115</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-28 18:00</td>
+                            <td>15.6</td>
+                            <td>156.3</td>
+                            <td>120</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-28 12:00</td>
+                            <td>15.4</td>
+                            <td>157.6</td>
+                            <td>130</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-28 06:00</td>
+                            <td>15.1</td>
+                            <td>158.9</td>
+                            <td>130</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-28 00:00</td>
+                            <td>14.9</td>
+                            <td>159.9</td>
+                            <td>120</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-27 18:00</td>
+                            <td>14.7</td>
+                            <td>160.8</td>
+                            <td>115</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-27 12:00</td>
+                            <td>14.5</td>
+                            <td>161.6</td>
+                            <td>105</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-27 06:00</td>
+                            <td>14.5</td>
+                            <td>162.1</td>
+                            <td>105</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-27 00:00</td>
+                            <td>14.3</td>
+                            <td>162.4</td>
+                            <td>110</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-26 18:00</td>
+                            <td>14.1</td>
+                            <td>162.6</td>
+                            <td>110</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-26 12:00</td>
+                            <td>14.1</td>
+                            <td>162.7</td>
+                            <td>115</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-26 06:00</td>
+                            <td>14.0</td>
+                            <td>163.0</td>
+                            <td>115</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-26 00:00</td>
+                            <td>13.8</td>
+                            <td>163.2</td>
+                            <td>80</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-25 18:00</td>
+                            <td>13.4</td>
+                            <td>163.9</td>
+                            <td>80</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-25 12:00</td>
+                            <td>12.8</td>
+                            <td>164.5</td>
+                            <td>75</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-25 06:00</td>
+                            <td>12.0</td>
+                            <td>165.0</td>
+                            <td>60</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-25 00:00</td>
+                            <td>11.5</td>
+                            <td>165.3</td>
+                            <td>55</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-24 18:00</td>
+                            <td>11.1</td>
+                            <td>165.6</td>
+                            <td>50</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-24 12:00</td>
+                            <td>10.6</td>
+                            <td>165.9</td>
+                            <td>50</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-24 06:00</td>
+                            <td>10.1</td>
+                            <td>165.7</td>
+                            <td>50</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-24 00:00</td>
+                            <td>10.4</td>
+                            <td>166.2</td>
+                            <td>45</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-23 18:00</td>
+                            <td>10.6</td>
+                            <td>166.3</td>
+                            <td>35</td>
+                        </tr>
+                    
+                        <tr>
+                            <td>2026-10-23 12:00</td>
+                            <td>10.9</td>
+                            <td>166.2</td>
+                            <td>30</td>
+                        </tr>
+                    
+
+                    </table>
+
+                    <p><a href="about.asp#strmstat">About Track History</a></p>
+
+                
+
+        <!-- End of STRMSTAT Product -->
+
+        </div>
+        <div class="product_grouping main_product_grouping">
+            <!-- Start of 4kmirimg Product -->
+<div class ="product_wrapper 4kmirimg">
+<h4>Enhanced Infrared (IR) Imagery (4 km Mercator)</h4>
+<a href="loop.asp?product=4kmirimg&storm_identifier=wp302026&starting_image=2026wp30_4kmirimg_202610282330.gif"><img src="/tc_realtime/products/storms/2026wp30/4kmirimg/2026wp30_4kmirimg_202610290540.gif" /></a><p class="caption"><a href="loop.asp?product=4kmirimg&storm_identifier=wp302026&starting_image=2026wp30_4kmirimg_202610282330.gif">Loop</a> | <a href="/tc_realtime/products/storms/2026wp30/4kmirimg/2026wp30_4kmirimg_202610290540.gif">Latest Image</a> | <a href="archive.asp?product=4kmirimg&storm_identifier=wp302026">Archive</a> | <a href="about.asp#4kmirimg">About</a></p><p class="caption">Time of Latest Image: 2026-10-29 05:40</p></div>
+
+            <!-- Start of mw_89ghz Product -->
+<div class ="product_wrapper mw_89ghz">
+<h4>85 – 92 GHz Brightness Temperature</h4>
+<a href="loop.asp?product=mw_89ghz&storm_identifier=wp302026&starting_image=2026wp30_mw_89ghz_202610280241.png"><img src="/tc_realtime/products/storms/2026wp30/mw_89ghz/2026wp30_mw_89ghz_202610290225.png" /></a><p class="caption"><a href="loop.asp?product=mw_89ghz&storm_identifier=wp302026&starting_image=2026wp30_mw_89ghz_202610280241.png">Loop</a> | <a href="/tc_realtime/products/storms/2026wp30/mw_89ghz/2026wp30_mw_89ghz_202610290225.png">Latest Image</a> | <a href="archive.asp?product=mw_89ghz&storm_identifier=wp302026">Archive</a> | <a href="about.asp#mw_89ghz">About</a></p><p class="caption">Time of Latest Image: 2026-10-29 02:25</p></div>
+
+            
+            <!-- Start of mpsatwnd Product -->
+<div class ="product_wrapper mpsatwnd">
+<h4>Multiplatform Satellite Surface Wind Analysis (Experimental)</h4>
+<a href="image_mpsatwnd.asp?product=mpsatwnd&storm_identifier=wp302026&product_filename=2026wp30_mpsatwnd_202610290300"><img src="/tc_realtime/products/storms/2026wp30/mpsatwnd/2026wp30_mpsatwnd_202610290300_swnd.gif" /></a><p class="caption"><a href="image_mpsatwnd.asp?product=mpsatwnd&storm_identifier=wp302026&product_filename=2026wp30_mpsatwnd_202610290300">Latest Image</a> | <a href="archive_sub_products.asp?product=mpsatwnd&storm_identifier=wp302026">Archive</a> | <a href="about.asp#mpsatwnd">About</a></p><p class="caption">Time of Latest Image: 2026-10-29 03:00</p></div>
+
+            <!-- Start of ohcnfcst Product -->
+<div class ="product_wrapper ohcnfcst">
+<h4>Ocean Heat Content & Forecast Track</h4>
+<a href="/tc_realtime/products/storms/2026wp30/ohcnfcst/2026wp30_ohcnfcst_202610290000.gif"><img src="/tc_realtime/products/storms/2026wp30/ohcnfcst/2026wp30_ohcnfcst_202610290000.gif" /></a><p class="caption"><a href="/tc_realtime/products/storms/2026wp30/ohcnfcst/2026wp30_ohcnfcst_202610290000.gif">Latest Image</a> | <a href="archive.asp?product=ohcnfcst&storm_identifier=wp302026">Archive</a> | <a href="about.asp#ohcnfcst">About</a></p><p class="caption">Time of Latest Image: 2026-10-29 00:00</p></div>
+
+            <!-- Start of diagplot Product -->
+<div class ="product_wrapper diagplot">
+<h4>Model Diagnostic Plot</h4>
+<a href="loop.asp?product=diagplot&storm_identifier=wp302026&starting_image=2026wp30_diagplot_202610251200.png"><img src="/tc_realtime/products/storms/2026wp30/diagplot/2026wp30_diagplot_202610290000.png" /></a><p class="caption"><a href="loop.asp?product=diagplot&storm_identifier=wp302026&starting_image=2026wp30_diagplot_202610251200.png">Loop</a> | <a href="/tc_realtime/products/storms/2026wp30/diagplot/2026wp30_diagplot_202610290000.png">Latest Image</a> | <a href="archive.asp?product=diagplot&storm_identifier=wp302026">Archive</a> | <a href="about.asp#diagplot">About</a></p><p class="caption">Time of Latest Image: 2026-10-29 00:00</p></div>
+
+
+            <!-- Uncomment out when we have a delivery mechanism -->
+            <!-- div class="product_wrapper"><h4>ciraalpw</h4></div -->
+
+            <!-- Start of ripafcst Product -->
+<div class ="product_wrapper ripafcst">
+<h4>RIPA Forecast</h4>
+<a href="/tc_realtime/products/storms/2026wp30/ripafcst/2026wp30_ripafcst_000000000000.gif"><img src="/tc_realtime/products/storms/2026wp30/ripafcst/2026wp30_ripafcst_000000000000.gif" /></a><p class="caption"><a href="about.asp#ripafcst">About</a></p></div>
+
+            <!-- Start of ripastbl Product -->
+<div class ="product_wrapper ripastbl">
+<h4>RIPA Storm Table</h4>
+<p>Please use the links below to view the text data for this product.</p><p class="caption"><a href="/tc_realtime/products/storms/2026wp30/ripastbl/2026wp30_ripastbl_202610290000.txt">Latest Text File</a> |  | <a href="archive_text.asp?product=ripastbl&storm_identifier=wp302026">Archive</a> | <a href="about.asp#ripastbl">About</a></p><p class="caption">Time of Latest Image: 2026-10-29 00:00</p></div>
+
+        </div>
+    </div>
+
+
+
+
+    <!--
+            <div class="container">
+                
+    
+                    <h1>WP302026 - Typhoon (&gt;=96 kt) IN-FA - Flask Super Example</h1>
+                
+
+                <h2>This is part of my base template</h2>
+                <br>
+                <br>
+                <h2>This is part of my base template</h2>
+                <br>
+                <div class="footer">
+                    
+                        Watch! This will be added to my base and child templates using the super powerful super block!
+                        <br>
+                        <br>
+                        <br>
+                    
+                </div>
+            </div>
+
+
+    -->
+
+                <!-- End of Body - STOP ENTERING PAGE CONTENTS HERE -->
+
+                </div>
+                <!-- End main content -->
+
+            </div>
+            <!-- End wrapper -->
+
+        <!-- Pull in header for WordPress styling using a soft link/symlink to the wordpress-styling repo -->
+        <div id="rammb_footer">
+    <div class="footerWrapper">
+        <div class="addressContact" style="width: 45%; float:left;">
+            <h4>Contact Us</h4>
+            <p>
+                Regional and Mesoscale Meteorology Branch <br>
+                Cooperative Institute for Research in the Atmosphere<br>
+                3925A West Laporte Ave.<br>
+                Fort Collins, CO 80523-1375<br>
+                Phone: 970.491.8448<br>
+                Fax: 970.491.8241
+            </p>
+        </div>
+        <div class="menusContact" style="width: 45%; float: right;">
+            <div style="width: 45%; float:left;">
+                <h4>More Details:</h4>
+                <ul>
+                    <li><a href="https://www.rammb2.cira.colostate.edu/resources/contact-directory">Contact Directory</a></li>
+                    <li><a href="http://www.noaa.gov/privacy.html">Privacy Policy</a></li>
+                    <li><a href="http://www.noaa.gov/disclaimer.html">Disclaimer</a></li>
+                    <li><a href="http://www.cio.noaa.gov/services_programs/info_quality.html">Information Quality</a></li>
+                    <li><a href="https://rammb2.cira.colostate.edu/resources/experimental_products_disclaimer">Experimental Products Disclaimer</a></li>
+                </ul>
+            </div>
+            <div style="width: 45%; float:right;">
+                <h4>Our Partners:</h4>
+                <ul>
+                    <li><a href="http://www.doc.gov/">US Dept. of Commerce</a></li>
+                    <li><a href="http://www.noaa.gov/">NOAA</a></li>
+                    <li><a href="http://www.nesdis.noaa.gov/">NESDIS</a></li>
+                    <li><a href="http://www.star.nesdis.noaa.gov/star/index.php">STAR</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copywrite">© 2021 Regional and Mesoscale Meteorology Branch.</div>
+    </div>
+    
+</div>
+
+
+
+
+</body>
+</html>
+            <!-- End of /templates/rammb_footer.asp. -->
