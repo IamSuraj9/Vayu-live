@@ -1,4 +1,4 @@
-import data from "@/data/storms.json"
+import saved from "../../public/data/storms.json"
 import past from "@/data/pastStorms.json"
 import { bearing, distanceKm, nearestCity, compass } from "@/lib/geo"
 import { isOverLand } from "@/globe/world"
@@ -7,13 +7,16 @@ export type Pt = { t: string; lat: number; lon: number; kt: number; hpa?: number
 export type Fc = { h: number; lat: number; lon: number; kt: number }
 export type Storm = {
   id: string; name: string; kind: string; basin: string; track: Pt[]; forecast: Fc[]; forecastIssued?: string | null
-  source: string; sourceUrl?: string; sourceLabel?: string; official?: string[]; windAvg: string
+  source: string; sourceUrl?: string; official?: string[]; windAvg: string; authority?: string
+  status?: "active" | "ended"; stale?: boolean; updated?: string
   people?: { count: number; alert: string; modified: string } | null; year?: number
 }
+export type SourceStatus = { ok: boolean; errors?: string[]; cycle?: string; storms?: number }
+/** data/storms.json, written by pipeline/storms.py */
+export type StormFile = { schema: number; snapshot: string; fetchedAt: string; sources: Record<string, SourceStatus>; credits: string; storms: Storm[] }
 
-export const SNAPSHOT = data.snapshot
-export const NOW = data.fetchedAt
-export const ACTIVE: Storm[] = data.storms as Storm[]
+/** The copy saved into the app at build time, used until (or unless) the live file loads */
+export const SAVED = saved as StormFile
 export const PAST: Storm[] = (past.storms as (Omit<Storm, "kind" | "forecast" | "source" | "windAvg"> & { year: number })[]).map(s => ({
   ...s, kind: "past", forecast: [], source: "IBTrACS (NOAA NCEI), JTWC winds", windAvg: "1-minute",
   sourceUrl: "https://www.ncei.noaa.gov/products/international-best-track-archive",
@@ -58,4 +61,16 @@ export function whereNow(lat: number, lon: number) {
   const c = nearestCity(lat, lon)
   const onLand = isOverLand(lon, lat)
   return { onLand, city: c.name, country: c.country, km: c.km, dir: compass(c.bearingFromCity) }
+}
+
+const KEEP_HOURS = 36, ACTIVE_HOURS = 12
+
+/** How a storm should be shown at `now`. Storms with no report for 36 h are left out, as the pipeline does. */
+export type Liveness = "active" | "ended" | "stale" | "gone"
+export function liveness(s: Storm, now: number, feedFresh: boolean): Liveness {
+  const age = (now - ms(s.updated ?? s.track[s.track.length - 1].t)) / 3.6e6
+  if (age > KEEP_HOURS) return "gone"
+  if (s.status === "ended" || (feedFresh && age > ACTIVE_HOURS)) return "ended"
+  if (s.stale || age > ACTIVE_HOURS) return "stale"
+  return "active"
 }

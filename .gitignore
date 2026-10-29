@@ -9,3 +9,6 @@ data/raw/
 data/fixtures/**/NI.csv
 .venv/
 __pycache__/
+
+# built at deploy time by pipeline/wind.py (about 1.4 MB), never committed
+app/public/data/wind.json

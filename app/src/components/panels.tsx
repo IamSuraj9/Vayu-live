@@ -1,7 +1,7 @@
 import { useId, useState } from "react"
 import {
-  ArrowUpRight, BookOpen, ChevronDown, Compass, FlaskConical, Gauge, History, Layers as LayersIcon, MapPin, Minus, Navigation,
-  Pause, Play, Plus, Search, Settings2, Thermometer, Wind, X,
+  ArrowUpRight, BookOpen, ChevronDown, CircleAlert, Compass, Gauge, History, Layers as LayersIcon, MapPin, Minus, Navigation,
+  Info, Pause, Play, Plus, Search, Settings2, Thermometer, Wind, X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -17,21 +17,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command"
-import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { LEVELS, headline, levelFor } from "@/lib/strength"
 import {
   type Units, defaultUnits, fmtAgo, fmtDist, fmtPress, fmtSpeedKmh, fmtTempK, fmtTime, fmtWindKt, fmtWindMs, windFromKt, windFromMs, WIND_LABEL,
 } from "@/lib/units"
 import { bearing, compass, compassShort, distanceKm, fmtLatLon, windWords } from "@/lib/geo"
-import { type Storm, type State, trend, whereNow, startMs, endMs } from "@/lib/storms"
+import { type Storm, type State, type StormFile, type Liveness, trend, whereNow, startMs, endMs } from "@/lib/storms"
 import { CITIES } from "@/data/cities"
 import { StormGlyph, RAMP_CSS, type Layers } from "@/globe/Globe"
 import { FIELD_SOURCE, FIELD_TIME, sampleAt } from "@/globe/field"
-
-export type MockState = "normal" | "empty" | "stale" | "down"
 
 /* ---------- shared bits ---------- */
 
@@ -87,21 +82,25 @@ export function SearchTrigger({ onOpen, compact }: { onOpen: () => void; compact
   )
 }
 
-function StormRow({ s, units, selected, onClick }: { s: Storm; units: Units; selected: boolean; onClick: () => void }) {
+function StormRow({ s, live, now, units, selected, onClick }: { s: Storm; live: Liveness; now: number; units: Units; selected: boolean; onClick: () => void }) {
   const last = s.track[s.track.length - 1]
   const invest = s.kind === "disturbance"
+  const quiet = live === "ended" || live === "stale"
   return (
     <button type="button" onClick={onClick} aria-pressed={selected}
       className={cn("flex w-full items-center gap-3 rounded-xl px-2.5 py-2 text-left transition-colors outline-none hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-ring",
         selected && "liquid-thumb")}>
       <span className="glass-well flex size-9 shrink-0 items-center justify-center rounded-xl">
-        <StormGlyph color={levelFor(last.kt).color} size={24} south={last.lat < 0} reducedMotion />
+        <StormGlyph color={quiet ? "oklch(0.6 0.01 270)" : levelFor(last.kt).color} size={24} south={last.lat < 0} reducedMotion />
       </span>
       <span className="min-w-0 flex-1">
         <span className="block truncate font-medium">{s.name}</span>
-        <span className="block truncate text-[12.5px] text-muted-foreground">{invest ? "Being watched" : headline(last.kt, s.basin)} · {s.basin}</span>
+        <span className="block truncate text-[12.5px] text-muted-foreground">
+          {quiet ? <><span className="text-warn">{live === "ended" ? "Ended" : "Not updated"}</span> · last report {fmtAgo(last.t, now)}</>
+            : <>{invest ? "Being watched" : headline(last.kt, s.basin)} · {s.basin}</>}
+        </span>
       </span>
-      <span className="flex flex-col items-end gap-1">
+      <span className={cn("flex flex-col items-end gap-1", quiet && "opacity-60")}>
         <span className="font-mono text-[12.5px] tabular-nums">{fmtWindKt(last.kt, units.wind)}</span>
         <StrengthBars kt={last.kt} />
       </span>
@@ -109,17 +108,18 @@ function StormRow({ s, units, selected, onClick }: { s: Storm; units: Units; sel
   )
 }
 
-export function StormTabs({ storms, past, units, selectedId, onSelect, onReplay, tab, setTab }: {
-  storms: Storm[]; past: Storm[]; units: Units; selectedId: string | null
+export function StormTabs({ storms, live, now, unknown, past, units, selectedId, onSelect, onReplay, tab, setTab }: {
+  storms: Storm[]; live: (s: Storm) => Liveness; now: number; unknown: boolean; past: Storm[]; units: Units; selectedId: string | null
   onSelect: (id: string) => void; onReplay: (id: string) => void; tab: string; setTab: (t: string) => void
 }) {
+  const current = storms.filter(s => live(s) !== "ended").length
   return (
     <Tabs value={tab} onValueChange={setTab} className="min-h-0 gap-0">
       <TabsList className="relative mx-3 mt-1 grid h-9 w-auto grid-cols-2 rounded-full p-[3px]">
         <span aria-hidden="true" className="tab-thumb liquid-thumb pointer-events-none absolute inset-y-[3px] left-[3px] w-[calc(50%-3px)] rounded-full"
           style={{ transform: tab === "past" ? "translateX(100%)" : "translateX(0)" }} />
         <TabsTrigger value="active" className="relative z-10 rounded-full text-[13px]">
-          Active <span className="ml-1 rounded-full bg-white/10 px-1.5 font-mono text-[10.5px] tabular-nums">{storms.length}</span>
+          Active <span className="ml-1 rounded-full bg-white/10 px-1.5 font-mono text-[10.5px] tabular-nums">{current}</span>
         </TabsTrigger>
         <TabsTrigger value="past" className="relative z-10 rounded-full text-[13px]">Past storms</TabsTrigger>
       </TabsList>
@@ -127,13 +127,15 @@ export function StormTabs({ storms, past, units, selectedId, onSelect, onReplay,
         {storms.length === 0 ? (
           <div className="mx-1.5 mb-1.5 flex flex-col items-center gap-2 rounded-xl border border-dashed border-white/12 px-4 py-6 text-center">
             <span className="flex size-10 items-center justify-center rounded-full bg-white/[0.06]"><Wind className="size-5 text-muted-foreground" aria-hidden="true" /></span>
-            <p className="font-medium">No storms right now</p>
-            <p className="text-[13px] leading-relaxed text-muted-foreground">No cyclones, hurricanes, typhoons or depressions are active. The globe still shows today's winds.</p>
+            <p className="font-medium">{unknown ? "Can't load storms right now" : "No storms right now"}</p>
+            <p className="text-[13px] leading-relaxed text-muted-foreground">
+              {unknown ? "The storm data could not be reached. Check your national weather agency for warnings." : "No cyclones, hurricanes, typhoons or depressions are active. The globe still shows today's winds."}
+            </p>
             <Button size="sm" variant="secondary" className="mt-1 rounded-full" onClick={() => setTab("past")}><History />Replay a past storm</Button>
           </div>
         ) : (
           <ul className="flex flex-col gap-0.5">
-            {storms.map(s => <li key={s.id}><StormRow s={s} units={units} selected={s.id === selectedId} onClick={() => onSelect(s.id)} /></li>)}
+            {storms.map(s => <li key={s.id}><StormRow s={s} live={live(s)} now={now} units={units} selected={s.id === selectedId} onClick={() => onSelect(s.id)} /></li>)}
           </ul>
         )}
       </TabsContent>
@@ -164,15 +166,14 @@ export function StormTabs({ storms, past, units, selectedId, onSelect, onReplay,
   )
 }
 
-export function Freshness({ newest, nowIso, units, mock }: { newest: string | null; nowIso: string; units: Units; mock: MockState }) {
-  const bad = mock === "stale" || mock === "down"
+export function Freshness({ newest, now, units, bad }: { newest: string | null; now: number; units: Units; bad: boolean }) {
   return (
     <div className="flex items-center gap-2.5 text-[12px] text-muted-foreground">
       <span className="relative flex size-2">
         {!bad && <span className="qellon-ping absolute inline-flex size-full rounded-full bg-live" />}
         <span className={cn("relative inline-flex size-2 rounded-full", bad ? "bg-warn" : "bg-live")} />
       </span>
-      {newest ? <span>Storm data {fmtTime(newest, units.time)} · <span className={cn(bad && "text-warn")}>{fmtAgo(newest, nowIso)}</span></span> : <span>Watching every ocean</span>}
+      {newest ? <span>Storm data {fmtTime(newest, units.time)} · <span className={cn(bad && "text-warn")}>{fmtAgo(newest, now)}</span></span> : <span>Watching every ocean</span>}
     </div>
   )
 }
@@ -190,7 +191,7 @@ function StrengthMeter({ kt, units }: { kt: number; units: Units }) {
         <span className="text-muted-foreground">Strength</span>
         <span className="font-medium">{lv.label}</span>
       </div>
-      <div className="relative mt-2">
+      <div className="relative mt-2 overflow-x-clip">
         <div className="flex gap-1">
           {LEVELS.map((l, i) => <span key={l.key} className="h-1.5 flex-1 rounded-full" style={{ background: l.color, opacity: i === idx ? 1 : i < idx ? 0.55 : 0.18 }} />)}
         </div>
@@ -240,8 +241,8 @@ function ForecastChart({ storm, nowKt, units }: { storm: Storm; nowKt: number; u
   )
 }
 
-export function StormPanel({ storm, state, units, nowIso, replaying, onClose, onReplay }: {
-  storm: Storm; state: State; units: Units; nowIso: string; replaying: boolean; onClose: () => void; onReplay: () => void
+export function StormPanel({ storm, state, live, units, now, replaying, onClose, onReplay }: {
+  storm: Storm; state: State; live: Liveness; units: Units; now: number; replaying: boolean; onClose: () => void; onReplay: () => void
 }) {
   const [open, setOpen] = useState(false)
   const where = whereNow(state.lat, state.lon)
@@ -249,10 +250,13 @@ export function StormPanel({ storm, state, units, nowIso, replaying, onClose, on
   const isPast = storm.kind === "past"
   const invest = storm.kind === "disturbance"
   const last = storm.track[storm.track.length - 1]
-  const status = invest
+  const quiet = !isPast && !replaying && (live === "ended" || live === "stale")
+  const status = quiet
+    ? `${live === "ended" ? "Ended. Forecasters stopped tracking it" : "No new report from the data sources"} ${fmtAgo(last.t, now)}. Last seen over ${where.onLand ? "land" : "the sea"}, ${fmtDist(where.km, units.dist)} ${where.dir} of ${where.city}, ${where.country}.`
+    : invest
     ? `Over ${where.onLand ? "land" : "the sea"}, ${fmtDist(where.km, units.dist)} ${where.dir} of ${where.city}. Forecasters are watching whether it grows into a depression.`
     : `${tr === "strengthening" ? "Strengthening" : tr === "weakening" ? "Weakening" : "Holding steady"} over ${where.onLand ? "land" : "the sea"}, ${fmtDist(where.km, units.dist)} ${where.dir} of ${where.city}, ${where.country}.`
-  const hasFc = !replaying && storm.forecast.some(f => f.h > 0)
+  const hasFc = !replaying && live !== "ended" && storm.forecast.some(f => f.h > 0)
   const rows = [...storm.track].reverse().filter(p => new Date(p.t).getTime() <= state.t + 1)
   return (
     <div className="flex shrink-0 flex-col">
@@ -313,12 +317,12 @@ export function StormPanel({ storm, state, units, nowIso, replaying, onClose, on
           <>
             <div className="glass-well mt-2 rounded-xl px-2 pt-1"><ForecastChart storm={storm} nowKt={state.kt} units={units} /></div>
             <p className="mt-2 text-[12px] leading-relaxed text-muted-foreground">
-              Published by {storm.source.startsWith("NHC") ? "NHC" : "JTWC"} at {fmtTime(storm.forecastIssued!, units.time)}. Qellon shows it as issued and does not make its own forecasts.
+              Published by {storm.authority ?? (storm.source.startsWith("NHC") ? "NHC" : "JTWC")} at {fmtTime(storm.forecastIssued!, units.time)}. Qellon shows it as issued and does not make its own forecasts.
             </p>
           </>
         ) : (
           <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
-            {replaying || isPast ? "The replay follows where the storm actually went." : invest ? "Forecasts usually start once it becomes a depression." : last.kt < 34 ? "No forecast issued. The storm is fading." : "No forecast from this source."}
+            {replaying || isPast ? "The replay follows where the storm actually went." : live === "ended" ? "No forecast. Tracking has ended." : invest ? "Forecasts usually start once it becomes a depression." : last.kt < 34 ? "No forecast issued. The storm is fading." : "No forecast from this source."}
           </p>
         )}
       </div>
@@ -375,7 +379,7 @@ export function StormPanel({ storm, state, units, nowIso, replaying, onClose, on
       </Collapsible>
 
       <p className="px-4 pt-3 pb-4 text-[11.5px] leading-relaxed text-muted-foreground">
-        {isPast ? "Historical track. " : `Updated ${fmtAgo(last.t, nowIso)}. `}Source:{" "}
+        {isPast ? "Historical track. " : `Updated ${fmtAgo(last.t, now)}. `}Source:{" "}
         {storm.sourceUrl ? <a className="underline decoration-white/25 underline-offset-2 hover:text-foreground" href={storm.sourceUrl} target="_blank" rel="noreferrer">{storm.source}</a> : storm.source}.
         {!isPast && " Not an official warning."}
       </p>
@@ -566,28 +570,94 @@ export function GlossaryDialog({ open, onOpenChange }: { open: boolean; onOpenCh
   )
 }
 
-export function PreviewMenu({ mock, setMock }: { mock: MockState; setMock: (m: MockState) => void }) {
+/* ---------- about and sources ---------- */
+
+const AGENCIES: [string, string, string][] = [
+  ["North Indian Ocean", "IMD (India Meteorological Department)", "https://mausam.imd.gov.in/"],
+  ["North-west Pacific", "JMA (Japan Meteorological Agency)", "https://www.jma.go.jp/bosai/map.html#contents=typhoon&lang=en"],
+  ["Atlantic and east Pacific", "NHC (US National Hurricane Center)", "https://www.nhc.noaa.gov/"],
+  ["Central Pacific", "CPHC (Central Pacific Hurricane Center)", "https://www.nhc.noaa.gov/?cpac"],
+  ["South-west Indian Ocean", "Météo-France La Réunion", "https://meteofrance.re/fr/cyclone"],
+  ["Australian region", "Bureau of Meteorology (Australia)", "https://www.bom.gov.au/cyclone/"],
+  ["South Pacific", "Fiji Meteorological Service", "https://www.met.gov.fj/"],
+  ["South Atlantic", "Brazilian Navy Hydrographic Center", "https://www.marinha.mil.br/chm/"],
+]
+
+export const CREDIT_SHORT = "Data: NOAA, NHC, GDACS (EC JRC)"
+
+function SourceRow({ ok, name, detail, href }: { ok: boolean | null; name: string; detail: string; href: string }) {
   return (
-    <DropdownMenu>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Preview other states" className="size-8 rounded-full text-brand hover:bg-white/10 hover:text-brand"><FlaskConical /></Button>
-          </DropdownMenuTrigger>
-        </TooltipTrigger>
-        <TooltipContent side="bottom">Preview states (mock-up only)</TooltipContent>
-      </Tooltip>
-      <DropdownMenuContent align="end" sideOffset={10} className="w-60 rounded-[20px]">
-        <DropdownMenuLabel>Preview a state</DropdownMenuLabel>
-        <DropdownMenuSeparator className="bg-white/8" />
-        <DropdownMenuRadioGroup value={mock} onValueChange={v => setMock(v as MockState)}>
-          <DropdownMenuRadioItem value="normal">Normal (real snapshot)</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="empty">No active storms</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="stale">Storm data is old</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="down">Data source unavailable</DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <li className="glass-well flex items-start gap-3 rounded-xl px-3 py-2.5">
+      <span className={cn("mt-1.5 size-2 shrink-0 rounded-full", ok === null ? "bg-white/30" : ok ? "bg-live" : "bg-warn")} aria-hidden="true" />
+      <div className="min-w-0 flex-1">
+        <a href={href} target="_blank" rel="noreferrer" className="font-medium underline decoration-white/20 underline-offset-2 hover:decoration-white/60">{name}</a>
+        <p className="mt-0.5 text-[12.5px] leading-relaxed text-muted-foreground">{detail}</p>
+      </div>
+    </li>
+  )
+}
+
+export function AboutDialog({ file, live, reachable, now, units, open, onOpenChange }: {
+  file: StormFile; live: boolean; reachable: boolean; now: number; units: Units; open: boolean; onOpenChange: (o: boolean) => void
+}) {
+  const src = file.sources
+  const state = (k: string) => (src[k] ? src[k].ok : null)
+  const note = (k: string, good: string) => (src[k] ? (src[k].ok ? good : "Did not answer at the last check. Its storms show the last saved data.") : "Not checked yet.")
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-lg">
+        <div className="grid min-h-0 gap-5 overflow-y-auto p-6">
+          <DialogHeader>
+            <DialogTitle className="text-xl tracking-tight">About this globe</DialogTitle>
+            <DialogDescription>An educational map of the world's tropical storms, built from free public data.</DialogDescription>
+          </DialogHeader>
+
+          <div className="flex gap-3 rounded-xl border border-warn/30 bg-warn/10 px-3.5 py-3 text-[13.5px] leading-relaxed">
+            <CircleAlert className="mt-0.5 size-4 shrink-0 text-warn" aria-hidden="true" />
+            <p>This is not an official warning service. For warnings and evacuation orders, follow your national weather agency.</p>
+          </div>
+
+          <section>
+            <h3 className="text-[13px] font-medium">Where the data comes from</h3>
+            <p className="mt-1 text-[12.5px] text-muted-foreground">
+              {live ? <>Storm file built {fmtTime(file.fetchedAt, units.time)} ({fmtAgo(file.fetchedAt, now)}).</> : <>Showing the copy saved with the app ({fmtTime(file.fetchedAt, units.time)}).</>}
+              {!reachable && " The live file could not be reached at the last try."} Checked again every 10 minutes.
+            </p>
+            <ul className="mt-2.5 flex flex-col gap-1.5">
+              <SourceRow ok={state("tcvitals")} name="NOAA/NCEP tcvitals" href="https://nomads.ncep.noaa.gov/"
+                detail={note("tcvitals", `Newest position and strength of every storm, every 6 hours${src.tcvitals?.cycle ? `. Latest: ${fmtTime(src.tcvitals.cycle, units.time)}` : ""}.`)} />
+              <SourceRow ok={state("nhc")} name="US National Hurricane Center" href="https://www.nhc.noaa.gov/"
+                detail={note("nhc", "Official track and forecast for the Atlantic and the eastern and central Pacific.")} />
+              <SourceRow ok={state("gdacs")} name="GDACS (European Commission JRC, UN OCHA)" href="https://www.gdacs.org/"
+                detail={note("gdacs", "Past track, forecast path and people affected, for every ocean. Forecasts come from JTWC.")} />
+              <SourceRow ok={null} name="GFS weather model (NOAA/NCEP)" href="https://www.nco.ncep.noaa.gov/pmb/products/gfs/"
+                detail={`Wind, temperature and pressure on the globe. Model run ${fmtTime(FIELD_TIME, units.time)}.`} />
+              <SourceRow ok={null} name="IBTrACS (NOAA NCEI)" href="https://www.ncei.noaa.gov/products/international-best-track-archive"
+                detail="Tracks of past storms for the replays." />
+              <SourceRow ok={null} name="Natural Earth" href="https://www.naturalearthdata.com/" detail="Coastlines and borders (public domain)." />
+            </ul>
+          </section>
+
+          <section>
+            <h3 className="text-[13px] font-medium">Official warnings</h3>
+            <ul className="mt-2 flex flex-col divide-y divide-white/6">
+              {AGENCIES.map(([region, name, href]) => (
+                <li key={region} className="flex items-baseline justify-between gap-3 py-2 text-[13px] first:pt-0">
+                  <span className="text-muted-foreground">{region}</span>
+                  <a href={href} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-right hover:underline">{name}<ArrowUpRight className="size-3.5 shrink-0" aria-hidden="true" /></a>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <p className="text-[12px] leading-relaxed text-muted-foreground">
+            {file.credits} Wind: GFS model, NOAA/NCEP. Past storms: IBTrACS, NOAA NCEI. Map: Natural Earth.
+            Winds are 1-minute averages, so they can read higher than figures from agencies that use 3- or 10-minute averages.
+          </p>
+          <p className="border-t border-white/8 pt-3 text-[12px] text-muted-foreground">MIT licence · © 2026 Suraj Kumar</p>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -595,7 +665,7 @@ export function Toolbar({ children }: { children: React.ReactNode }) {
   return <div className={cn(glass, "lens flex items-center gap-0.5 rounded-full p-1")}>{children}</div>
 }
 
-export { BookOpen, Gauge, Settings2 }
+export { BookOpen, Gauge, Info, Settings2 }
 
 /* ---------- command palette ---------- */
 

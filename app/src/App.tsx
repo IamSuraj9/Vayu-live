@@ -1,18 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import { AlertTriangle, BookOpen, CloudOff, Gauge, List } from "lucide-react"
+import { AlertTriangle, BookOpen, CloudOff, Gauge, Info, List } from "lucide-react"
 import { Globe, type LL, type Layers, type Marker, type View } from "@/globe/Globe"
 import { createCamera } from "@/globe/camera"
-import { ACTIVE, NOW, PAST, type Storm, endMs, startMs, stateAt } from "@/lib/storms"
+import { PAST, type Storm, endMs, liveness, startMs, stateAt } from "@/lib/storms"
+import { STALE_HOURS, useNow, useStormFeed, useWindField } from "@/lib/live"
 import { levelFor } from "@/lib/strength"
 import { type Units, fmtTime, fmtWindKt, loadUnits, saveUnits } from "@/lib/units"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import {
-  CommandPalette, Freshness, GlossaryDialog, LayersPopover, Legend, MapControls, type MockState, PointReadout, PreviewMenu, ReplayBar,
+  AboutDialog, CREDIT_SHORT, CommandPalette, Freshness, GlossaryDialog, LayersPopover, Legend, MapControls, PointReadout, ReplayBar,
   ScaleDialog, SearchTrigger, StormPanel, StormTabs, ToolButton, Toolbar, UnitsPopover, glass,
 } from "@/components/panels"
 import { cn } from "@/lib/utils"
@@ -28,7 +27,6 @@ function useMedia(q: string) {
   return m
 }
 
-const ALL: Storm[] = [...ACTIVE, ...PAST]
 const HOUR = 3.6e6
 const START: View = { lon: 100, lat: 15, zoom: 1 }
 const LAYERS_KEY = "qellon.layers.v2"
@@ -43,7 +41,9 @@ export default function App() {
   const setUnits = (u: Units) => { setUnitsState(u); saveUnits(u) }
   const [layers, setLayersState] = useState<Layers>(loadLayers)
   const setLayers = (l: Layers) => { setLayersState(l); try { localStorage.setItem(LAYERS_KEY, JSON.stringify(l)) } catch { /* unavailable */ } }
-  const [mock, setMock] = useState<MockState>("normal")
+  const feed = useStormFeed()
+  const now = useNow()
+  const fieldVersion = useWindField()
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [replay, setReplay] = useState<{ id: string; at: number } | null>(null)
   const [playing, setPlaying] = useState(false)
@@ -54,12 +54,22 @@ export default function App() {
   const [cmdOpen, setCmdOpen] = useState(false)
   const [scaleOpen, setScaleOpen] = useState(false)
   const [glossOpen, setGlossOpen] = useState(false)
+  const [aboutOpen, setAboutOpen] = useState(false)
   const isMobile = useMedia("(max-width: 720px)")
   const reduced = useMedia("(prefers-reduced-motion: reduce)")
   const [camera] = useState(() => createCamera({ ...START, zoom: typeof window !== "undefined" && window.innerWidth < 720 ? 1.15 : 1 }))
 
-  const nowIso = useMemo(() => new Date(new Date(NOW).getTime() + (mock === "stale" ? 9 : mock === "down" ? 1 : 0) * HOUR).toISOString(), [mock])
-  const active = useMemo(() => (mock === "empty" ? [] : [...ACTIVE].sort((a, b) => b.track[b.track.length - 1].kt - a.track[a.track.length - 1].kt)), [mock])
+  // Storm file age: the pipeline runs every 3 h, so more than STALE_HOURS means it has missed runs
+  const fileAgeH = (now - new Date(feed.file.fetchedAt).getTime()) / HOUR
+  const feedFresh = fileAgeH <= STALE_HOURS
+  const offline = !feed.loading && (!feed.reachable || feed.origin === "saved")
+  const live = useMemo(() => {
+    const m = new Map(feed.file.storms.map(s => [s.id, liveness(s, now, feedFresh)]))
+    return (s: Storm) => m.get(s.id) ?? "active"
+  }, [feed.file, now, feedFresh])
+  const active = useMemo(() => feed.file.storms.filter(s => live(s) !== "gone").sort((a, b) =>
+    Number(live(a) === "ended") - Number(live(b) === "ended") || b.track[b.track.length - 1].kt - a.track[a.track.length - 1].kt), [feed.file, live])
+  const ALL = useMemo(() => [...active, ...PAST], [active])
   const newest = active.length ? active.reduce((m, s) => (s.track[s.track.length - 1].t > m ? s.track[s.track.length - 1].t : m), "") : null
   const selected = ALL.find(s => s.id === selectedId) ?? null
   const replayStorm = replay ? ALL.find(s => s.id === replay.id) ?? null : null
@@ -132,37 +142,39 @@ export default function App() {
         label: s.kind === "disturbance" ? `${fmtWindKt(st.kt, units.wind)} · watch` : fmtWindKt(st.kt, units.wind),
         past: [...upto.map(p => ({ lon: p.lon, lat: p.lat, color: levelFor(p.kt).color })), { lon: st.lon, lat: st.lat, color: levelFor(st.kt).color }],
         ghost: replayingThis ? [{ lon: st.lon, lat: st.lat }, ...s.track.filter(p => new Date(p.t).getTime() > st.t).map(p => ({ lon: p.lon, lat: p.lat }))] : undefined,
-        forecast: replayingThis ? [] : s.forecast.filter(f => f.h > 0).map(f => ({ lon: f.lon, lat: f.lat, color: levelFor(f.kt).color })),
-        dim: !!replay && !replayingThis,
+        forecast: replayingThis || live(s) === "ended" ? [] : s.forecast.filter(f => f.h > 0).map(f => ({ lon: f.lon, lat: f.lat, color: levelFor(f.kt).color })),
+        dim: (!!replay && !replayingThis) || (!replayingThis && live(s) !== "active"),
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, replay, replayStorm, units.wind])
+  }, [active, live, replay, replayStorm, units.wind])
 
   const stormStates = active.map(s => ({ s, st: stateOf(s) }))
   const pastReplay = replayStorm?.kind === "past"
 
   const panelEl = selected ? (
-    <StormPanel storm={selected} state={stateOf(selected)} units={units} nowIso={nowIso} replaying={replay?.id === selected.id}
+    <StormPanel storm={selected} state={stateOf(selected)} live={live(selected)} units={units} now={now} replaying={replay?.id === selected.id}
       onClose={() => select(null)} onReplay={() => startReplay(selected.id)} />
   ) : null
   const tabs = (
-    <StormTabs storms={active} past={PAST} units={units} selectedId={selectedId} tab={tab} setTab={setTab}
+    <StormTabs storms={active} live={live} now={now} unknown={offline && !active.length} past={PAST} units={units} selectedId={selectedId} tab={tab} setTab={setTab}
       onSelect={id => select(id)} onReplay={id => startReplay(id)} />
   )
-  const banner = mock === "stale" ? (
-    <Alert className={cn(glass, "rounded-[22px]")}>
-      <AlertTriangle className="text-warn" />
-      <AlertTitle>Storm data is 15 hours old</AlertTitle>
-      <AlertDescription>The source has not updated since {fmtTime("2026-10-29T00:00:00Z", units.time)}. Storms may have moved, so check your national weather agency.</AlertDescription>
-    </Alert>
-  ) : mock === "down" ? (
+  const savedAt = fmtTime(feed.file.fetchedAt, units.time)
+  const banner = offline ? (
     <Alert className={cn(glass, "rounded-[22px]")}>
       <CloudOff className="text-destructive" />
-      <AlertTitle>Can't reach the storm data source</AlertTitle>
-      <AlertDescription>Showing the last saved data from {fmtTime("2026-10-29T00:00:00Z", units.time)}. Qellon tries again every 10 minutes.</AlertDescription>
+      <AlertTitle>Can't reach the storm data</AlertTitle>
+      <AlertDescription>{active.length ? `Showing the last saved data, from ${savedAt}. ` : ""}Trying again every 10 minutes.</AlertDescription>
+    </Alert>
+  ) : !feedFresh ? (
+    <Alert className={cn(glass, "rounded-[22px]")}>
+      <AlertTriangle className="text-warn" />
+      <AlertTitle>Storm data is {fileAgeH < 48 ? `${Math.round(fileAgeH)} hours` : `${Math.round(fileAgeH / 24)} days`} old</AlertTitle>
+      <AlertDescription>It has not updated since {savedAt}. Storms may have moved, so check your national weather agency.</AlertDescription>
     </Alert>
   ) : null
+  const bannerKey = offline ? "offline" : "stale"
   const replayBar = replayStorm && replay ? (
     <ReplayBar storm={replayStorm} at={replay.at} playing={playing} speed={speed} units={units} onSpeed={setSpeed}
       onToggle={() => { if (!playing && replay.at >= endMs(replayStorm)) setReplay({ ...replay, at: startMs(replayStorm) }); setPlaying(p => !p) }}
@@ -176,8 +188,7 @@ export default function App() {
       <UnitsPopover units={units} setUnits={setUnits} />
       <ToolButton label="Storm strength scale" onClick={() => setScaleOpen(true)}><Gauge /></ToolButton>
       <ToolButton label="What the words mean" onClick={() => setGlossOpen(true)}><BookOpen /></ToolButton>
-      <Separator orientation="vertical" className="mx-0.5 h-5 bg-white/10" />
-      <PreviewMenu mock={mock} setMock={m => { setMock(m); if (m === "empty" && selected && selected.kind !== "past") select(null) }} />
+      <ToolButton label="About and sources" onClick={() => setAboutOpen(true)}><Info /></ToolButton>
     </Toolbar>
   )
 
@@ -187,7 +198,7 @@ export default function App() {
         <h1 className="sr-only">Qellon storm globe</h1>
         <Globe markers={markers} selectedId={selectedId} camera={camera} onSelect={id => select(id)}
           pick={pick} onPick={p => setPick(p ? { lon: p.lon, lat: p.lat } : null)} reducedMotion={reduced}
-          showParticles={!pastReplay} dimField={pastReplay} layers={pastReplay ? { ...layers, colors: false } : layers}
+          showParticles={!pastReplay} fieldVersion={fieldVersion} dimField={pastReplay} layers={pastReplay ? { ...layers, colors: false } : layers}
           offsetY={isMobile && selected ? Math.round(window.innerHeight * 0.24) : 0}
           renderPick={isMobile ? undefined : (x, y, w, h) => {
             const W = 284, left = x + 20 + W > w - 16 ? x - 20 - W : x + 20
@@ -202,14 +213,16 @@ export default function App() {
             <aside className={cn(glass, "absolute top-4 left-[max(16px,env(safe-area-inset-left,0px))] flex max-h-[calc(100%-32px)] w-[336px] flex-col")} aria-label="Storms">
               <div className="flex items-center justify-between px-4 pt-4 pb-3">
                 <Wordmark />
-                <Badge variant="outline" className="glass-well rounded-full border-transparent text-[11px] text-brand">Mock-up</Badge>
               </div>
               <div className="px-3 pb-3"><SearchTrigger onOpen={() => setCmdOpen(true)} /></div>
               <div className="min-h-0 flex-1 overflow-y-auto">{tabs}</div>
-              <div className="border-t border-white/8 px-4 py-3"><Freshness newest={newest} nowIso={nowIso} units={units} mock={mock} /></div>
+              <div className="flex flex-col gap-1.5 border-t border-white/8 px-4 py-3">
+                <Freshness newest={newest} now={now} units={units} bad={offline || !feedFresh} />
+                <CreditLine onAbout={() => setAboutOpen(true)} />
+              </div>
             </aside>
             <div className="absolute top-4 right-[max(16px,env(safe-area-inset-right,0px))]">{toolbar}</div>
-            {banner && <div key={mock} className="absolute top-4 left-1/2 w-[min(520px,calc(100%-800px))] min-w-[360px] -translate-x-1/2"><div className="q-pop origin-top">{banner}</div></div>}
+            {banner && <div key={bannerKey} className="absolute top-4 left-1/2 w-[min(520px,calc(100%-800px))] min-w-[360px] -translate-x-1/2"><div className="q-pop origin-top">{banner}</div></div>}
             {panelEl && (
               <section key={selected!.id} className={cn(glass, "q-enter absolute top-[68px] right-[max(16px,env(safe-area-inset-right,0px))] w-[384px] origin-top-right flex-col overflow-hidden")}
                 style={{ maxHeight: "calc(100% - 68px - 16px)", display: "flex" }} aria-label="Storm details">
@@ -246,8 +259,8 @@ export default function App() {
               ) : (
                 <button type="button" onClick={() => setSheetOpen(true)}
                   className={cn(glass, "lens flex h-12 items-center justify-between rounded-full px-4 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring")}>
-                  <span className="flex items-center gap-2 font-medium"><List className="size-4" aria-hidden="true" />{active.length ? `${active.length} storms active` : "No active storms"}</span>
-                  <Freshness newest={newest} nowIso={nowIso} units={units} mock={mock} />
+                  <span className="flex items-center gap-2 font-medium"><List className="size-4" aria-hidden="true" />{active.length ? `${active.length} ${active.length === 1 ? "storm" : "storms"}` : "No active storms"}</span>
+                  <Freshness newest={newest} now={now} units={units} bad={offline || !feedFresh} />
                 </button>
               )}
             </div>
@@ -256,9 +269,10 @@ export default function App() {
                 <div className="min-h-0 flex-1 overflow-y-auto pb-3">
                 <SheetHeader className="px-4 pt-5 pb-2">
                   <SheetTitle className="text-lg tracking-tight">Storms</SheetTitle>
-                  <SheetDescription>Mock-up with a real snapshot. Tap a storm to see it on the globe.</SheetDescription>
+                  <SheetDescription>Tap a storm to see it on the globe.</SheetDescription>
                 </SheetHeader>
                 {tabs}
+                <div className="px-4 pt-2"><CreditLine onAbout={() => { setSheetOpen(false); setAboutOpen(true) }} /></div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -270,6 +284,7 @@ export default function App() {
           onPlace={(lon, lat) => { setCmdOpen(false); select(null); setPick({ lon, lat }); flyTo(lon, lat, Math.max(camera.get().zoom, 2.2)) }} />
         <ScaleDialog units={units} open={scaleOpen} onOpenChange={setScaleOpen} />
         <GlossaryDialog open={glossOpen} onOpenChange={setGlossOpen} />
+        <AboutDialog file={feed.file} live={feed.origin === "live"} reachable={feed.reachable} now={now} units={units} open={aboutOpen} onOpenChange={setAboutOpen} />
       </main>
     </TooltipProvider>
   )
@@ -277,6 +292,15 @@ export default function App() {
 
 function ToolButtonSearch({ onOpen }: { onOpen: () => void }) {
   return <SearchTrigger compact onOpen={onOpen} />
+}
+
+function CreditLine({ onAbout }: { onAbout: () => void }) {
+  return (
+    <p className="text-[11.5px] text-muted-foreground">
+      {CREDIT_SHORT} · Not an official warning ·{" "}
+      <button type="button" onClick={onAbout} className="rounded underline decoration-white/25 underline-offset-2 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">About</button>
+    </p>
+  )
 }
 
 function Wordmark({ compact }: { compact?: boolean }) {

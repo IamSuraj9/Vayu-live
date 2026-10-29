@@ -25,6 +25,7 @@ wind is averaged: JMA gave In-fa 90 kt (10-minute average) when JTWC gave 115 kt
 | NHC `CurrentStorms.json` + ATCF b-deck and fst | Official track and forecast | Atlantic, Eastern and Central Pacific | US government, public | Authority for those basins |
 | GDACS RSS + episode data + timeline export | Past track with winds, forecast track, wind radii, people affected | Worldwide | Reuse allowed with acknowledgement | The API timed out on some calls on 29 Oct; the pipeline retries and keeps the last good data |
 | IBTrACS | Historical tracks | Worldwide | US government, public | Replays only (about 2 days behind) |
+| GFS model via the NOMADS grib filter (`filter_gfs_0p50.pl`, f000) | 10 m wind, 2 m temperature, sea-level pressure at 0.5° | Worldwide | US government, public | `pipeline/wind.py`; every 6 h, about 3.5 h after the run |
 
 Looked at, not used now:
 - **JMA JSON** (`www.jma.go.jp/bosai/typhoon/data/...`): official western Pacific analysis and forecast with 10-minute winds.
@@ -43,3 +44,11 @@ Looked at, not used now:
 
 The refresh runs every 3 hours in GitHub Actions (`.github/workflows/refresh-storms.yml`) and commits
 `app/public/data/storms.json`.
+
+## How the app uses the files (day 2)
+- `data/storms.json` is loaded when the page opens, every 10 minutes, and when the tab comes back into view. The copy
+  from the last build is built into the app and used if the file can't be loaded.
+- A banner shows when the file can't be reached, or when it is more than 6 hours old (two missed pipeline runs).
+- Storms with no report for 12 hours show as "Ended" (or "Not updated" when the whole file is old); after 36 hours they
+  are hidden, the same rule as the pipeline. A storm whose source failed is shown as "Not updated".
+- `data/wind.json` (0.5°, signed bytes, about 1.4 MB, 400 KB gzipped) replaces the built-in 1° field when present.

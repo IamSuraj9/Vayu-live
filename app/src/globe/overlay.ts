@@ -3,7 +3,7 @@ import type { GeoProjection } from "d3-geo"
 import { windAt } from "./field"
 
 type Ramp = [number, number, number][]
-type Cached = { canvas: HTMLCanvasElement; scale: number; step: number; rot: number[]; cx: number; cy: number; w: number; h: number }
+type Cached = { canvas: HTMLCanvasElement; version: number; scale: number; step: number; rot: number[]; cx: number; cy: number; w: number; h: number }
 
 const same = (a: number, b: number) => Math.abs(a - b) < 1e-9
 
@@ -49,7 +49,7 @@ function rasterise(projection: GeoProjection, w: number, h: number, step: number
  */
 export function useWindOverlay(
   ref: React.RefObject<HTMLCanvasElement | null>, projection: GeoProjection, size: { w: number; h: number }, dpr: number,
-  on: boolean, lut: Ramp, alpha = 214,
+  on: boolean, lut: Ramp, fieldVersion = 0, alpha = 214,
 ) {
   const cache = useRef<Cached | null>(null)
   useEffect(() => {
@@ -77,11 +77,11 @@ export function useWindOverlay(
       ctx.globalCompositeOperation = "source-over"
     }
     const render = (step: number): Cached => ({
-      canvas: rasterise(projection, size.w, size.h, step, lut, alpha), scale: r, step, rot: [...rot], cx, cy, w: size.w, h: size.h,
+      canvas: rasterise(projection, size.w, size.h, step, lut, alpha), version: fieldVersion, scale: r, step, rot: [...rot], cx, cy, w: size.w, h: size.h,
     })
 
     const c0 = cache.current
-    const zoomOnly = !!c0 && c0.w === size.w && c0.h === size.h && same(c0.cx, cx) && same(c0.cy, cy) && same(c0.rot[0], rot[0]) && same(c0.rot[1], rot[1])
+    const zoomOnly = !!c0 && c0.version === fieldVersion && c0.w === size.w && c0.h === size.h && same(c0.cx, cx) && same(c0.cy, cy) && same(c0.rot[0], rot[0]) && same(c0.rot[1], rot[1])
     // Zooming out can reveal parts of the globe the cached image never covered
     const covered = !!c0 && (r >= c0.scale || (cx - c0.scale >= 0 && cx + c0.scale <= size.w && cy - c0.scale >= 0 && cy + c0.scale <= size.h))
     if (zoomOnly && covered) compose(c0!)
@@ -91,7 +91,7 @@ export function useWindOverlay(
     if (exact) return
     const id = window.setTimeout(() => { cache.current = render(sharpStep); compose(cache.current) }, 140)
     return () => window.clearTimeout(id)
-  }, [ref, projection, size, dpr, on, lut, alpha])
+  }, [ref, projection, size, dpr, on, lut, alpha, fieldVersion])
 }
 
 /** Scale an existing particle-trail canvas about the globe centre so trails ride along with a zoom. */

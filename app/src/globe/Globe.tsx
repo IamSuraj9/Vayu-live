@@ -17,7 +17,7 @@ export type Marker = LL & {
 type Props = {
   markers: Marker[]; selectedId: string | null; camera: Camera
   onSelect: (id: string | null) => void; pick: LL | null; onPick: (p: (LL & { x: number; y: number }) | null) => void
-  reducedMotion: boolean; showParticles: boolean; dimField?: boolean; offsetY?: number
+  reducedMotion: boolean; showParticles: boolean; dimField?: boolean; offsetY?: number; fieldVersion?: number
   layers?: Layers; renderPick?: (x: number, y: number, w: number, h: number) => React.ReactNode
 }
 export type Layers = { particles: boolean; colors: boolean; paths: boolean; borders: boolean }
@@ -47,7 +47,7 @@ const graticule = geoGraticule10()
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v))
 const wrapLon = (l: number) => ((l + 540) % 360) - 180
 
-export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, reducedMotion, showParticles: showP, dimField = false, offsetY = 0, layers = ALL_ON, renderPick }: Props) {
+export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, reducedMotion, showParticles: showP, dimField = false, offsetY = 0, fieldVersion = 0, layers = ALL_ON, renderPick }: Props) {
   const showParticles = showP && layers.particles
   const wrap = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLCanvasElement>(null)
@@ -116,7 +116,7 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
     ctx.beginPath(); p({ type: "Sphere" }); ctx.strokeStyle = "rgba(255,255,255,0.14)"; ctx.lineWidth = 1; ctx.stroke()
   }, [projection, size, dpr, layers.colors, layers.borders])
 
-  useWindOverlay(overlayRef, projection, size, dpr, layers.colors, LUT)
+  useWindOverlay(overlayRef, projection, size, dpr, layers.colors, LUT, fieldVersion)
 
   // Animated particles that follow the wind (in lon/lat space, projected each frame)
   useEffect(() => {
