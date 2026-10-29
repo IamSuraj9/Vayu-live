@@ -43,15 +43,17 @@ export type Feed = {
   /** false when the latest attempt to load the live file failed */
   reachable: boolean
   loading: boolean
+  /** When the app last got the live file (ms), or null if it never has */
+  checkedAt: number | null
 }
 
 export function useStormFeed(): Feed {
-  const [feed, setFeed] = useState<Feed>({ file: SAVED, origin: "saved", reachable: true, loading: true })
+  const [feed, setFeed] = useState<Feed>({ file: SAVED, origin: "saved", reachable: true, loading: true, checkedAt: null })
   const [check] = useState(() => async () => {
     try {
       const file = await getJson<StormFile>(STORMS_URL)
       if (file.schema !== 1 || !Array.isArray(file.storms)) throw new Error("unexpected storms.json")
-      setFeed(f => ({ file: f.origin === "live" && f.file.fetchedAt > file.fetchedAt ? f.file : file, origin: "live", reachable: true, loading: false }))
+      setFeed(f => ({ file: f.origin === "live" && f.file.fetchedAt > file.fetchedAt ? f.file : file, origin: "live", reachable: true, loading: false, checkedAt: Date.now() }))
     } catch {
       setFeed(f => ({ ...f, reachable: false, loading: false }))
     }

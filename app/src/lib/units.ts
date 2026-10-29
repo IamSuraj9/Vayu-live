@@ -84,6 +84,10 @@ export function zoneLabel(mode: TimeMode, d = new Date()) {
   const part = dtf("local", { timeZoneName: "short" }).formatToParts(d).find(p => p.type === "timeZoneName")
   return part?.value ?? "local"
 }
+/** "just now" for the first minute and a half, then the usual "12 min ago" */
+export function fmtChecked(from: number, now: number) {
+  return now - from < 90e3 ? "just now" : fmtAgo(from, now)
+}
 export function fmtAgo(from: string | number, now: string | number) {
   const h = (new Date(now).getTime() - new Date(from).getTime()) / 3.6e6
   if (h < 1) return `${Math.max(1, Math.round(h * 60))} min ago`

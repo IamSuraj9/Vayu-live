@@ -5,7 +5,7 @@ import { createCamera } from "@/globe/camera"
 import { PAST, type Storm, endMs, liveness, startMs, stateAt } from "@/lib/storms"
 import { STALE_HOURS, useNow, useStormFeed, useWindField } from "@/lib/live"
 import { levelFor } from "@/lib/strength"
-import { type Units, fmtTime, fmtWindKt, loadUnits, saveUnits } from "@/lib/units"
+import { type Units, fmtAgo, fmtChecked, fmtTime, fmtWindKt, loadUnits, saveUnits } from "@/lib/units"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
@@ -73,7 +73,10 @@ export default function App() {
   const active = useMemo(() => feed.file.storms.filter(s => live(s) !== "gone").sort((a, b) =>
     Number(live(a) === "ended") - Number(live(b) === "ended") || b.track[b.track.length - 1].kt - a.track[a.track.length - 1].kt), [feed.file, live])
   const ALL = useMemo(() => [...active, ...PAST], [active])
-  const newest = active.length ? active.reduce((m, s) => (s.track[s.track.length - 1].t > m ? s.track[s.track.length - 1].t : m), "") : null
+  // The freshness label says when we last checked, not how old the newest report is (agencies publish every 6 h)
+  const fresh = !active.length ? { lead: "", ago: null }
+    : feed.checkedAt !== null ? { lead: "Checked", ago: fmtChecked(feed.checkedAt, now) }
+    : { lead: "Saved copy,", ago: fmtAgo(feed.file.fetchedAt, now) }
   const selected = ALL.find(s => s.id === selectedId) ?? null
   const replayStorm = replay ? ALL.find(s => s.id === replay.id) ?? null : null
 
@@ -232,7 +235,7 @@ export default function App() {
               <div className="px-3 pb-3"><SearchTrigger onOpen={() => setCmdOpen(true)} /></div>
               <div className="min-h-0 flex-1 overflow-y-auto">{tabs}</div>
               <div className="flex flex-col gap-1.5 border-t border-white/8 px-4 py-3">
-                <Freshness newest={newest} now={now} units={units} bad={offline || !feedFresh} />
+                <Freshness {...fresh} bad={offline || !feedFresh} />
                 <CreditLine onAbout={() => setAboutOpen(true)} />
               </div>
             </aside>
@@ -277,7 +280,7 @@ export default function App() {
                 <button type="button" onClick={() => setSheetOpen(true)}
                   className={cn(glass, "lens flex h-12 items-center justify-between rounded-full px-4 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring")}>
                   <span className="flex items-center gap-2 font-medium whitespace-nowrap"><List className="size-4" aria-hidden="true" />{active.length ? `${active.length} ${active.length === 1 ? "storm" : "storms"}` : "No active storms"}</span>
-                  <Freshness newest={newest} now={now} units={units} bad={offline || !feedFresh} compact />
+                  <Freshness {...fresh} bad={offline || !feedFresh} />
                 </button>
               )}
             </div>

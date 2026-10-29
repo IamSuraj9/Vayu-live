@@ -167,17 +167,18 @@ export function StormTabs({ storms, live, now, unknown, past, units, selectedId,
   )
 }
 
-export function Freshness({ newest, now, units, bad, compact }: { newest: string | null; now: number; units: Units; bad: boolean; compact?: boolean }) {
+/** How recently the app checked for storm data (not how old the newest storm report is: reports come every 6 h) */
+export function Freshness({ lead, ago, bad }: { lead: string; ago: string | null; bad: boolean }) {
   return (
     <div className="flex items-center gap-2.5 text-[12px] text-muted-foreground">
       <span className="relative flex size-2">
         {!bad && <span className="qellon-ping absolute inline-flex size-full rounded-full bg-live" />}
         <span className={cn("relative inline-flex size-2 rounded-full", bad ? "bg-warn" : "bg-live")} />
       </span>
-      {newest ? (
+      {ago ? (
         <span className="whitespace-nowrap">
-          {compact ? <span className="sr-only">Storm data </span> : <>Storm data {fmtTime(newest, units.time)} · </>}
-          <span className={cn(bad && "text-warn")}>{fmtAgo(newest, now)}</span>
+          {lead}{" "}
+          <span className={cn(bad && "text-warn")}>{ago}</span>
         </span>
       ) : <span className="whitespace-nowrap">Watching every ocean</span>}
     </div>
