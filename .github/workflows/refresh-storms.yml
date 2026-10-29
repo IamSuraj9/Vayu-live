@@ -1,9 +1,19 @@
 name: Refresh storm data
 
+# Who starts this run:
+#  - the Cloudflare timer in trigger/worker.js (every 3 hours; reason "timer"). It is the dependable one.
+#  - GitHub's own schedule below, kept as a backup. GitHub's scheduler is best-effort and has skipped runs entirely.
+#  - a person pressing "Run workflow" (reason "manual"), which always refreshes.
+# Timer and backup runs stop early when the data is already fresh, so having both costs almost nothing.
 on:
   schedule:
-    - cron: "17 */3 * * *" # every 3 hours, at 17 minutes past to avoid the top-of-hour rush
+    - cron: "17 */3 * * *"
   workflow_dispatch:
+    inputs:
+      reason:
+        description: "timer (from Cloudflare) or manual"
+        required: false
+        default: manual
 
 permissions:
   contents: write
@@ -15,17 +25,31 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 6
     steps:
       - uses: actions/checkout@v7
+      - name: Skip if the data is already fresh
+        id: fresh
+        if: github.event_name == 'schedule' || inputs.reason == 'timer'
+        run: |
+          age=$(python3 -c "
+          import json, datetime as d
+          t = d.datetime.strptime(json.load(open('app/public/data/storms.json'))['fetchedAt'], '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=d.timezone.utc)
+          print(int((d.datetime.now(d.timezone.utc) - t).total_seconds()))")
+          echo "The storm file is $((age / 60)) minutes old"
+          if [ "$age" -lt 6000 ]; then echo "Fresh enough (under 100 minutes), nothing to do"; echo "skip=true" >> "$GITHUB_OUTPUT"; fi
       - uses: actions/setup-python@v7
+        if: steps.fresh.outputs.skip != 'true'
         with:
           python-version: "3.12"
       - name: Test the pipeline
+        if: steps.fresh.outputs.skip != 'true'
         run: python -m unittest discover -s pipeline/tests -t .
       - name: Fetch NHC, GDACS and NOAA tcvitals
+        if: steps.fresh.outputs.skip != 'true'
         run: python -m pipeline.storms --out app/public/data/storms.json
       - name: Commit the new data
+        if: steps.fresh.outputs.skip != 'true'
         run: |
           if git diff --quiet -- app/public/data/storms.json; then
             echo "No change"

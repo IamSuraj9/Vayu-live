@@ -29,6 +29,9 @@ ACTIVE_HOURS = 12  # newer than this is "active", older is "ended"
 GDACS_LOOKBACK_HOURS = 48  # only open GDACS events updated this recently
 MATCH_KM = 1500  # the same name within this distance is the same storm
 FORECAST_MAX_AGE_HOURS = 24  # a forecast older than this (versus the newest position) is not shown
+# Seconds each source may take in total. A slow source fails on its own and the previous run fills in for it,
+# so a whole refresh stays under about 3 minutes (it used to wait on GDACS for up to 5).
+BUDGET_SECONDS = {"nhc": 40, "gdacs": 80, "tcvitals": 50}
 
 SOURCE_ERRORS = (FetchError, ET.ParseError, ValueError, KeyError, TypeError, json.JSONDecodeError)
 
@@ -250,9 +253,12 @@ def _finish(s: dict, now: datetime) -> dict:
 def build(fetcher, now: datetime, previous: dict | None = None) -> dict:
     status: dict[str, dict] = {}
     merge = Merge()
-    _nhc(merge, fetcher, status)
-    _gdacs(merge, fetcher, now, status)
-    _tcvitals(merge, fetcher, now, status)
+    with fetcher.budget(BUDGET_SECONDS["nhc"]):
+        _nhc(merge, fetcher, status)
+    with fetcher.budget(BUDGET_SECONDS["gdacs"]):
+        _gdacs(merge, fetcher, now, status)
+    with fetcher.budget(BUDGET_SECONDS["tcvitals"]):
+        _tcvitals(merge, fetcher, now, status)
     _carry_previous(merge, previous, status, now)
     out = []
     for s in merge.storms:

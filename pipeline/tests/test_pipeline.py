@@ -72,6 +72,44 @@ class NhcTest(unittest.TestCase):
         self.assertEqual([f["h"] for f in fc], [3, 12, 24, 36])
 
 
+class BudgetTest(unittest.TestCase):
+    def test_a_spent_budget_fails_at_once_without_touching_the_network(self):
+        from unittest import mock
+
+        from pipeline.fetch import FetchError, HttpFetcher
+        f = HttpFetcher(timeout=30, retries=3, backoff=1)
+        with mock.patch("urllib.request.urlopen", side_effect=AssertionError("must not be called")) as urlopen:
+            with f.budget(0):
+                with self.assertRaises(FetchError) as ctx:
+                    f.get("https://example.invalid/slow")
+            urlopen.assert_not_called()
+        self.assertIn("time budget", str(ctx.exception))
+
+    def test_each_attempt_is_cut_to_the_time_left(self):
+        import urllib.error
+        from unittest import mock
+
+        from pipeline.fetch import FetchError, HttpFetcher
+        f = HttpFetcher(timeout=30, retries=2, backoff=0)
+        seen = []
+
+        def slow(req, timeout):
+            seen.append(timeout)
+            raise urllib.error.URLError("slow")
+        with mock.patch("urllib.request.urlopen", side_effect=slow):
+            with f.budget(5):
+                with self.assertRaises(FetchError):
+                    f.get("https://example.invalid/slow")
+        self.assertTrue(all(t <= 5 for t in seen), seen)  # never the full 30 s
+
+    def test_a_slow_source_does_not_stop_the_others(self):
+        # GDACS takes too long, so it fails by itself; NHC and NOAA still deliver every storm
+        r = storms.build(FixtureFetcher(fixture_routes(FIX), fail=("gdacs.org",)), NOW)
+        self.assertFalse(r["sources"]["gdacs"]["ok"])
+        self.assertTrue(r["sources"]["tcvitals"]["ok"] and r["sources"]["nhc"]["ok"])
+        self.assertEqual(len(r["storms"]), 3)
+
+
 class BuildTest(unittest.TestCase):
     def fetcher(self, fail=()):
         return FixtureFetcher(fixture_routes(FIX), fail=fail)
