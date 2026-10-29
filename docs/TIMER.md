@@ -30,6 +30,10 @@ Within 5 minutes the Actions tab on GitHub shows a **Refresh storm data** run st
 It should finish in about 20 seconds with "Fresh enough, nothing to do" if the data is under 100 minutes old.
 Tell Claude, who can check it too. Then change the cron to **`20 */3 * * *`** (every 3 hours, at 20 past).
 
+## Tests
+`node --test trigger/` runs 12 checks on the Worker (request shape, retries, bad tokens, 200 simultaneous ticks, a real HTTP round-trip).
+They run on every push. It was also run once in Cloudflare's own runtime (`wrangler dev --test-scheduled`).
+
 ## If it stops working
 - **GitHub token expired or wrong:** the Worker's **Logs** show `GitHub answered 401` or `403`. Make a new token (step 1) and replace the secret.
 - **No runs at all:** open the Worker, **Triggers**, and check the cron is listed.

@@ -18,6 +18,16 @@ jobs:
       - run: pip install eccodes numpy # for the wind field tests
       - run: python -m unittest discover -s pipeline/tests -t . -v
 
+  timer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - run: node --test trigger/
+
   app:
     runs-on: ubuntu-latest
     timeout-minutes: 10

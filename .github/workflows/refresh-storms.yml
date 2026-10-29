@@ -32,12 +32,13 @@ jobs:
         id: fresh
         if: github.event_name == 'schedule' || inputs.reason == 'timer'
         run: |
+          # If the age cannot be worked out (file missing, damaged, or stamped in the future), refresh: that repairs it
           age=$(python3 -c "
           import json, datetime as d
           t = d.datetime.strptime(json.load(open('app/public/data/storms.json'))['fetchedAt'], '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=d.timezone.utc)
-          print(int((d.datetime.now(d.timezone.utc) - t).total_seconds()))")
-          echo "The storm file is $((age / 60)) minutes old"
-          if [ "$age" -lt 6000 ]; then echo "Fresh enough (under 100 minutes), nothing to do"; echo "skip=true" >> "$GITHUB_OUTPUT"; fi
+          print(int((d.datetime.now(d.timezone.utc) - t).total_seconds()))" 2>/dev/null) || age=-1
+          if [ "$age" -ge 0 ]; then echo "The storm file is $((age / 60)) minutes old"; else echo "The age of the storm file is unknown, refreshing"; fi
+          if [ "$age" -ge 0 ] && [ "$age" -lt 6000 ]; then echo "Fresh enough (under 100 minutes), nothing to do"; echo "skip=true" >> "$GITHUB_OUTPUT"; fi
       - uses: actions/setup-python@v7
         if: steps.fresh.outputs.skip != 'true'
         with:
