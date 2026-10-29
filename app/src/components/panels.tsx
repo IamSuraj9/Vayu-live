@@ -123,7 +123,7 @@ export function StormTabs({ storms, live, now, unknown, past, units, selectedId,
         </TabsTrigger>
         <TabsTrigger value="past" className="relative z-10 rounded-full text-[13px]">Past storms</TabsTrigger>
       </TabsList>
-      <TabsContent value="active" className="mt-2 px-1.5 pb-1.5">
+      <TabsContent value="active" tabIndex={-1} className="mt-2 px-1.5 pb-1.5">
         {storms.length === 0 ? (
           <div className="mx-1.5 mb-1.5 flex flex-col items-center gap-2 rounded-xl border border-dashed border-white/12 px-4 py-6 text-center">
             <span className="flex size-10 items-center justify-center rounded-full bg-white/[0.06]"><Wind className="size-5 text-muted-foreground" aria-hidden="true" /></span>
@@ -139,7 +139,7 @@ export function StormTabs({ storms, live, now, unknown, past, units, selectedId,
           </ul>
         )}
       </TabsContent>
-      <TabsContent value="past" className="mt-2 px-1.5 pb-1.5">
+      <TabsContent value="past" tabIndex={-1} className="mt-2 px-1.5 pb-1.5">
         <ul className="flex flex-col gap-0.5">
           {past.map(s => {
             const peak = s.track.reduce((m, p) => (p.kt > m.kt ? p : m), s.track[0])
@@ -166,14 +166,19 @@ export function StormTabs({ storms, live, now, unknown, past, units, selectedId,
   )
 }
 
-export function Freshness({ newest, now, units, bad }: { newest: string | null; now: number; units: Units; bad: boolean }) {
+export function Freshness({ newest, now, units, bad, compact }: { newest: string | null; now: number; units: Units; bad: boolean; compact?: boolean }) {
   return (
     <div className="flex items-center gap-2.5 text-[12px] text-muted-foreground">
       <span className="relative flex size-2">
         {!bad && <span className="qellon-ping absolute inline-flex size-full rounded-full bg-live" />}
         <span className={cn("relative inline-flex size-2 rounded-full", bad ? "bg-warn" : "bg-live")} />
       </span>
-      {newest ? <span>Storm data {fmtTime(newest, units.time)} · <span className={cn(bad && "text-warn")}>{fmtAgo(newest, now)}</span></span> : <span>Watching every ocean</span>}
+      {newest ? (
+        <span className="whitespace-nowrap">
+          {compact ? <span className="sr-only">Storm data </span> : <>Storm data {fmtTime(newest, units.time)} · </>}
+          <span className={cn(bad && "text-warn")}>{fmtAgo(newest, now)}</span>
+        </span>
+      ) : <span className="whitespace-nowrap">Watching every ocean</span>}
     </div>
   )
 }

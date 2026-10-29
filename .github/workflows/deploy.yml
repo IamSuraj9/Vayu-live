@@ -1,0 +1,74 @@
+name: Deploy site
+
+# Builds the app with fresh wind data and publishes it to Cloudflare Pages.
+# Runs after every storm refresh, on pushes to main, and on demand.
+# Needs two repository secrets: CLOUDFLARE_API_TOKEN (permission: Cloudflare Pages, Edit) and CLOUDFLARE_ACCOUNT_ID.
+# Until they are set, the site is built and checked but not published.
+
+on:
+  workflow_run:
+    workflows: ["Refresh storm data"]
+    types: [completed]
+  push:
+    branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "**.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true # only the newest build matters
+
+env:
+  PROJECT: ${{ vars.CF_PAGES_PROJECT || 'storm-globe' }}
+
+jobs:
+  deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main # the refresh commits new storm data to main after this run's trigger commit
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build the wind field from the newest GFS run
+        run: |
+          pip install --quiet eccodes numpy
+          if ! python -m pipeline.wind --out app/public/data/wind.json; then
+            echo "::warning::GFS download failed; reusing the wind field from the live site"
+            curl -fsS "${{ vars.SITE_URL || format('https://{0}.pages.dev', env.PROJECT) }}/data/wind.json" \
+              -o app/public/data/wind.json || echo "::warning::No wind field; the app will use its built-in one"
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Build the app
+        working-directory: app
+        run: |
+          npm ci
+          npm run build
+          ls -la dist dist/data
+
+      - name: Publish to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::notice::Cloudflare secrets are not set yet, so the build was not published"
+            exit 0
+          fi
+          # Creates the project the first time; afterwards this fails harmlessly because it exists
+          npx --yes wrangler@4 pages project create "$PROJECT" --production-branch=main 2>/dev/null || true
+          npx --yes wrangler@4 pages deploy app/dist --project-name="$PROJECT" --branch=main --commit-dirty=true

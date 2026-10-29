@@ -1,0 +1,8 @@
+# Cloudflare Pages response headers
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Storm and wind files change every few hours: always check for a newer copy (cheap, uses ETags)
+/data/*
+  Cache-Control: no-cache

@@ -259,8 +259,8 @@ export default function App() {
               ) : (
                 <button type="button" onClick={() => setSheetOpen(true)}
                   className={cn(glass, "lens flex h-12 items-center justify-between rounded-full px-4 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring")}>
-                  <span className="flex items-center gap-2 font-medium"><List className="size-4" aria-hidden="true" />{active.length ? `${active.length} ${active.length === 1 ? "storm" : "storms"}` : "No active storms"}</span>
-                  <Freshness newest={newest} now={now} units={units} bad={offline || !feedFresh} />
+                  <span className="flex items-center gap-2 font-medium whitespace-nowrap"><List className="size-4" aria-hidden="true" />{active.length ? `${active.length} ${active.length === 1 ? "storm" : "storms"}` : "No active storms"}</span>
+                  <Freshness newest={newest} now={now} units={units} bad={offline || !feedFresh} compact />
                 </button>
               )}
             </div>
