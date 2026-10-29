@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-10-29T12:00:00Z",
- "fetchedAt": "2026-10-29T17:01:02Z",
+ "snapshot": "2026-10-29T18:00:00Z",
+ "fetchedAt": "2026-10-29T21:20:12Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -11,16 +11,14 @@
   "gdacs": {
    "ok": true,
    "events": 3,
-   "used": 2,
-   "errors": [
-    "ARNAB-26: https://www.gdacs.org/gdacsapi/api/events/getepisodedata?eventtype=TC&eventid=1001345&episodeid=10: The read operation timed out"
-   ]
+   "used": 3,
+   "errors": []
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-10-29T12:00:00Z",
-   "storms": 3,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261029/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
+   "cycle": "2026-10-29T18:00:00Z",
+   "storms": 2,
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261029/18/atmos/gfs.t18z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -33,7 +31,7 @@
    "basin": "Western Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-10-29T12:00:00Z",
+   "updated": "2026-10-29T18:00:00Z",
    "track": [
     {
      "t": "2026-10-25T06:00:00Z",
@@ -141,6 +139,12 @@
      "t": "2026-10-29T12:00:00Z",
      "lat": 16.6,
      "lon": 151.3,
+     "kt": 130
+    },
+    {
+     "t": "2026-10-29T18:00:00Z",
+     "lat": 17.1,
+     "lon": 149.7,
      "kt": 130,
      "hpa": 938
     }
@@ -148,55 +152,55 @@
    "forecast": [
     {
      "h": 12,
-     "lat": 17.8,
-     "lon": 147.9,
+     "lat": 18.5,
+     "lon": 146.6,
      "kt": 125
     },
     {
      "h": 24,
-     "lat": 19.3,
-     "lon": 145.0,
-     "kt": 120
+     "lat": 20.2,
+     "lon": 144.1,
+     "kt": 125
     },
     {
      "h": 36,
-     "lat": 20.9,
-     "lon": 143.2,
+     "lat": 21.7,
+     "lon": 143.1,
      "kt": 120
     },
     {
      "h": 48,
-     "lat": 21.9,
-     "lon": 142.9,
+     "lat": 22.1,
+     "lon": 143.1,
      "kt": 110
     },
     {
      "h": 60,
      "lat": 22.1,
-     "lon": 142.9,
+     "lon": 142.7,
      "kt": 100
     },
     {
      "h": 72,
      "lat": 22.1,
-     "lon": 142.3,
+     "lon": 141.3,
      "kt": 100
     },
     {
      "h": 96,
-     "lat": 22.0,
-     "lon": 139.0,
+     "lat": 22.3,
+     "lon": 138.3,
      "kt": 100
     },
     {
      "h": 120,
-     "lat": 22.7,
-     "lon": 137.1,
+     "lat": 22.9,
+     "lon": 136.7,
      "kt": 100
     }
    ],
-   "forecastIssued": "2026-10-29T12:00:00Z",
-   "forecastBase": "2026-10-29T12:00:00Z",
+   "forecastIssued": "2026-10-29T18:00:00Z",
+   "forecastBase": "2026-10-29T18:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001343",
    "authority": "JTWC",
@@ -208,7 +212,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Thu, 29 Oct 2026 13:52:17 GMT"
+    "modified": "Thu, 29 Oct 2026 20:21:53 GMT"
    },
    "codes": {
     "atcf": "wp302026",
@@ -224,7 +228,7 @@
    "basin": "Eastern Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-10-29T12:00:00Z",
+   "updated": "2026-10-29T18:00:00Z",
    "track": [
     {
      "t": "2026-10-18T18:00:00Z",
@@ -533,24 +537,31 @@
      "lon": -108.7,
      "kt": 35,
      "hpa": 1004
+    },
+    {
+     "t": "2026-10-29T18:00:00Z",
+     "lat": 22.0,
+     "lon": -108.6,
+     "kt": 30,
+     "hpa": 1005
     }
    ],
    "forecast": [
     {
      "h": 3,
-     "lat": 21.6,
-     "lon": -108.8,
-     "kt": 35
+     "lat": 22.3,
+     "lon": -108.6,
+     "kt": 30
     },
     {
      "h": 12,
-     "lat": 22.9,
-     "lon": -108.5,
+     "lat": 23.3,
+     "lon": -108.7,
      "kt": 25
     }
    ],
-   "forecastIssued": "2026-10-29T15:00:00Z",
-   "forecastBase": "2026-10-29T12:00:00Z",
+   "forecastIssued": "2026-10-29T21:00:00Z",
+   "forecastBase": "2026-10-29T18:00:00Z",
    "source": "NHC",
    "sourceUrl": "https://www.nhc.noaa.gov/",
    "authority": "NHC",
@@ -562,7 +573,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Thu, 29 Oct 2026 14:51:37 GMT"
+    "modified": "Thu, 29 Oct 2026 20:51:27 GMT"
    },
    "codes": {
     "atcf": "ep222026",
@@ -576,7 +587,7 @@
    "rawName": "ARNAB",
    "kind": "cyclone",
    "basin": "Bay of Bengal",
-   "status": "active",
+   "status": "ended",
    "stale": false,
    "updated": "2026-10-29T06:00:00Z",
    "track": [
@@ -648,11 +659,18 @@
      "hpa": 1005
     }
    ],
-   "forecast": [],
-   "forecastIssued": null,
-   "forecastBase": null,
-   "source": "NOAA tcvitals",
-   "sourceUrl": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261029/12/atmos/gfs.t12z.syndata.tcvitals.tm00",
+   "forecast": [
+    {
+     "h": 12,
+     "lat": 21.9,
+     "lon": 81.6,
+     "kt": 25
+    }
+   ],
+   "forecastIssued": "2026-10-28T06:00:00Z",
+   "forecastBase": "2026-10-29T06:00:00Z",
+   "source": "JTWC via GDACS",
+   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001345",
    "authority": "JTWC",
    "official": [
     "IMD (India Meteorological Department)",
@@ -666,8 +684,8 @@
    },
    "codes": {
     "atcf": "io022026",
-    "gdacs": null,
-    "code": "02B"
+    "gdacs": 1001345,
+    "code": null
    }
   }
  ]
