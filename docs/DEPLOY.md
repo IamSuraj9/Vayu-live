@@ -26,6 +26,11 @@ still shows green).
    Pages project. The address is at the end of the *Publish to Cloudflare Pages* step, usually
    `https://storm-globe.pages.dev` (Cloudflare adds a few letters if that name is taken).
 
+## Preview a change before it goes live
+Actions tab → **Deploy site** → **Run workflow** → pick the branch instead of `main`. The copy is published at
+`https://<branch-name>.storm-globe.pages.dev` (slashes become dashes, for example `claude-perf-pass`) and the live site is
+not touched. Merging the branch into `main` then publishes it for real.
+
 ## Changing the name later
 The site name comes from the repository variable `CF_PAGES_PROJECT` (default `storm-globe`). To rename: **Settings** →
 **Secrets and variables** → **Actions** → **Variables** → add `CF_PAGES_PROJECT` with the new name, run the workflow,

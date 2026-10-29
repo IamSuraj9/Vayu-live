@@ -34,7 +34,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: main # the refresh commits new storm data to main after this run's trigger commit
+          # After a refresh, build the newest main (the refresh commits new storm data after its trigger commit).
+          # Otherwise build the commit that started the run: main on a push, or the branch picked in "Run workflow".
+          ref: ${{ github.event_name == 'workflow_run' && 'main' || '' }}
 
       - uses: actions/setup-python@v7
         with:
@@ -66,6 +68,7 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          BRANCH: ${{ github.event_name == 'workflow_run' && 'main' || github.ref_name }}
         run: |
           if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
             echo "::notice::Cloudflare secrets are not set yet, so the build was not published"
@@ -73,4 +76,6 @@ jobs:
           fi
           # Creates the project the first time; afterwards this fails harmlessly because it exists
           npx --yes wrangler@4 pages project create "$PROJECT" --production-branch=main 2>/dev/null || true
-          npx --yes wrangler@4 pages deploy app/dist --project-name="$PROJECT" --branch=main --commit-dirty=true
+          # main publishes the live site; any other branch publishes a preview copy at
+          # https://<branch-name>.<project>.pages.dev and leaves the live site alone
+          npx --yes wrangler@4 pages deploy app/dist --project-name="$PROJECT" --branch="$BRANCH" --commit-dirty=true
