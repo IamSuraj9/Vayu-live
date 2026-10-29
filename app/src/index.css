@@ -268,3 +268,13 @@ html, body { background: #000; }
   .tab-thumb, .meter-glide, [data-slot="switch-thumb"], [data-slot="button"] { transition: none !important; }
   [data-slot="button"]:active { transform: none; }
 }
+
+/* ---------- Windows high-contrast mode: plain panels instead of glass effects ---------- */
+@media (forced-colors: active) {
+  .glass, .glass-well, .liquid-thumb, [data-slot="popover-content"], [data-slot="dropdown-menu-content"], [data-slot="dialog-content"], [data-slot="sheet-content"] {
+    background: Canvas !important; border: 1px solid CanvasText; backdrop-filter: none !important; box-shadow: none !important;
+  }
+  .glass::before, .glass::after, .liquid-thumb::before, .glass-well::before,
+  [data-slot="popover-content"]::before, [data-slot="dropdown-menu-content"]::before, [data-slot="dialog-content"]::before, [data-slot="sheet-content"]::before { display: none !important; }
+  .lens { filter: none !important; }
+}

@@ -60,14 +60,23 @@ class EncodeTest(unittest.TestCase):
             p, raw_p = self.value("p", lat, lon)
             self.assertAlmostEqual(p, raw_p, delta=51)
 
+    def test_coarse_file_is_every_other_point(self):
+        import numpy as np
+        fine = {k: np.arange(8 * 6, dtype=float).reshape(6, 8) for k in "uvtp"}
+        sub, g = wind.coarsen(fine, {"lo1": 0, "la1": 90, "dx": 0.5, "dy": 0.5, "ni": 8, "nj": 6})
+        self.assertEqual((g["ni"], g["nj"], g["dx"], g["dy"]), (4, 3, 1.0, 1.0))
+        self.assertEqual(sub["u"][1, 1], fine["u"][2, 2])
+
     def test_main_writes_the_file(self):
         import json
         import tempfile
         with tempfile.TemporaryDirectory() as d:
-            out = os.path.join(d, "wind.json")
-            self.assertEqual(wind.main(["--out", out, "--grib", GRIB]), 0)
+            out, coarse = os.path.join(d, "wind.json"), os.path.join(d, "wind-1.json")
+            self.assertEqual(wind.main(["--out", out, "--coarse-out", coarse, "--grib", GRIB]), 0)
             with open(out) as fh:
                 self.assertEqual(json.load(fh)["source"], wind.SOURCE)
+            with open(coarse) as fh:
+                self.assertEqual(json.load(fh)["grid"]["ni"], 360)  # the fixture is already 1°
 
 
 if __name__ == "__main__":

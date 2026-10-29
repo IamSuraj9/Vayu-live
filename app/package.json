@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -p tsconfig.json && vite build",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "build:single": "tsc -p tsconfig.json && SINGLE=1 vite build"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

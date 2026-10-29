@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react"
 import { geoDistance, geoGraticule10, geoOrthographic, geoPath } from "d3-geo"
-import { borders, coastline } from "./world"
+import { HIGH, LOW, loadHigh } from "./world"
 import { windAt } from "./field"
 import { useWindOverlay, rescaleTrails } from "./overlay"
 import type { Camera, View } from "./camera"
@@ -84,6 +84,27 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
   )
   const projRef = useRef(projection); projRef.current = projection
   const svgPath = useMemo(() => geoPath(projection), [projection])
+  const radius = base * view.zoom
+  const fieldReady = fieldVersion > 0
+
+  // "Moving" lasts until the view has been still for 160 ms. While moving, the light map is drawn.
+  const [moving, setMoving] = useState(false)
+  const settle = useRef<number | undefined>(undefined)
+  const firstView = useRef(true)
+  useEffect(() => {
+    if (firstView.current) { firstView.current = false; return }
+    setMoving(true)
+    window.clearTimeout(settle.current)
+    settle.current = window.setTimeout(() => setMoving(false), 160)
+  }, [view, oy])
+  useEffect(() => () => window.clearTimeout(settle.current), [])
+
+  // Fetch the detailed map only once the globe is big enough on screen for the extra detail to show
+  const wantHigh = radius > 350
+  const [highReady, setHighReady] = useState(!!HIGH)
+  useEffect(() => { if (wantHigh && !highReady) loadHigh().then(() => setHighReady(true), () => {}) }, [wantHigh, highReady])
+  const lines = !moving && wantHigh && highReady && HIGH ? HIGH : LOW
+
   const visible = (lon: number, lat: number) => geoDistance([lon, lat], [view.lon, view.lat]) < Math.PI / 2 - 0.015
 
   useEffect(() => {
@@ -110,13 +131,13 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
     if (!layers.colors) { ctx.beginPath(); p({ type: "Sphere" }); ctx.fillStyle = "#0d0f14"; ctx.fill() }
     if (layers.borders) {
       ctx.beginPath(); p(graticule); ctx.strokeStyle = "rgba(255,255,255,0.06)"; ctx.lineWidth = 0.6; ctx.stroke()
-      ctx.beginPath(); p(borders); ctx.strokeStyle = "rgba(255,255,255,0.17)"; ctx.lineWidth = 0.6; ctx.stroke()
+      ctx.beginPath(); p(lines.borders); ctx.strokeStyle = "rgba(255,255,255,0.17)"; ctx.lineWidth = 0.6; ctx.stroke()
     }
-    ctx.beginPath(); p(coastline); ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 0.85; ctx.stroke()
+    ctx.beginPath(); p(lines.coastline); ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 0.85; ctx.stroke()
     ctx.beginPath(); p({ type: "Sphere" }); ctx.strokeStyle = "rgba(255,255,255,0.14)"; ctx.lineWidth = 1; ctx.stroke()
-  }, [projection, size, dpr, layers.colors, layers.borders])
+  }, [projection, size, dpr, layers.colors, layers.borders, lines])
 
-  useWindOverlay(overlayRef, projection, size, dpr, layers.colors, LUT, fieldVersion)
+  useWindOverlay(overlayRef, projection, size, dpr, layers.colors && fieldReady, LUT, fieldVersion)
 
   // Animated particles that follow the wind (in lon/lat space, projected each frame)
   useEffect(() => {
@@ -124,7 +145,7 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
     c.width = size.w * dpr; c.height = size.h * dpr
     const ctx = c.getContext("2d")!
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-    if (!showParticles) { ctx.clearRect(0, 0, size.w, size.h); return }
+    if (!showParticles || !fieldReady) { ctx.clearRect(0, 0, size.w, size.h); return }
     const N = Math.round(clamp((size.w * size.h) / 240, 1200, 5200))
     type P = { lon: number; lat: number; age: number; max: number }
     const parts: P[] = Array.from({ length: N }, () => ({ lon: 0, lat: 0, age: 1, max: 0 }))
@@ -178,7 +199,7 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [size, dpr, reducedMotion, showParticles, reducedMotion && interacting])
+  }, [size, dpr, reducedMotion, showParticles, fieldReady, reducedMotion && interacting])
 
   // Pointer: drag to rotate, pinch or wheel to zoom, click to read a point or pick a storm
   const pointers = useRef(new Map<number, { x: number; y: number }>())
@@ -275,7 +296,7 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
       role="application"
       style={{ cursor: interacting ? "grabbing" : "grab" }}
     >
-      <canvas ref={overlayRef} className="absolute inset-0 h-full w-full transition-opacity duration-500" style={{ opacity: dimField ? 0.28 : 1 }} />
+      <canvas ref={overlayRef} className="absolute inset-0 h-full w-full transition-opacity duration-500" style={{ opacity: !fieldReady ? 0 : dimField ? 0.28 : 1 }} />
       <canvas ref={mapRef} className="absolute inset-0 h-full w-full" />
       <canvas ref={partRef} className="absolute inset-0 h-full w-full" />
       <svg className="pointer-events-none absolute inset-0" width={size.w} height={size.h} aria-hidden="true">
@@ -333,7 +354,7 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
               m.dim && "opacity-50",
             )}
             style={{ left: x, top: y }}
-            aria-label={`${m.name}: ${m.label}`}
+            aria-label={`${m.name} ${m.label}`}
             aria-pressed={sel}
           >
             <StormGlyph color={m.color} south={m.lat < 0} selected={sel} reducedMotion={reducedMotion} />

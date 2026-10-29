@@ -7,7 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+    <meta name="description" content="A live globe of every active cyclone, hurricane and typhoon, in plain language: how strong, how fast, where it has been and where it is expected to go." />
+    <meta name="theme-color" content="#000000" />
+    <!-- Fonts load without holding up the first paint; system fonts show until they arrive -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"></noscript>
+    <style>
+      html, body { margin: 0; height: 100%; background: #000; }
+      /* Shown until the app starts: the globe's outline, so the screen is never blank */
+      .boot { position: fixed; inset: 0; display: grid; place-items: center; font: 13px/1.4 system-ui, sans-serif; color: rgba(255,255,255,.5); }
+      .boot::before { content: ""; position: absolute; width: min(88vw, 88vh); aspect-ratio: 1; border-radius: 50%; border: 1px solid rgba(255,255,255,.14); background: radial-gradient(circle at 50% 40%, #10172b, #05070d 70%); }
+      .boot span { position: relative; }
+    </style>
   </head>
   <body>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -17,7 +28,7 @@
         <feDisplacementMap in="SourceGraphic" in2="soft" scale="34" xChannelSelector="R" yChannelSelector="G" />
       </filter>
     </svg>
-    <div id="root"></div>
+    <div id="root"><div class="boot" role="status"><span>Loading the globe…</span></div></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

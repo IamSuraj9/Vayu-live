@@ -13,7 +13,9 @@ const fpsDuring = (p, ms, action) => Promise.all([
     requestAnimationFrame(f) }), ms),
   action ? action() : null,
 ]).then(([r]) => r);
-const isMarker = () => [...document.querySelectorAll('button')].some(b => /^[^:]+: \d+ (km\/h|mph|kt|m\/s)/.test(b.getAttribute('aria-label') || ''));
+// Storm markers on the globe are buttons labelled like "In-fa 222 km/h" (older builds: "In-fa: 222 km/h")
+const MARKER = /^(.+?):? \d+ (km\/h|mph|kt|m\/s)/;
+const isMarker = () => [...document.querySelectorAll('button')].some(b => /^(.+?):? \d+ (km\/h|mph|kt|m\/s)/.test(b.getAttribute('aria-label') || ''));
 
 (async () => {
   const b = await chromium.launch({ ignoreDefaultArgs: ['--hide-scrollbars'] });
@@ -53,10 +55,10 @@ const isMarker = () => [...document.querySelectorAll('button')].some(b => /^[^:]
     // Memory: open and close storms 30 times
     const heap = async () => { await cdp.send('HeapProfiler.collectGarbage'); const m = await cdp.send('Performance.getMetrics'); return m.metrics.find(x => x.name === 'JSHeapUsedSize').value / 1048576 };
     const h0 = await heap();
-    const names = await p.evaluate(() => [...document.querySelectorAll('button')].map(b => b.getAttribute('aria-label') || '').filter(l => /^[^:]+: \d+ /.test(l)).map(l => l.split(':')[0]));
+    const names = await p.evaluate(src => { const re = new RegExp(src); return [...document.querySelectorAll('button')].map(b => b.getAttribute('aria-label') || '').map(l => l.match(re)?.[1]).filter(Boolean) }, MARKER.source);
     for (let i = 0; i < 30; i++) {
       const n = names[i % names.length];
-      await p.evaluate(n => [...document.querySelectorAll('button')].find(b => (b.getAttribute('aria-label') || '').startsWith(n + ':'))?.click(), n);
+      await p.evaluate(n => [...document.querySelectorAll('button')].find(b => /^.+?:? \d+ /.test(b.getAttribute('aria-label') || '') && (b.getAttribute('aria-label') || '').startsWith(n))?.click(), n);
       await p.waitForTimeout(60);
       await p.keyboard.press('Escape');
       await p.evaluate(() => document.querySelector('button[aria-label="Close storm details"]')?.click());
@@ -70,6 +72,7 @@ const isMarker = () => [...document.querySelectorAll('button')].some(b => /^[^:]
     const longTasks = await p.evaluate(() => ({ count: window.__long.length, worst: Math.round(Math.max(0, ...window.__long)), total: Math.round(window.__long.reduce((a, b) => a + b, 0)) }));
 
     // Offline: cut the connection and wait for the next check (tab hidden then shown triggers a re-check)
+    if (env.net) await cdp.send('Network.emulateNetworkConditions', { offline: true, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
     await ctx.setOffline(true);
     await p.evaluate(() => { Object.defineProperty(document, 'visibilityState', { value: 'visible', configurable: true }); document.dispatchEvent(new Event('visibilitychange')) });
     await p.waitForTimeout(2500);

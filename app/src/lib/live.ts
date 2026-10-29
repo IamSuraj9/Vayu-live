@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 import { SAVED, type StormFile } from "@/lib/storms"
-import { type WindFile, loadWind } from "@/globe/field"
+import { type WindFile, loadBuiltIn, loadWind } from "@/globe/field"
 
 const STORMS_URL = "data/storms.json"
 const WIND_URL = "data/wind.json"
+const WIND_COARSE_URL = "data/wind-1.json"
 const STORMS_EVERY = 10 * 60e3 // the pipeline runs every 3 h; checking often costs little and catches it soon after
 const WIND_EVERY = 3 * 3.6e6
 export const STALE_HOURS = 6 // two missed pipeline runs
@@ -59,16 +60,31 @@ export function useStormFeed(): Feed {
   return feed
 }
 
-/** Loads the 0.5° wind field when it is published next to the page. Returns a number that changes with each new field. */
+/** True unless the connection is slow or the person asked to save data */
+function wantsSharpWind() {
+  const c = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection
+  return !(c?.saveData || /2g|3g/.test(c?.effectiveType ?? ""))
+}
+
+/**
+ * Loads the wind field published next to the page: the small 1° file first so colours appear quickly, then the sharp
+ * 0.5° file (skipped on slow connections). If neither can be reached, falls back to the copy saved with the app.
+ * Returns a number that changes with each new field (0 until the first one loads).
+ */
 export function useWindField() {
   const [version, setVersion] = useState(0)
   const [check] = useState(() => {
-    let time = ""
+    let time = "", level = 0, builtIn = false // level 1: 1°, 2: 0.5°
     return async () => {
-      try {
-        const doc = await getJson<WindFile>(WIND_URL)
-        if (doc.time !== time && loadWind(doc)) { time = doc.time; setVersion(v => v + 1) }
-      } catch { /* keep the built-in field */ }
+      const files: [string, number][] = wantsSharpWind() ? [[WIND_URL, 2]] : [[WIND_COARSE_URL, 1]]
+      if (level === 0 && files[0][1] === 2) files.unshift([WIND_COARSE_URL, 1])
+      for (const [url, lv] of files) {
+        try {
+          const doc = await getJson<WindFile>(url)
+          if ((doc.time > time || (doc.time === time && lv > level)) && loadWind(doc)) { time = doc.time; level = lv; setVersion(v => v + 1) }
+        } catch { /* try the next file */ }
+      }
+      if (!time && !builtIn && (await loadBuiltIn().catch(() => false))) { builtIn = true; setVersion(v => v + 1) }
     }
   })
   usePoll(check, WIND_EVERY)

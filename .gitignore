@@ -1,5 +1,6 @@
 node_modules/
 dist/
+dist-single/
 *.log
 .DS_Store
 .env
@@ -10,5 +11,6 @@ data/fixtures/**/NI.csv
 .venv/
 __pycache__/
 
-# built at deploy time by pipeline/wind.py (about 1.4 MB), never committed
+# built at deploy time by pipeline/wind.py (1.4 MB and 340 KB), never committed
 app/public/data/wind.json
+app/public/data/wind-1.json

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import { AlertTriangle, BookOpen, CloudOff, Gauge, Info, List } from "lucide-react"
+import { AlertTriangle, BookOpen, CloudOff, Gauge, Info, List, MousePointerClick, X } from "lucide-react"
 import { Globe, type LL, type Layers, type Marker, type View } from "@/globe/Globe"
 import { createCamera } from "@/globe/camera"
 import { PAST, type Storm, endMs, liveness, startMs, stateAt } from "@/lib/storms"
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import {
-  AboutDialog, CREDIT_SHORT, CommandPalette, Freshness, GlossaryDialog, LayersPopover, Legend, MapControls, PointReadout, ReplayBar,
+  AboutDialog, CREDIT_SHORT, CommandPalette, HelpMenu, Freshness, GlossaryDialog, LayersPopover, Legend, MapControls, PointReadout, ReplayBar,
   ScaleDialog, SearchTrigger, StormPanel, StormTabs, ToolButton, Toolbar, UnitsPopover, glass,
 } from "@/components/panels"
 import { cn } from "@/lib/utils"
@@ -30,6 +30,7 @@ function useMedia(q: string) {
 const HOUR = 3.6e6
 const START: View = { lon: 100, lat: 15, zoom: 1 }
 const LAYERS_KEY = "qellon.layers.v2"
+const HINT_KEY = "qellon.hint.v1"
 
 function loadLayers(): Layers {
   try { const raw = localStorage.getItem(LAYERS_KEY); if (raw) return { particles: true, colors: true, paths: true, borders: true, ...JSON.parse(raw) } } catch { /* unavailable */ }
@@ -55,6 +56,8 @@ export default function App() {
   const [scaleOpen, setScaleOpen] = useState(false)
   const [glossOpen, setGlossOpen] = useState(false)
   const [aboutOpen, setAboutOpen] = useState(false)
+  const [hint, setHint] = useState(() => { try { return !localStorage.getItem(HINT_KEY) } catch { return false } })
+  const dismissHint = () => { if (!hint) return; setHint(false); try { localStorage.setItem(HINT_KEY, "1") } catch { /* unavailable */ } }
   const isMobile = useMedia("(max-width: 720px)")
   const reduced = useMedia("(prefers-reduced-motion: reduce)")
   const [camera] = useState(() => createCamera({ ...START, zoom: typeof window !== "undefined" && window.innerWidth < 720 ? 1.15 : 1 }))
@@ -181,20 +184,32 @@ export default function App() {
       onSeek={t => { setPlaying(false); setReplay({ ...replay, at: t }) }}
       onClose={() => { setReplay(null); setPlaying(false); if (selected?.kind === "past") setSelectedId(null) }} />
   ) : null
+  // First visit only: say what can be tapped. Any tap or click anywhere dismisses it for good.
+  const hintEl = hint && !selected && !pick && !replay ? (
+    <div className={cn(glass, "flex items-center gap-2 rounded-[22px] py-1.5 pr-1.5 pl-3.5 text-[13px] leading-snug text-foreground/90")}>
+      <MousePointerClick className="size-4 shrink-0 text-brand" aria-hidden="true" />
+      <p>{isMobile ? "Tap" : "Click"} a storm to see its path, or anywhere on the globe for local weather</p>
+      <Button variant="ghost" size="icon" className="size-8 shrink-0 rounded-full" aria-label="Dismiss tip" onClick={dismissHint}><X /></Button>
+    </div>
+  ) : null
   const toolbar = (
-    <Toolbar>
+    <Toolbar large={isMobile}>
       {isMobile && <ToolButtonSearch onOpen={() => setCmdOpen(true)} />}
       <LayersPopover layers={layers} setLayers={setLayers} />
       <UnitsPopover units={units} setUnits={setUnits} />
-      <ToolButton label="Storm strength scale" onClick={() => setScaleOpen(true)}><Gauge /></ToolButton>
-      <ToolButton label="What the words mean" onClick={() => setGlossOpen(true)}><BookOpen /></ToolButton>
-      <ToolButton label="About and sources" onClick={() => setAboutOpen(true)}><Info /></ToolButton>
+      {isMobile ? (
+        <HelpMenu onScale={() => setScaleOpen(true)} onGlossary={() => setGlossOpen(true)} onAbout={() => setAboutOpen(true)} />
+      ) : (<>
+        <ToolButton label="Storm strength scale" onClick={() => setScaleOpen(true)}><Gauge /></ToolButton>
+        <ToolButton label="What the words mean" onClick={() => setGlossOpen(true)}><BookOpen /></ToolButton>
+        <ToolButton label="About and sources" onClick={() => setAboutOpen(true)}><Info /></ToolButton>
+      </>)}
     </Toolbar>
   )
 
   return (
     <TooltipProvider delayDuration={250}>
-      <main className="relative h-full w-full overflow-hidden bg-black">
+      <main className="relative h-full w-full overflow-hidden bg-black" onPointerDownCapture={dismissHint}>
         <h1 className="sr-only">Qellon storm globe</h1>
         <Globe markers={markers} selectedId={selectedId} camera={camera} onSelect={id => select(id)}
           pick={pick} onPick={p => setPick(p ? { lon: p.lon, lat: p.lat } : null)} reducedMotion={reduced}
@@ -234,6 +249,7 @@ export default function App() {
               {!panelEl && <Legend units={units} onScale={() => setScaleOpen(true)} />}
             </div>
             {replayBar && <div className="q-rise absolute bottom-4 left-[368px] right-[472px] mx-auto max-w-[620px]">{replayBar}</div>}
+            {hintEl && <div className="q-rise absolute bottom-4 left-[368px] right-[472px] flex justify-center">{hintEl}</div>}
           </>
         )}
 
@@ -252,6 +268,7 @@ export default function App() {
             )}
             <div className="ui-gutter absolute inset-x-0 bottom-0 flex flex-col gap-2 pb-3">
               {replayBar && <div className="q-rise">{replayBar}</div>}
+              {hintEl && !panelEl && <div className="q-rise">{hintEl}</div>}
               {panelEl ? (
                 <section key={selected!.id} className={cn(glass, "q-rise flex max-h-[52vh] flex-col overflow-hidden")} aria-label="Storm details">
                   <div className="min-h-0 flex-1 overflow-y-auto">{panelEl}</div>

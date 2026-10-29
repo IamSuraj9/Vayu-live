@@ -42,10 +42,12 @@ jobs:
       - name: Build the wind field from the newest GFS run
         run: |
           pip install --quiet eccodes numpy
-          if ! python -m pipeline.wind --out app/public/data/wind.json; then
-            echo "::warning::GFS download failed; reusing the wind field from the live site"
-            curl -fsS "${{ vars.SITE_URL || format('https://{0}.pages.dev', env.PROJECT) }}/data/wind.json" \
-              -o app/public/data/wind.json || echo "::warning::No wind field; the app will use its built-in one"
+          if ! python -m pipeline.wind --out app/public/data/wind.json --coarse-out app/public/data/wind-1.json; then
+            echo "::warning::GFS download failed; reusing the wind fields from the live site"
+            for f in wind.json wind-1.json; do
+              curl -fsS "${{ vars.SITE_URL || format('https://{0}.pages.dev', env.PROJECT) }}/data/$f" \
+                -o "app/public/data/$f" || echo "::warning::No $f; the app falls back to its built-in wind"
+            done
           fi
 
       - uses: actions/setup-node@v7

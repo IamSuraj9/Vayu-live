@@ -1,8 +1,6 @@
-import gfs from "@/data/gfs.json"
-
 type Grid = { lo1: number; la1: number; dx: number; dy: number; ni: number; nj: number }
 type Scale = [number, number]
-/** data/wind.json, written by pipeline/wind.py */
+/** data/wind.json and data/wind-1.json, written by pipeline/wind.py */
 export type WindFile = { time: string; source: string; grid: Grid; dtype: "int8" | "int16"; scale: Record<"u" | "v" | "t" | "p", Scale>; u: string; v: string; t: string; p: string }
 
 function decode(b64: string, dtype: "int8" | "int16", [scale, offset]: Scale) {
@@ -16,30 +14,34 @@ function decode(b64: string, dtype: "int8" | "int16", [scale, offset]: Scale) {
   return out
 }
 
-// Built in: the 1° GFS field saved with the app, used until (or unless) data/wind.json loads
-const m = gfs.meta as Grid & { date: number; time: number }
-const builtInTime = (() => {
-  const d = String(m.date), t = String(m.time).padStart(4, "0")
-  return `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}T${t.slice(0, 2)}:${t.slice(2)}:00Z`
-})()
+// Empty until a wind file loads; until then the globe shows land without wind
+let g: Grid = { lo1: 0, la1: 90, dx: 1, dy: 1, ni: 1, nj: 2 }
+let U = new Float32Array(2), V = new Float32Array(2), T = new Float32Array(2), P = new Float32Array(2)
 
-let g: Grid = m
-let U = decode(gfs.u, "int16", [10, 0])
-let V = decode(gfs.v, "int16", [10, 0])
-let T = decode(gfs.t, "int16", [10, 200])
-let P = decode(gfs.p, "int16", [0.1, 0]) // Pa
-
-export let FIELD_TIME = builtInTime
+export let FIELD_TIME = ""
 export const FIELD_SOURCE = "GFS model, NOAA/NCEP"
+export let FIELD_READY = false
 
-/** Swap in a newer field. Returns false (and keeps the current one) if the file does not look right. */
+/** Swap in a field. Returns false (and keeps the current one) if the file does not look right. */
 export function loadWind(doc: WindFile): boolean {
   const n = doc.grid.ni * doc.grid.nj
   const next = { u: decode(doc.u, doc.dtype, doc.scale.u), v: decode(doc.v, doc.dtype, doc.scale.v), t: decode(doc.t, doc.dtype, doc.scale.t), p: decode(doc.p, doc.dtype, doc.scale.p) }
   if (!n || Object.values(next).some(a => a.length !== n)) return false
   g = doc.grid; U = next.u; V = next.v; T = next.t; P = next.p
   FIELD_TIME = doc.time
+  FIELD_READY = true
   return true
+}
+
+/** Last resort when no wind file can be reached: the 1° field saved with the app (fetched only when needed). */
+export async function loadBuiltIn() {
+  const { default: gfs } = await import("@/data/gfs.json")
+  const m = gfs.meta as Grid & { date: number; time: number }
+  const d = String(m.date), t = String(m.time).padStart(4, "0")
+  return loadWind({
+    time: `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}T${t.slice(0, 2)}:${t.slice(2)}:00Z`, source: FIELD_SOURCE,
+    grid: m, dtype: "int16", scale: { u: [10, 0], v: [10, 0], t: [10, 200], p: [0.1, 0] }, u: gfs.u, v: gfs.v, t: gfs.t, p: gfs.p,
+  })
 }
 
 function bilinear(arr: Float32Array, lon: number, lat: number) {
@@ -55,7 +57,9 @@ function bilinear(arr: Float32Array, lon: number, lat: number) {
 export function windAt(lon: number, lat: number): [number, number] {
   return [bilinear(U, lon, lat), bilinear(V, lon, lat)]
 }
+/** Wind, temperature and pressure at a point, or null while no wind data has loaded */
 export function sampleAt(lon: number, lat: number) {
+  if (!FIELD_READY) return null
   const [u, v] = windAt(lon, lat)
   return { u, v, speed: Math.hypot(u, v), tempK: bilinear(T, lon, lat), hpa: bilinear(P, lon, lat) / 100,
     // meteorological convention: direction the wind blows FROM

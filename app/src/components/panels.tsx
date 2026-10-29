@@ -1,6 +1,6 @@
 import { useId, useState } from "react"
 import {
-  ArrowUpRight, BookOpen, ChevronDown, Compass, Gauge, History, Layers as LayersIcon, MapPin, Minus, Navigation,
+  ArrowUpRight, BookOpen, ChevronDown, CircleHelp, Compass, Gauge, History, Layers as LayersIcon, MapPin, Minus, Navigation,
   Info, Pause, Play, Plus, Search, Settings2, Thermometer, Wind, X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,7 @@ import { Slider } from "@/components/ui/slider"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Kbd } from "@/components/ui/kbd"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -57,7 +58,7 @@ export function ToolButton({ label, shortcut, children, className, ...rest }: Re
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label={label} className={cn("size-8 rounded-full text-foreground/80 hover:bg-white/10 hover:text-foreground", className)} {...rest}>
+        <Button variant="ghost" size="icon" aria-label={label} data-tool className={cn("size-8 rounded-full text-foreground/80 hover:bg-white/10 hover:text-foreground", className)} {...rest}>
           {children}
         </Button>
       </TooltipTrigger>
@@ -416,7 +417,7 @@ export function PointReadout({ lon, lat, units, storms, onClose, className, styl
         </div>
         <Button variant="ghost" size="icon" className="-mt-0.5 -mr-1 size-7 rounded-full" onClick={onClose} aria-label="Close point readout"><X /></Button>
       </div>
-      <div className="mt-2.5 grid grid-cols-2 gap-1.5 text-[12px]">
+      {w ? <div className="mt-2.5 grid grid-cols-2 gap-1.5 text-[12px]">
         <div className={cn(tile, "col-span-2")}>
           <p className="flex items-center gap-1.5 text-muted-foreground"><Wind className="size-3.5" aria-hidden="true" />Wind</p>
           <p className="mt-0.5 text-[15px] font-medium"><span className="tabular-nums">{fmtWindMs(w.speed, units.wind)}</span> <span className="font-normal text-muted-foreground">from the {compass(w.fromDeg)}</span></p>
@@ -430,9 +431,9 @@ export function PointReadout({ lon, lat, units, storms, onClose, className, styl
           <p className="flex items-center gap-1.5 text-muted-foreground"><Gauge className="size-3.5" aria-hidden="true" />Pressure</p>
           <p className="mt-0.5 text-[15px] font-medium tabular-nums">{fmtPress(w.hpa, units.press)}</p>
         </div>
-      </div>
+      </div> : <p className={cn(tile, "mt-2.5 text-[12.5px] text-muted-foreground")}>Wind data is still loading. Try again in a moment.</p>}
       {nearest && <p className="mt-2 text-[12.5px]"><span className="text-muted-foreground">Nearest storm:</span> {nearest.name}, {fmtDist(nearest.km, units.dist)} {nearest.dir}</p>}
-      <p className="mt-1.5 font-mono text-[10.5px] text-muted-foreground">{fmtLatLon(lat, lon)} · {FIELD_SOURCE.replace(", NOAA/NCEP", "")} {fmtTime(FIELD_TIME, units.time, false)}</p>
+      <p className="mt-1.5 font-mono text-[10.5px] text-muted-foreground">{fmtLatLon(lat, lon)}{w && <> · {FIELD_SOURCE.replace(", NOAA/NCEP", "")} {fmtTime(FIELD_TIME, units.time, false)}</>}</p>
     </div>
   )
 }
@@ -459,8 +460,8 @@ export function UnitsPopover({ units, setUnits }: { units: Units; setUnits: (u: 
       <Tooltip>
         <TooltipTrigger asChild>
           <PopoverTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 rounded-full px-3 font-mono text-[12px] text-foreground/85 hover:bg-white/10" aria-label="Change units">
-              {WIND_LABEL[units.wind]}<span className="text-muted-foreground">·</span>{units.temp === "c" ? "°C" : "°F"}
+            <Button variant="ghost" size="sm" data-tool-wide className="h-8 rounded-full px-3 font-mono text-[12px] text-foreground/85 hover:bg-white/10">
+              <span className="sr-only">Units: </span>{WIND_LABEL[units.wind]}<span className="text-muted-foreground">·</span>{units.temp === "c" ? "°C" : "°F"}
             </Button>
           </PopoverTrigger>
         </TooltipTrigger>
@@ -494,7 +495,7 @@ export function LayersPopover({ layers, setLayers }: { layers: Layers; setLayers
       <Tooltip>
         <TooltipTrigger asChild>
           <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Map layers" className="size-8 rounded-full text-foreground/80 hover:bg-white/10"><LayersIcon /></Button>
+            <Button variant="ghost" size="icon" aria-label="Map layers" data-tool className="size-8 rounded-full text-foreground/80 hover:bg-white/10"><LayersIcon /></Button>
           </PopoverTrigger>
         </TooltipTrigger>
         <TooltipContent side="bottom">Map layers</TooltipContent>
@@ -636,7 +637,7 @@ export function AboutDialog({ file, live, reachable, now, units, open, onOpenCha
               <SourceRow ok={state("gdacs")} name="GDACS (European Commission JRC, UN OCHA)" href="https://www.gdacs.org/"
                 detail={note("gdacs", "Past track, forecast path and people affected, for every ocean. Forecasts come from JTWC.")} />
               <SourceRow ok={null} name="GFS weather model (NOAA/NCEP)" href="https://www.nco.ncep.noaa.gov/pmb/products/gfs/"
-                detail={`Wind, temperature and pressure on the globe. Model run ${fmtTime(FIELD_TIME, units.time)}.`} />
+                detail={`Wind, temperature and pressure on the globe. ${FIELD_TIME ? `Model run ${fmtTime(FIELD_TIME, units.time)}.` : "Still loading."}`} />
               <SourceRow ok={null} name="IBTrACS (NOAA NCEI)" href="https://www.ncei.noaa.gov/products/international-best-track-archive"
                 detail="Tracks of past storms for the replays." />
               <SourceRow ok={null} name="Natural Earth" href="https://www.naturalearthdata.com/" detail="Coastlines and borders (public domain)." />
@@ -666,8 +667,26 @@ export function AboutDialog({ file, live, reachable, now, units, open, onOpenCha
   )
 }
 
-export function Toolbar({ children }: { children: React.ReactNode }) {
-  return <div className={cn(glass, "lens flex items-center gap-0.5 rounded-full p-1")}>{children}</div>
+export function Toolbar({ children, large }: { children: React.ReactNode; large?: boolean }) {
+  // On phones every control is 44 px, Apple's minimum comfortable tap size
+  return <div className={cn(glass, "lens flex items-center gap-0.5 rounded-full p-1", large && "[&_[data-tool]]:size-11 [&_[data-tool-wide]]:h-11")}>{children}</div>
+}
+
+/** Phone toolbar: the scale, glossary and About behind one labelled menu instead of three bare icons */
+export function HelpMenu({ onScale, onGlossary, onAbout }: { onScale: () => void; onGlossary: () => void; onAbout: () => void }) {
+  const item = "gap-3 rounded-xl px-3 py-2.5 text-[14px]"
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" aria-label="Help and info" data-tool className="size-8 rounded-full text-foreground/80 hover:bg-white/10"><CircleHelp /></Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" sideOffset={10} className="w-64 rounded-[22px] p-1.5">
+        <DropdownMenuItem className={item} onSelect={onScale}><Gauge />How strong is it? (scale)</DropdownMenuItem>
+        <DropdownMenuItem className={item} onSelect={onGlossary}><BookOpen />What the words mean</DropdownMenuItem>
+        <DropdownMenuItem className={item} onSelect={onAbout}><Info />Sources and official alerts</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }
 
 export { BookOpen, Gauge, Info, Settings2 }

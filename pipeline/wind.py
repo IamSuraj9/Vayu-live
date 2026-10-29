@@ -9,7 +9,7 @@ four fields: 10 m wind (u, v), 2 m temperature and sea-level pressure. Values ar
 Needs eccodes and numpy (pip install eccodes numpy). The file is about 1.4 MB and is built at deploy time, not committed.
 
 Usage:
-  python -m pipeline.wind --out app/public/data/wind.json
+  python -m pipeline.wind --out app/public/data/wind.json --coarse-out app/public/data/wind-1.json
   python -m pipeline.wind --out /tmp/wind.json --grib data/fixtures/2026-10-29/gfs/gfs_2026102900.grb2
 """
 from __future__ import annotations
@@ -83,6 +83,24 @@ def encode(fields: dict, grid: dict) -> dict:
     return out
 
 
+def coarsen(fields: dict, grid: dict, degrees: float = 1.0) -> tuple[dict, dict]:
+    """Every n-th point, for a smaller file that loads fast on phones (0.5° -> 1° is a quarter of the size)."""
+    n = max(1, round(degrees / grid["dx"]))
+    sub = {k: v[::n, ::n] for k, v in fields.items()}
+    nj, ni = sub["u"].shape
+    return sub, {**grid, "dx": grid["dx"] * n, "dy": grid["dy"] * n, "ni": ni, "nj": nj}
+
+
+def write(doc: dict, path: str, url: str) -> None:
+    tmp = path + ".tmp"
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+    with open(tmp, "w") as fh:
+        json.dump(doc, fh, separators=(",", ":"))
+    os.replace(tmp, path)
+    g = doc["grid"]
+    print(f"wind: {doc['time']} {g['ni']}x{g['nj']} from {url} -> {path} ({os.path.getsize(path) // 1024} KB)")
+
+
 def fetch(fetcher, now: datetime) -> tuple[bytes, str]:
     errors = []
     for cycle in cycles(now):
@@ -101,6 +119,7 @@ def fetch(fetcher, now: datetime) -> tuple[bytes, str]:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--coarse-out", help="also write a 1° version here (loads first on phones)")
     ap.add_argument("--grib", help="read this GRIB2 file instead of downloading")
     ap.add_argument("--now", help="override the current time, e.g. 2026-10-29T08:30:00Z")
     args = ap.parse_args(argv)
@@ -111,17 +130,15 @@ def main(argv: list[str] | None = None) -> int:
                 data, url = fh.read(), args.grib
         else:
             data, url = fetch(HttpFetcher(timeout=90), now)
-        doc = encode(*decode_grib(data))
+        fields, grid = decode_grib(data)
+        docs = [(encode(fields, dict(grid)), args.out)]
+        if args.coarse_out:
+            docs.append((encode(*coarsen(fields, grid)), args.coarse_out))
     except (FetchError, ValueError, OSError) as e:
         print(f"wind: failed, keeping any existing file: {e}", file=sys.stderr)
         return 1
-    tmp = args.out + ".tmp"
-    os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
-    with open(tmp, "w") as fh:
-        json.dump(doc, fh, separators=(",", ":"))
-    os.replace(tmp, args.out)
-    g = doc["grid"]
-    print(f"wind: {doc['time']} {g['ni']}x{g['nj']} from {url} -> {args.out} ({os.path.getsize(args.out) // 1024} KB)")
+    for doc, path in docs:
+        write(doc, path, url)
     return 0
 
 
