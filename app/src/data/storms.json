@@ -1,156 +1,38 @@
 {
- "snapshot": "2026-10-29T00:00:00Z",
- "fetchedAt": "2026-10-29T06:10:00Z",
- "storms": [
-  {
-   "id": "io022026",
-   "name": "Arnab",
-   "kind": "cyclone",
-   "basin": "Bay of Bengal",
-   "track": [
-    {
-     "t": "2026-10-26T00:00:00Z",
-     "lat": 16.0,
-     "lon": 89.1,
-     "kt": 35
-    },
-    {
-     "t": "2026-10-26T06:00:00Z",
-     "lat": 15.3,
-     "lon": 88.4,
-     "kt": 65
-    },
-    {
-     "t": "2026-10-26T12:00:00Z",
-     "lat": 15.9,
-     "lon": 87.2,
-     "kt": 80
-    },
-    {
-     "t": "2026-10-26T18:00:00Z",
-     "lat": 16.0,
-     "lon": 85.8,
-     "kt": 80
-    },
-    {
-     "t": "2026-10-27T00:00:00Z",
-     "lat": 16.0,
-     "lon": 84.8,
-     "kt": 90
-    },
-    {
-     "t": "2026-10-27T06:00:00Z",
-     "lat": 16.2,
-     "lon": 83.8,
-     "kt": 115
-    },
-    {
-     "t": "2026-10-27T12:00:00Z",
-     "lat": 16.3,
-     "lon": 82.7,
-     "kt": 120
-    },
-    {
-     "t": "2026-10-27T18:00:00Z",
-     "lat": 16.4,
-     "lon": 81.6,
-     "kt": 100
-    },
-    {
-     "t": "2026-10-28T00:00:00Z",
-     "lat": 16.4,
-     "lon": 81.4,
-     "kt": 70
-    },
-    {
-     "t": "2026-10-28T06:00:00Z",
-     "lat": 16.4,
-     "lon": 81.8,
-     "kt": 55
-    },
-    {
-     "t": "2026-10-28T12:00:00Z",
-     "lat": 17.0,
-     "lon": 81.8,
-     "kt": 40
-    },
-    {
-     "t": "2026-10-28T18:00:00Z",
-     "lat": 18.0,
-     "lon": 82.0,
-     "kt": 35
-    },
-    {
-     "t": "2026-10-29T00:00:00Z",
-     "lat": 19.0,
-     "lon": 82.1,
-     "kt": 30
-    }
-   ],
-   "forecast": [],
-   "forecastIssued": "2026-10-28T18:00:00Z",
-   "sourceLabel": "Tropical Cyclone (<34 kt)",
-   "source": "JTWC via CIRA RAMMB",
-   "sourceUrl": "https://rammb-data.cira.colostate.edu/tc_realtime/storm.asp?storm_identifier=io022026",
-   "official": [
-    "IMD (India Meteorological Department)",
-    "https://mausam.imd.gov.in/"
-   ],
-   "people": {
-    "count": 4007943,
-    "alert": "Red",
-    "modified": "Thu, 29 Oct 2026 05:37:59 GMT"
-   },
-   "windAvg": "1-minute"
+ "schema": 1,
+ "snapshot": "2026-10-29T06:00:00Z",
+ "fetchedAt": "2026-10-29T08:30:00Z",
+ "sources": {
+  "nhc": {
+   "ok": true,
+   "storms": 1,
+   "errors": []
   },
+  "gdacs": {
+   "ok": true,
+   "events": 3,
+   "used": 3,
+   "errors": []
+  },
+  "tcvitals": {
+   "ok": true,
+   "cycle": "2026-10-29T06:00:00Z",
+   "storms": 3,
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261029/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
+  }
+ },
+ "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
+ "storms": [
   {
    "id": "wp302026",
    "name": "In-fa",
+   "rawName": "IN-FA",
    "kind": "typhoon",
    "basin": "Western Pacific",
+   "status": "active",
+   "stale": false,
+   "updated": "2026-10-29T06:00:00Z",
    "track": [
-    {
-     "t": "2026-10-23T12:00:00Z",
-     "lat": 10.9,
-     "lon": 166.2,
-     "kt": 30
-    },
-    {
-     "t": "2026-10-23T18:00:00Z",
-     "lat": 10.6,
-     "lon": 166.3,
-     "kt": 35
-    },
-    {
-     "t": "2026-10-24T00:00:00Z",
-     "lat": 10.4,
-     "lon": 166.2,
-     "kt": 45
-    },
-    {
-     "t": "2026-10-24T06:00:00Z",
-     "lat": 10.1,
-     "lon": 165.7,
-     "kt": 50
-    },
-    {
-     "t": "2026-10-24T12:00:00Z",
-     "lat": 10.6,
-     "lon": 165.9,
-     "kt": 50
-    },
-    {
-     "t": "2026-10-24T18:00:00Z",
-     "lat": 11.1,
-     "lon": 165.6,
-     "kt": 50
-    },
-    {
-     "t": "2026-10-25T00:00:00Z",
-     "lat": 11.5,
-     "lon": 165.3,
-     "kt": 55
-    },
     {
      "t": "2026-10-25T06:00:00Z",
      "lat": 12.0,
@@ -246,103 +128,95 @@
      "lat": 15.9,
      "lon": 154.6,
      "kt": 115
+    },
+    {
+     "t": "2026-10-29T06:00:00Z",
+     "lat": 16.3,
+     "lon": 152.9,
+     "kt": 120,
+     "hpa": 945
     }
    ],
    "forecast": [
     {
-     "h": 0,
-     "lat": 15.9,
-     "lon": 154.6,
-     "kt": 115
-    },
-    {
-     "h": 12,
+     "h": 6,
      "lat": 16.6,
      "lon": 151.4,
      "kt": 115
     },
     {
-     "h": 24,
+     "h": 18,
      "lat": 17.6,
      "lon": 148.1,
      "kt": 115
     },
     {
-     "h": 36,
+     "h": 30,
      "lat": 19.1,
      "lon": 145.2,
      "kt": 115
     },
     {
-     "h": 48,
+     "h": 42,
      "lat": 20.7,
      "lon": 143.4,
      "kt": 115
     },
     {
-     "h": 72,
+     "h": 54,
+     "lat": 21.8,
+     "lon": 143.0,
+     "kt": 110
+    },
+    {
+     "h": 66,
      "lat": 22.1,
      "lon": 142.9,
      "kt": 100
     },
     {
-     "h": 96,
+     "h": 90,
      "lat": 21.9,
      "lon": 140.2,
      "kt": 100
     },
     {
-     "h": 120,
+     "h": 114,
      "lat": 22.2,
      "lon": 137.8,
      "kt": 100
     }
    ],
    "forecastIssued": "2026-10-29T00:00:00Z",
-   "sourceLabel": "Typhoon (>=96 kt)",
-   "source": "JTWC via CIRA RAMMB",
-   "sourceUrl": "https://rammb-data.cira.colostate.edu/tc_realtime/storm.asp?storm_identifier=wp302026",
+   "forecastBase": "2026-10-29T06:00:00Z",
+   "source": "JTWC via GDACS + NOAA tcvitals",
+   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001343",
+   "authority": "JTWC",
    "official": [
     "JMA (Japan Meteorological Agency)",
     "https://www.jma.go.jp/bosai/map.html#contents=typhoon&lang=en"
    ],
+   "windAvg": "1-minute",
    "people": {
     "count": 0,
     "alert": "Green",
     "modified": "Thu, 29 Oct 2026 02:23:55 GMT"
    },
-   "windAvg": "1-minute"
-  },
-  {
-   "id": "io912026",
-   "name": "Invest 91B",
-   "kind": "disturbance",
-   "basin": "Andaman Sea",
-   "track": [
-    {
-     "t": "2026-10-29T00:00:00Z",
-     "lat": 7.9,
-     "lon": 97.0,
-     "kt": 25
-    }
-   ],
-   "forecast": [],
-   "forecastIssued": "2026-10-28T18:00:00Z",
-   "sourceLabel": "INVEST",
-   "source": "JTWC via CIRA RAMMB",
-   "sourceUrl": "https://rammb-data.cira.colostate.edu/tc_realtime/storm.asp?storm_identifier=io912026",
-   "official": [
-    "IMD (India Meteorological Department)",
-    "https://mausam.imd.gov.in/"
-   ],
-   "people": null,
-   "windAvg": "1-minute"
+   "codes": {
+    "atcf": "wp302026",
+    "gdacs": 1001343,
+    "code": "30W"
+   }
   },
   {
    "id": "ep222026",
    "name": "Vance",
-   "kind": "hurricane-basin",
+   "rawName": "Vance",
+   "kind": "hurricane",
    "basin": "Eastern Pacific",
+   "status": "active",
+   "stale": false,
+   "updated": "2026-10-29T06:00:00Z",
    "track": [
     {
      "t": "2026-10-18T18:00:00Z",
@@ -637,54 +511,162 @@
      "lon": -108.4,
      "kt": 30,
      "hpa": 1002
+    },
+    {
+     "t": "2026-10-29T06:00:00Z",
+     "lat": 20.6,
+     "lon": -108.5,
+     "kt": 35,
+     "hpa": 1001
     }
    ],
    "forecast": [
     {
-     "h": 0,
-     "lat": 20.7,
-     "lon": -108.4,
-     "kt": 30
-    },
-    {
-     "h": 3,
-     "lat": 21.1,
-     "lon": -108.1,
-     "kt": 30
-    },
-    {
-     "h": 12,
+     "h": 6,
      "lat": 22.2,
      "lon": -107.6,
      "kt": 30
     },
     {
-     "h": 24,
+     "h": 18,
      "lat": 23.7,
      "lon": -107.7,
      "kt": 25
     },
     {
-     "h": 36,
+     "h": 30,
      "lat": 25.2,
      "lon": -108.1,
      "kt": 25
     }
    ],
-   "forecastIssued": "2026-10-29T00:00:00Z",
-   "sourceLabel": "Tropical Depression",
-   "source": "NHC (US National Hurricane Center)",
+   "forecastIssued": "2026-10-29T03:00:00Z",
+   "forecastBase": "2026-10-29T06:00:00Z",
+   "source": "NHC + NOAA tcvitals",
    "sourceUrl": "https://www.nhc.noaa.gov/",
+   "authority": "NHC",
    "official": [
     "NHC (US National Hurricane Center)",
     "https://www.nhc.noaa.gov/"
    ],
+   "windAvg": "1-minute",
    "people": {
     "count": 0,
     "alert": "Green",
     "modified": "Thu, 29 Oct 2026 02:52:03 GMT"
    },
-   "windAvg": "1-minute"
+   "codes": {
+    "atcf": "ep222026",
+    "gdacs": 1001341,
+    "code": "22E"
+   }
+  },
+  {
+   "id": "io022026",
+   "name": "Arnab",
+   "rawName": "ARNAB",
+   "kind": "cyclone",
+   "basin": "Bay of Bengal",
+   "status": "active",
+   "stale": false,
+   "updated": "2026-10-29T06:00:00Z",
+   "track": [
+    {
+     "t": "2026-10-26T00:00:00Z",
+     "lat": 16.0,
+     "lon": 89.1,
+     "kt": 35
+    },
+    {
+     "t": "2026-10-26T06:00:00Z",
+     "lat": 15.3,
+     "lon": 88.4,
+     "kt": 65
+    },
+    {
+     "t": "2026-10-26T12:00:00Z",
+     "lat": 15.9,
+     "lon": 87.2,
+     "kt": 80
+    },
+    {
+     "t": "2026-10-26T18:00:00Z",
+     "lat": 16.0,
+     "lon": 85.8,
+     "kt": 80
+    },
+    {
+     "t": "2026-10-27T00:00:00Z",
+     "lat": 16.0,
+     "lon": 84.8,
+     "kt": 90
+    },
+    {
+     "t": "2026-10-27T06:00:00Z",
+     "lat": 16.2,
+     "lon": 83.8,
+     "kt": 115
+    },
+    {
+     "t": "2026-10-27T12:00:00Z",
+     "lat": 16.3,
+     "lon": 82.7,
+     "kt": 120
+    },
+    {
+     "t": "2026-10-27T18:00:00Z",
+     "lat": 16.4,
+     "lon": 81.6,
+     "kt": 100
+    },
+    {
+     "t": "2026-10-28T00:00:00Z",
+     "lat": 16.2,
+     "lon": 81.6,
+     "kt": 65
+    },
+    {
+     "t": "2026-10-28T06:00:00Z",
+     "lat": 16.4,
+     "lon": 81.8,
+     "kt": 55
+    },
+    {
+     "t": "2026-10-29T06:00:00Z",
+     "lat": 20.1,
+     "lon": 82.1,
+     "kt": 25,
+     "hpa": 1005
+    }
+   ],
+   "forecast": [
+    {
+     "h": 12,
+     "lat": 21.9,
+     "lon": 81.6,
+     "kt": 25
+    }
+   ],
+   "forecastIssued": "2026-10-28T06:00:00Z",
+   "forecastBase": "2026-10-29T06:00:00Z",
+   "source": "JTWC via GDACS + NOAA tcvitals",
+   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001345",
+   "authority": "JTWC",
+   "official": [
+    "IMD (India Meteorological Department)",
+    "https://mausam.imd.gov.in/"
+   ],
+   "windAvg": "1-minute",
+   "people": {
+    "count": 4007943,
+    "alert": "Red",
+    "modified": "Thu, 29 Oct 2026 05:37:59 GMT"
+   },
+   "codes": {
+    "atcf": "io022026",
+    "gdacs": 1001345,
+    "code": "02B"
+   }
   }
  ]
 }
