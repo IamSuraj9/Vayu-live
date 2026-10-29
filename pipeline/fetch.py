@@ -1,6 +1,7 @@
 """HTTP fetching with retries, plus a fixture-backed fetcher for tests and offline runs."""
 from __future__ import annotations
 
+import contextlib
 import os
 import time
 import urllib.error
@@ -14,15 +15,36 @@ class FetchError(Exception):
 
 
 class HttpFetcher:
-    def __init__(self, timeout: float = 40, retries: int = 3, backoff: float = 4.0):
+    def __init__(self, timeout: float = 30, retries: int = 2, backoff: float = 3.0):
         self.timeout, self.retries, self.backoff = timeout, retries, backoff
+        self._deadline: float | None = None
+
+    @contextlib.contextmanager
+    def budget(self, seconds: float):
+        """Everything fetched inside the block shares `seconds`. When they run out, requests fail at once instead of waiting.
+
+        A slow server (GDACS is the usual one) can no longer hold up the whole refresh: the stage fails, the previous
+        run's data stands in for it, and the other sources are unaffected.
+        """
+        self._deadline = time.monotonic() + seconds
+        try:
+            yield
+        finally:
+            self._deadline = None
+
+    def _left(self) -> float | None:
+        return None if self._deadline is None else self._deadline - time.monotonic()
 
     def get(self, url: str) -> bytes:
         last: Exception | None = None
         for attempt in range(self.retries):
+            left = self._left()
+            if left is not None and left <= 0:
+                raise FetchError(f"time budget used up before {url}" + (f" ({last})" if last else ""))
+            timeout = self.timeout if left is None else max(1.0, min(self.timeout, left))
             try:
                 req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "*/*"})
-                with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                with urllib.request.urlopen(req, timeout=timeout) as resp:
                     return resp.read()
             except urllib.error.HTTPError as e:
                 if e.code in (403, 404):  # missing or refused: retrying will not help
@@ -31,7 +53,8 @@ class HttpFetcher:
             except (urllib.error.URLError, TimeoutError, ConnectionError, OSError) as e:
                 last = e
             if attempt < self.retries - 1:
-                time.sleep(self.backoff * (attempt + 1))
+                left = self._left()
+                time.sleep(self.backoff * (attempt + 1) if left is None else max(0.0, min(self.backoff * (attempt + 1), left)))
         raise FetchError(f"{url}: {last}")
 
 
@@ -41,6 +64,10 @@ class FixtureFetcher:
     def __init__(self, routes: dict[str, str], fail: tuple[str, ...] = ()):
         self.routes, self.fail = routes, fail
         self.requested: list[str] = []
+
+    @contextlib.contextmanager
+    def budget(self, seconds: float):
+        yield  # saved responses are instant
 
     def get(self, url: str) -> bytes:
         self.requested.append(url)

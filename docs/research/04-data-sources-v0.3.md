@@ -42,7 +42,9 @@ Looked at, not used now:
 5. Forecast hours are re-counted from the newest position; points already in the past are dropped; forecasts older
    than 24 h are not shown. Storms with no report for 36 h are removed; after 12 h they are marked `ended`.
 
-The refresh runs every 3 hours in GitHub Actions (`.github/workflows/refresh-storms.yml`) and commits
+The refresh runs every 3 hours in GitHub Actions (`.github/workflows/refresh-storms.yml`), started by a Cloudflare timer
+(`trigger/worker.js`) with GitHub's own schedule as a backup. Each source has a time budget (NHC 40 s, GDACS 80 s,
+tcvitals 50 s), so one slow server cannot hold up the run; a refresh now takes under about 3 minutes. It commits
 `app/public/data/storms.json`.
 
 ## How the app uses the files (day 2)
