@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-10-30T06:00:00Z",
- "fetchedAt": "2026-10-30T12:20:10Z",
+ "snapshot": "2026-10-30T12:00:00Z",
+ "fetchedAt": "2026-10-30T15:20:11Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-10-30T06:00:00Z",
-   "storms": 2,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261030/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
+   "cycle": "2026-10-30T12:00:00Z",
+   "storms": 1,
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261030/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -31,7 +31,7 @@
    "basin": "Western Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-10-30T06:00:00Z",
+   "updated": "2026-10-30T12:00:00Z",
    "track": [
     {
      "t": "2026-10-25T06:00:00Z",
@@ -157,62 +157,68 @@
      "t": "2026-10-30T06:00:00Z",
      "lat": 18.7,
      "lon": 146.2,
-     "kt": 125,
-     "hpa": 943
+     "kt": 125
+    },
+    {
+     "t": "2026-10-30T12:00:00Z",
+     "lat": 19.7,
+     "lon": 144.5,
+     "kt": 120,
+     "hpa": 949
     }
    ],
    "forecast": [
     {
      "h": 12,
-     "lat": 20.5,
-     "lon": 143.9,
+     "lat": 21.5,
+     "lon": 143.0,
      "kt": 120
     },
     {
      "h": 24,
-     "lat": 22.1,
-     "lon": 143.1,
-     "kt": 120
+     "lat": 22.8,
+     "lon": 143.0,
+     "kt": 115
     },
     {
      "h": 36,
-     "lat": 23.0,
+     "lat": 23.2,
      "lon": 143.7,
-     "kt": 110
+     "kt": 105
     },
     {
      "h": 48,
-     "lat": 22.9,
-     "lon": 144.0,
-     "kt": 100
+     "lat": 23.1,
+     "lon": 143.6,
+     "kt": 95
     },
     {
      "h": 60,
-     "lat": 22.7,
-     "lon": 143.2,
-     "kt": 90
+     "lat": 22.9,
+     "lon": 142.2,
+     "kt": 85
     },
     {
      "h": 72,
-     "lat": 22.8,
-     "lon": 142.0,
-     "kt": 90
+     "lat": 23.2,
+     "lon": 140.9,
+     "kt": 85
     },
     {
      "h": 96,
-     "lat": 23.7,
-     "lon": 140.5,
-     "kt": 80
+     "lat": 24.4,
+     "lon": 140.1,
+     "kt": 75
     },
     {
      "h": 120,
-     "lat": 25.4,
-     "lon": 140.6,
-     "kt": 70
+     "lat": 26.4,
+     "lon": 140.7,
+     "kt": 65
     }
    ],
-   "forecastIssued": "2026-10-30T06:00:00Z",
-   "forecastBase": "2026-10-30T06:00:00Z",
+   "forecastIssued": "2026-10-30T12:00:00Z",
+   "forecastBase": "2026-10-30T12:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001343",
    "authority": "JTWC",
@@ -222,9 +228,9 @@
    ],
    "windAvg": "1-minute",
    "people": {
-    "count": 2127,
+    "count": 0,
     "alert": "Green",
-    "modified": "Fri, 30 Oct 2026 08:07:34 GMT"
+    "modified": "Fri, 30 Oct 2026 13:52:05 GMT"
    },
    "codes": {
     "atcf": "wp302026",
@@ -238,7 +244,7 @@
    "rawName": "VANCE",
    "kind": "hurricane",
    "basin": "Eastern Pacific",
-   "status": "active",
+   "status": "ended",
    "stale": false,
    "updated": "2026-10-30T03:00:00Z",
    "track": [
@@ -757,7 +763,7 @@
    "forecast": [],
    "forecastIssued": null,
    "forecastBase": null,
-   "source": "NHC via GDACS + NOAA tcvitals",
+   "source": "NHC via GDACS",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001341",
    "authority": "NHC",
    "official": [
@@ -773,7 +779,7 @@
    "codes": {
     "atcf": "ep222026",
     "gdacs": 1001341,
-    "code": "22E"
+    "code": null
    }
   }
  ]
