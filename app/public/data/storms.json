@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-10-29T18:00:00Z",
- "fetchedAt": "2026-10-30T00:20:11Z",
+ "snapshot": "2026-10-30T00:00:00Z",
+ "fetchedAt": "2026-10-30T03:20:10Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-10-29T18:00:00Z",
+   "cycle": "2026-10-30T00:00:00Z",
    "storms": 2,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261029/18/atmos/gfs.t18z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261030/00/atmos/gfs.t00z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -31,7 +31,7 @@
    "basin": "Western Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-10-29T18:00:00Z",
+   "updated": "2026-10-30T00:00:00Z",
    "track": [
     {
      "t": "2026-10-25T06:00:00Z",
@@ -145,62 +145,68 @@
      "t": "2026-10-29T18:00:00Z",
      "lat": 17.1,
      "lon": 149.7,
-     "kt": 130,
-     "hpa": 938
+     "kt": 130
+    },
+    {
+     "t": "2026-10-30T00:00:00Z",
+     "lat": 17.8,
+     "lon": 147.8,
+     "kt": 125,
+     "hpa": 948
     }
    ],
    "forecast": [
     {
      "h": 12,
-     "lat": 18.5,
-     "lon": 146.6,
-     "kt": 125
-    },
-    {
-     "h": 24,
-     "lat": 20.2,
-     "lon": 144.1,
-     "kt": 125
-    },
-    {
-     "h": 36,
-     "lat": 21.7,
-     "lon": 143.1,
+     "lat": 19.5,
+     "lon": 144.8,
      "kt": 120
     },
     {
+     "h": 24,
+     "lat": 21.2,
+     "lon": 143.2,
+     "kt": 120
+    },
+    {
+     "h": 36,
+     "lat": 22.2,
+     "lon": 143.2,
+     "kt": 115
+    },
+    {
      "h": 48,
-     "lat": 22.1,
-     "lon": 143.1,
-     "kt": 110
+     "lat": 22.5,
+     "lon": 143.2,
+     "kt": 105
     },
     {
      "h": 60,
-     "lat": 22.1,
-     "lon": 142.7,
-     "kt": 100
+     "lat": 22.5,
+     "lon": 143.0,
+     "kt": 95
     },
     {
      "h": 72,
-     "lat": 22.1,
-     "lon": 141.3,
-     "kt": 100
+     "lat": 22.5,
+     "lon": 141.6,
+     "kt": 95
     },
     {
      "h": 96,
-     "lat": 22.3,
-     "lon": 138.3,
-     "kt": 100
+     "lat": 22.6,
+     "lon": 139.1,
+     "kt": 95
     },
     {
      "h": 120,
-     "lat": 22.9,
-     "lon": 136.7,
-     "kt": 100
+     "lat": 23.4,
+     "lon": 137.4,
+     "kt": 95
     }
    ],
-   "forecastIssued": "2026-10-29T18:00:00Z",
-   "forecastBase": "2026-10-29T18:00:00Z",
+   "forecastIssued": "2026-10-30T00:00:00Z",
+   "forecastBase": "2026-10-30T00:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001343",
    "authority": "JTWC",
@@ -212,7 +218,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Thu, 29 Oct 2026 20:21:53 GMT"
+    "modified": "Fri, 30 Oct 2026 01:52:06 GMT"
    },
    "codes": {
     "atcf": "wp302026",
@@ -228,7 +234,7 @@
    "basin": "Eastern Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-10-29T18:00:00Z",
+   "updated": "2026-10-30T00:00:00Z",
    "track": [
     {
      "t": "2026-10-18T18:00:00Z",
@@ -544,24 +550,25 @@
      "lon": -108.6,
      "kt": 30,
      "hpa": 1005
+    },
+    {
+     "t": "2026-10-30T00:00:00Z",
+     "lat": 22.6,
+     "lon": -107.8,
+     "kt": 25,
+     "hpa": 1008
     }
    ],
    "forecast": [
     {
      "h": 3,
-     "lat": 22.3,
-     "lon": -108.6,
-     "kt": 30
-    },
-    {
-     "h": 12,
-     "lat": 23.3,
-     "lon": -108.7,
+     "lat": 20.7,
+     "lon": -107.7,
      "kt": 25
     }
    ],
-   "forecastIssued": "2026-10-29T21:00:00Z",
-   "forecastBase": "2026-10-29T18:00:00Z",
+   "forecastIssued": "2026-10-30T03:00:00Z",
+   "forecastBase": "2026-10-30T00:00:00Z",
    "source": "NHC",
    "sourceUrl": "https://www.nhc.noaa.gov/",
    "authority": "NHC",
@@ -573,7 +580,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Fri, 30 Oct 2026 00:06:56 GMT"
+    "modified": "Fri, 30 Oct 2026 02:51:58 GMT"
    },
    "codes": {
     "atcf": "ep222026",
