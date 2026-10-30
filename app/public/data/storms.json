@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-10-30T00:00:00Z",
- "fetchedAt": "2026-10-30T06:20:11Z",
+ "snapshot": "2026-10-30T06:00:00Z",
+ "fetchedAt": "2026-10-30T09:20:12Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -9,16 +9,19 @@
    "errors": []
   },
   "gdacs": {
-   "ok": true,
+   "ok": false,
    "events": 2,
-   "used": 2,
-   "errors": []
+   "used": 0,
+   "errors": [
+    "IN-FA-26: https://www.gdacs.org/gdacsapi/api/events/getepisodedata?eventtype=TC&eventid=1001343&episodeid=28: HTTP Error 503: Service Unavailable",
+    "VANCE-26: https://www.gdacs.org/gdacsapi/api/events/getepisodedata?eventtype=TC&eventid=1001341&episodeid=35: HTTP Error 503: Service Unavailable"
+   ]
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-10-30T00:00:00Z",
+   "cycle": "2026-10-30T06:00:00Z",
    "storms": 2,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261030/00/atmos/gfs.t00z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261030/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -31,7 +34,7 @@
    "basin": "Western Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-10-30T00:00:00Z",
+   "updated": "2026-10-30T06:00:00Z",
    "track": [
     {
      "t": "2026-10-25T06:00:00Z",
@@ -153,62 +156,20 @@
      "lon": 147.8,
      "kt": 125,
      "hpa": 948
+    },
+    {
+     "t": "2026-10-30T06:00:00Z",
+     "lat": 18.7,
+     "lon": 146.2,
+     "kt": 125,
+     "hpa": 943
     }
    ],
-   "forecast": [
-    {
-     "h": 12,
-     "lat": 19.5,
-     "lon": 144.8,
-     "kt": 120
-    },
-    {
-     "h": 24,
-     "lat": 21.2,
-     "lon": 143.2,
-     "kt": 120
-    },
-    {
-     "h": 36,
-     "lat": 22.2,
-     "lon": 143.2,
-     "kt": 115
-    },
-    {
-     "h": 48,
-     "lat": 22.5,
-     "lon": 143.2,
-     "kt": 105
-    },
-    {
-     "h": 60,
-     "lat": 22.5,
-     "lon": 143.0,
-     "kt": 95
-    },
-    {
-     "h": 72,
-     "lat": 22.5,
-     "lon": 141.6,
-     "kt": 95
-    },
-    {
-     "h": 96,
-     "lat": 22.6,
-     "lon": 139.1,
-     "kt": 95
-    },
-    {
-     "h": 120,
-     "lat": 23.4,
-     "lon": 137.4,
-     "kt": 95
-    }
-   ],
-   "forecastIssued": "2026-10-30T00:00:00Z",
-   "forecastBase": "2026-10-30T00:00:00Z",
-   "source": "JTWC via GDACS + NOAA tcvitals",
-   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001343",
+   "forecast": [],
+   "forecastIssued": null,
+   "forecastBase": null,
+   "source": "NOAA tcvitals",
+   "sourceUrl": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261030/06/atmos/gfs.t06z.syndata.tcvitals.tm00",
    "authority": "JTWC",
    "official": [
     "JMA (Japan Meteorological Agency)",
@@ -222,7 +183,7 @@
    },
    "codes": {
     "atcf": "wp302026",
-    "gdacs": 1001343,
+    "gdacs": null,
     "code": "30W"
    }
   },
@@ -584,7 +545,7 @@
    },
    "codes": {
     "atcf": "ep222026",
-    "gdacs": 1001341,
+    "gdacs": null,
     "code": "22E"
    }
   }
