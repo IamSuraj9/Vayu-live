@@ -1,21 +1,18 @@
 {
  "schema": 1,
  "snapshot": "2026-10-30T06:00:00Z",
- "fetchedAt": "2026-10-30T09:20:12Z",
+ "fetchedAt": "2026-10-30T12:20:10Z",
  "sources": {
   "nhc": {
    "ok": true,
-   "storms": 1,
+   "storms": 0,
    "errors": []
   },
   "gdacs": {
-   "ok": false,
+   "ok": true,
    "events": 2,
-   "used": 0,
-   "errors": [
-    "IN-FA-26: https://www.gdacs.org/gdacsapi/api/events/getepisodedata?eventtype=TC&eventid=1001343&episodeid=28: HTTP Error 503: Service Unavailable",
-    "VANCE-26: https://www.gdacs.org/gdacsapi/api/events/getepisodedata?eventtype=TC&eventid=1001341&episodeid=35: HTTP Error 503: Service Unavailable"
-   ]
+   "used": 2,
+   "errors": []
   },
   "tcvitals": {
    "ok": true,
@@ -154,8 +151,7 @@
      "t": "2026-10-30T00:00:00Z",
      "lat": 17.8,
      "lon": 147.8,
-     "kt": 125,
-     "hpa": 948
+     "kt": 125
     },
     {
      "t": "2026-10-30T06:00:00Z",
@@ -165,11 +161,60 @@
      "hpa": 943
     }
    ],
-   "forecast": [],
-   "forecastIssued": null,
-   "forecastBase": null,
-   "source": "NOAA tcvitals",
-   "sourceUrl": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261030/06/atmos/gfs.t06z.syndata.tcvitals.tm00",
+   "forecast": [
+    {
+     "h": 12,
+     "lat": 20.5,
+     "lon": 143.9,
+     "kt": 120
+    },
+    {
+     "h": 24,
+     "lat": 22.1,
+     "lon": 143.1,
+     "kt": 120
+    },
+    {
+     "h": 36,
+     "lat": 23.0,
+     "lon": 143.7,
+     "kt": 110
+    },
+    {
+     "h": 48,
+     "lat": 22.9,
+     "lon": 144.0,
+     "kt": 100
+    },
+    {
+     "h": 60,
+     "lat": 22.7,
+     "lon": 143.2,
+     "kt": 90
+    },
+    {
+     "h": 72,
+     "lat": 22.8,
+     "lon": 142.0,
+     "kt": 90
+    },
+    {
+     "h": 96,
+     "lat": 23.7,
+     "lon": 140.5,
+     "kt": 80
+    },
+    {
+     "h": 120,
+     "lat": 25.4,
+     "lon": 140.6,
+     "kt": 70
+    }
+   ],
+   "forecastIssued": "2026-10-30T06:00:00Z",
+   "forecastBase": "2026-10-30T06:00:00Z",
+   "source": "JTWC via GDACS + NOAA tcvitals",
+   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001343",
    "authority": "JTWC",
    "official": [
     "JMA (Japan Meteorological Agency)",
@@ -177,25 +222,25 @@
    ],
    "windAvg": "1-minute",
    "people": {
-    "count": 0,
+    "count": 2127,
     "alert": "Green",
-    "modified": "Fri, 30 Oct 2026 01:52:06 GMT"
+    "modified": "Fri, 30 Oct 2026 08:07:34 GMT"
    },
    "codes": {
     "atcf": "wp302026",
-    "gdacs": null,
+    "gdacs": 1001343,
     "code": "30W"
    }
   },
   {
    "id": "ep222026",
    "name": "Vance",
-   "rawName": "Vance",
+   "rawName": "VANCE",
    "kind": "hurricane",
    "basin": "Eastern Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-10-30T00:00:00Z",
+   "updated": "2026-10-30T03:00:00Z",
    "track": [
     {
      "t": "2026-10-18T18:00:00Z",
@@ -282,9 +327,23 @@
      "hpa": 1005
     },
     {
+     "t": "2026-10-21T15:00:00Z",
+     "lat": 9.5,
+     "lon": -99.3,
+     "kt": 30,
+     "hpa": 1005
+    },
+    {
      "t": "2026-10-21T18:00:00Z",
      "lat": 9.4,
      "lon": -99.5,
+     "kt": 35,
+     "hpa": 1003
+    },
+    {
+     "t": "2026-10-21T21:00:00Z",
+     "lat": 9.4,
+     "lon": -99.8,
      "kt": 35,
      "hpa": 1003
     },
@@ -296,10 +355,24 @@
      "hpa": 1003
     },
     {
+     "t": "2026-10-22T03:00:00Z",
+     "lat": 9.6,
+     "lon": -100.7,
+     "kt": 40,
+     "hpa": 1000
+    },
+    {
      "t": "2026-10-22T06:00:00Z",
      "lat": 9.6,
      "lon": -100.5,
      "kt": 40,
+     "hpa": 1000
+    },
+    {
+     "t": "2026-10-22T09:00:00Z",
+     "lat": 9.7,
+     "lon": -101.5,
+     "kt": 45,
      "hpa": 1000
     },
     {
@@ -310,6 +383,13 @@
      "hpa": 999
     },
     {
+     "t": "2026-10-22T15:00:00Z",
+     "lat": 9.7,
+     "lon": -101.0,
+     "kt": 50,
+     "hpa": 997
+    },
+    {
      "t": "2026-10-22T18:00:00Z",
      "lat": 9.8,
      "lon": -101.3,
@@ -317,9 +397,23 @@
      "hpa": 994
     },
     {
+     "t": "2026-10-22T21:00:00Z",
+     "lat": 10.0,
+     "lon": -101.5,
+     "kt": 55,
+     "hpa": 994
+    },
+    {
      "t": "2026-10-23T00:00:00Z",
      "lat": 10.4,
      "lon": -101.6,
+     "kt": 60,
+     "hpa": 991
+    },
+    {
+     "t": "2026-10-23T03:00:00Z",
+     "lat": 10.5,
+     "lon": -101.9,
      "kt": 60,
      "hpa": 991
     },
@@ -387,9 +481,23 @@
      "hpa": 980
     },
     {
+     "t": "2026-10-25T09:00:00Z",
+     "lat": 14.3,
+     "lon": -103.4,
+     "kt": 75,
+     "hpa": 980
+    },
+    {
      "t": "2026-10-25T12:00:00Z",
      "lat": 13.9,
      "lon": -103.6,
+     "kt": 65,
+     "hpa": 989
+    },
+    {
+     "t": "2026-10-25T15:00:00Z",
+     "lat": 14.3,
+     "lon": -103.8,
      "kt": 65,
      "hpa": 989
     },
@@ -401,6 +509,13 @@
      "hpa": 994
     },
     {
+     "t": "2026-10-25T21:00:00Z",
+     "lat": 14.9,
+     "lon": -104.2,
+     "kt": 60,
+     "hpa": 994
+    },
+    {
      "t": "2026-10-26T00:00:00Z",
      "lat": 14.9,
      "lon": -104.5,
@@ -408,9 +523,23 @@
      "hpa": 994
     },
     {
+     "t": "2026-10-26T03:00:00Z",
+     "lat": 15.0,
+     "lon": -104.7,
+     "kt": 55,
+     "hpa": 995
+    },
+    {
      "t": "2026-10-26T06:00:00Z",
      "lat": 15.2,
      "lon": -104.9,
+     "kt": 55,
+     "hpa": 995
+    },
+    {
+     "t": "2026-10-26T09:00:00Z",
+     "lat": 15.3,
+     "lon": -105.1,
      "kt": 55,
      "hpa": 995
     },
@@ -422,9 +551,23 @@
      "hpa": 997
     },
     {
+     "t": "2026-10-26T15:00:00Z",
+     "lat": 15.4,
+     "lon": -105.7,
+     "kt": 55,
+     "hpa": 997
+    },
+    {
      "t": "2026-10-26T18:00:00Z",
      "lat": 15.3,
      "lon": -105.9,
+     "kt": 55,
+     "hpa": 997
+    },
+    {
+     "t": "2026-10-26T21:00:00Z",
+     "lat": 15.4,
+     "lon": -106.1,
      "kt": 55,
      "hpa": 997
     },
@@ -436,6 +579,13 @@
      "hpa": 999
     },
     {
+     "t": "2026-10-27T03:00:00Z",
+     "lat": 15.5,
+     "lon": -106.3,
+     "kt": 45,
+     "hpa": 999
+    },
+    {
      "t": "2026-10-27T06:00:00Z",
      "lat": 15.7,
      "lon": -106.7,
@@ -443,9 +593,23 @@
      "hpa": 999
     },
     {
+     "t": "2026-10-27T09:00:00Z",
+     "lat": 15.9,
+     "lon": -106.9,
+     "kt": 40,
+     "hpa": 1002
+    },
+    {
      "t": "2026-10-27T12:00:00Z",
      "lat": 16.1,
      "lon": -107.3,
+     "kt": 35,
+     "hpa": 1003
+    },
+    {
+     "t": "2026-10-27T15:00:00Z",
+     "lat": 16.3,
+     "lon": -107.7,
      "kt": 35,
      "hpa": 1003
     },
@@ -457,8 +621,22 @@
      "hpa": 1003
     },
     {
+     "t": "2026-10-27T21:00:00Z",
+     "lat": 17.2,
+     "lon": -108.3,
+     "kt": 35,
+     "hpa": 1003
+    },
+    {
      "t": "2026-10-28T00:00:00Z",
      "lat": 16.9,
+     "lon": -108.4,
+     "kt": 35,
+     "hpa": 1003
+    },
+    {
+     "t": "2026-10-28T03:00:00Z",
+     "lat": 17.3,
      "lon": -108.4,
      "kt": 35,
      "hpa": 1003
@@ -471,8 +649,22 @@
      "hpa": 1003
     },
     {
+     "t": "2026-10-28T09:00:00Z",
+     "lat": 18.6,
+     "lon": -108.6,
+     "kt": 35,
+     "hpa": 1003
+    },
+    {
      "t": "2026-10-28T12:00:00Z",
      "lat": 18.8,
+     "lon": -109.2,
+     "kt": 35,
+     "hpa": 1004
+    },
+    {
+     "t": "2026-10-28T15:00:00Z",
+     "lat": 19.2,
      "lon": -109.2,
      "kt": 35,
      "hpa": 1004
@@ -485,9 +677,23 @@
      "hpa": 1006
     },
     {
+     "t": "2026-10-28T21:00:00Z",
+     "lat": 20.1,
+     "lon": -109.1,
+     "kt": 30,
+     "hpa": 1006
+    },
+    {
      "t": "2026-10-29T00:00:00Z",
      "lat": 20.5,
      "lon": -108.5,
+     "kt": 30,
+     "hpa": 1002
+    },
+    {
+     "t": "2026-10-29T03:00:00Z",
+     "lat": 21.1,
+     "lon": -108.1,
      "kt": 30,
      "hpa": 1002
     },
@@ -499,9 +705,23 @@
      "hpa": 1001
     },
     {
+     "t": "2026-10-29T09:00:00Z",
+     "lat": 21.0,
+     "lon": -108.4,
+     "kt": 35,
+     "hpa": 1001
+    },
+    {
      "t": "2026-10-29T12:00:00Z",
      "lat": 21.4,
      "lon": -108.7,
+     "kt": 35,
+     "hpa": 1004
+    },
+    {
+     "t": "2026-10-29T15:00:00Z",
+     "lat": 21.6,
+     "lon": -108.8,
      "kt": 35,
      "hpa": 1004
     },
@@ -513,25 +733,32 @@
      "hpa": 1005
     },
     {
+     "t": "2026-10-29T21:00:00Z",
+     "lat": 22.3,
+     "lon": -108.6,
+     "kt": 30,
+     "hpa": 1008
+    },
+    {
      "t": "2026-10-30T00:00:00Z",
      "lat": 22.6,
      "lon": -107.8,
      "kt": 25,
      "hpa": 1008
-    }
-   ],
-   "forecast": [
+    },
     {
-     "h": 3,
+     "t": "2026-10-30T03:00:00Z",
      "lat": 20.7,
      "lon": -107.7,
-     "kt": 25
+     "kt": 25,
+     "hpa": 1008
     }
    ],
-   "forecastIssued": "2026-10-30T03:00:00Z",
-   "forecastBase": "2026-10-30T00:00:00Z",
-   "source": "NHC",
-   "sourceUrl": "https://www.nhc.noaa.gov/",
+   "forecast": [],
+   "forecastIssued": null,
+   "forecastBase": null,
+   "source": "NHC via GDACS + NOAA tcvitals",
+   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001341",
    "authority": "NHC",
    "official": [
     "NHC (US National Hurricane Center)",
@@ -541,11 +768,11 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Fri, 30 Oct 2026 02:51:58 GMT"
+    "modified": "Fri, 30 Oct 2026 08:21:53 GMT"
    },
    "codes": {
     "atcf": "ep222026",
-    "gdacs": null,
+    "gdacs": 1001341,
     "code": "22E"
    }
   }
