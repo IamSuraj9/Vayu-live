@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-10-29T18:00:00Z",
- "fetchedAt": "2026-10-29T21:20:12Z",
+ "fetchedAt": "2026-10-30T00:20:11Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -573,7 +573,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Thu, 29 Oct 2026 20:51:27 GMT"
+    "modified": "Fri, 30 Oct 2026 00:06:56 GMT"
    },
    "codes": {
     "atcf": "ep222026",
