@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-10-31T12:00:00Z",
- "fetchedAt": "2026-10-31T18:20:10Z",
+ "snapshot": "2026-10-31T18:00:00Z",
+ "fetchedAt": "2026-10-31T21:20:10Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-10-31T12:00:00Z",
+   "cycle": "2026-10-31T18:00:00Z",
    "storms": 1,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261031/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261031/18/atmos/gfs.t18z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -31,7 +31,7 @@
    "basin": "Western Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-10-31T12:00:00Z",
+   "updated": "2026-10-31T18:00:00Z",
    "track": [
     {
      "t": "2026-10-25T06:00:00Z",
@@ -187,62 +187,68 @@
      "t": "2026-10-31T12:00:00Z",
      "lat": 22.8,
      "lon": 143.5,
-     "kt": 110,
-     "hpa": 953
+     "kt": 110
+    },
+    {
+     "t": "2026-10-31T18:00:00Z",
+     "lat": 22.9,
+     "lon": 144.0,
+     "kt": 100,
+     "hpa": 960
     }
    ],
    "forecast": [
     {
      "h": 12,
-     "lat": 23.1,
-     "lon": 144.0,
-     "kt": 100
+     "lat": 22.7,
+     "lon": 144.1,
+     "kt": 90
     },
     {
      "h": 24,
-     "lat": 22.7,
-     "lon": 143.0,
-     "kt": 90
+     "lat": 22.6,
+     "lon": 142.9,
+     "kt": 85
     },
     {
      "h": 36,
      "lat": 22.7,
-     "lon": 141.9,
+     "lon": 141.4,
      "kt": 85
     },
     {
      "h": 48,
      "lat": 23.2,
-     "lon": 140.7,
-     "kt": 85
+     "lon": 140.3,
+     "kt": 90
     },
     {
      "h": 60,
-     "lat": 23.6,
-     "lon": 140.0,
+     "lat": 23.7,
+     "lon": 139.8,
      "kt": 90
     },
     {
      "h": 72,
-     "lat": 24.3,
-     "lon": 139.6,
-     "kt": 90
+     "lat": 24.4,
+     "lon": 139.5,
+     "kt": 85
     },
     {
      "h": 96,
-     "lat": 26.3,
-     "lon": 140.2,
-     "kt": 80
+     "lat": 26.7,
+     "lon": 139.8,
+     "kt": 70
     },
     {
      "h": 120,
-     "lat": 30.4,
-     "lon": 143.2,
-     "kt": 65
+     "lat": 31.5,
+     "lon": 144.9,
+     "kt": 60
     }
    ],
-   "forecastIssued": "2026-10-31T12:00:00Z",
-   "forecastBase": "2026-10-31T12:00:00Z",
+   "forecastIssued": "2026-10-31T18:00:00Z",
+   "forecastBase": "2026-10-31T18:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001343",
    "authority": "JTWC",
@@ -254,7 +260,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Sat, 31 Oct 2026 14:07:23 GMT"
+    "modified": "Sat, 31 Oct 2026 20:07:29 GMT"
    },
    "codes": {
     "atcf": "wp302026",
