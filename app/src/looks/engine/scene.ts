@@ -52,13 +52,6 @@ export class Scene {
   private markColors: string[] = []
   private markWidths: number[] = []
   private time = 0
-  /** drawing the lighter version of the marks while the globe is being dragged or zoomed */
-  private lite = false
-  /** 1 = as much as the full drawing, lower = thinner lines, chosen from how long recent frames took */
-  private q = 1
-  private ema = 16
-  private lastT = 0
-  private trailDirty = true
 
   constructor(public els: { surface: HTMLCanvasElement; marks: HTMLCanvasElement; trail: HTMLCanvasElement; live: HTMLCanvasElement }, public dpr = 1) {
     this.ctxS = els.surface.getContext("2d")!; this.ctxM = els.marks.getContext("2d")!
@@ -68,12 +61,12 @@ export class Scene {
   resize(w: number, h: number) {
     this.w = w; this.h = h
     for (const c of Object.values(this.els)) { c.width = Math.round(w * this.dpr); c.height = Math.round(h * this.dpr); c.style.width = w + "px"; c.style.height = h + "px" }
-    this.key = ""; this.restKey = ""; this.trailDirty = true // the canvases were cleared: everything has to be drawn again
+    this.key = ""; this.restKey = "" // the canvases were cleared: everything has to be drawn again
   }
   setView(v: View) { this.view = v }
   /** The wind field changed: everything has to be drawn again from it */
-  invalidate() { this.key = ""; this.restKey = ""; this.parts = []; this.trailDirty = true }
-  setCfg(c: Cfg) { this.cfg = c; this.key = ""; this.restKey = ""; this.prepareColors(); this.parts = []; this.trailDirty = true }
+  invalidate() { this.key = ""; this.restKey = ""; this.parts = [] }
+  setCfg(c: Cfg) { this.cfg = c; this.key = ""; this.restKey = ""; this.prepareColors(); this.parts = [] }
 
   private get onLight() { return !!THEME[this.cfg.earth].light }
 
@@ -95,36 +88,22 @@ export class Scene {
   // ---------------------------------------------------------------- main entry per frame
   /** moving: the person is dragging or zooming, so draw the cheap version */
   update(t: number, moving: boolean) {
-    const dtMs = this.lastT ? Math.min(100, t - this.lastT) : 16
-    this.lastT = t
     this.time = t / 1000
     const proj = new Proj(this.view, this.w, this.h, Math.min(this.w, this.h) * this.baseScale, this.centre?.[0], this.centre?.[1])
     const key = `${this.view.lon.toFixed(3)}|${this.view.lat.toFixed(3)}|${this.view.zoom.toFixed(4)}|${this.w}x${this.h}|${this.centre}`
     const changed = key !== this.key
     if (changed) { this.proj = proj; this.key = key }
-    this.lite = moving
     if (moving) {
-      // Wind lines, pressure lines and arrows stay on screen while the globe moves, in a lighter version.
-      // How light depends on how long the last frames took, so a slow phone thins the lines instead of stuttering.
-      this.ema = this.ema * 0.9 + dtMs * 0.1
-      this.q = this.ema < 20 ? 1 : this.ema < 30 ? 0.5 : this.ema < 60 ? 0.25 : 0.1
-      if (changed) {
-        this.drawSurface(this.q > 0.7 ? 4 : this.q > 0.4 ? 5 : this.q > 0.2 ? 6 : 8)
-        this.drawMarks()
-        this.els.marks.style.opacity = "1"; this.els.trail.style.opacity = "1"
-        this.restKey = ""
-      }
-      if ((this.cfg.wind === "particles" || this.cfg.wind === "glow") && this.animate) this.stepParticles(true)
+      if (changed) { this.drawSurface(4); this.els.marks.style.opacity = "0"; this.els.trail.style.opacity = "0"; this.restKey = "" }
     } else if (this.restKey !== this.key) {
       this.proj = proj
       this.drawSurface(this.dpr > 1 ? 1.5 : 2)
       this.drawMarks()
-      // after a drag the short streaks are left to fade into the normal trails; they are only wiped after a change of look
-      if (this.trailDirty) { this.ctxT.clearRect(0, 0, this.els.trail.width, this.els.trail.height); this.trailDirty = false }
+      this.ctxT.clearRect(0, 0, this.els.trail.width, this.els.trail.height)
       this.els.marks.style.opacity = "1"; this.els.trail.style.opacity = "1"
       this.restKey = this.key
     }
-    if (!moving && this.restKey === this.key && (this.cfg.wind === "particles" || this.cfg.wind === "glow") && this.animate) this.stepParticles(false)
+    if (!moving && this.restKey === this.key && (this.cfg.wind === "particles" || this.cfg.wind === "glow") && this.animate) this.stepParticles()
     this.drawLive()
   }
 
@@ -134,7 +113,7 @@ export class Scene {
     this.animate = true
     const saved = this.time
     this.update(0, false)
-    for (let i = 0; i < frames; i++) this.stepParticles(false)
+    for (let i = 0; i < frames; i++) this.stepParticles()
     this.time = saved + 1.3
     this.drawLive()
   }
@@ -314,13 +293,13 @@ export class Scene {
     ctx.clearRect(0, 0, w, h)
     ctx.save(); ctx.beginPath(); ctx.arc(this.proj.cx, this.proj.cy, this.proj.R, 0, Math.PI * 2); ctx.clip()
     if (cfg.isobars !== "off") this.isobars(ctx)
-    if (cfg.wind === "lines" || (cfg.wind === "flow" && this.lite)) this.streamlines(ctx)
+    if (cfg.wind === "lines") this.streamlines(ctx)
     else if (cfg.wind === "arrows") this.arrows(ctx)
     else if (cfg.wind === "barbs") this.barbs(ctx)
     ctx.restore()
     if (cfg.isobars === "hl") this.centres(ctx)
     this.flow = []; this.shimmer = []
-    if (cfg.wind === "flow" && !this.lite) this.prepareFlow()
+    if (cfg.wind === "flow") this.prepareFlow()
     else if (cfg.wind === "shimmer") this.prepareShimmer()
   }
 
@@ -330,11 +309,10 @@ export class Scene {
       ? { lo: "rgba(96,60,190,", mid: "rgba(150,64,44,", hi: "rgba(176,110,20," }
       : { lo: "rgba(176,160,255,", mid: "rgba(255,255,255,", hi: "rgba(255,206,120," }
     const groups: Path2D[] = Array.from({ length: 6 }, () => new Path2D())
-    const skip = this.lite ? (this.q > 0.7 ? 2 : this.q > 0.4 ? 3 : this.q > 0.2 ? 5 : 8) : 1
     for (const iso of DATA.isobars()) {
       const g = (iso.level < 1004 ? 0 : iso.level > 1024 ? 4 : 2) + (iso.major ? 1 : 0)
       const path = groups[g], s = iso.seg
-      for (let i = 0; i < s.length; i += 4 * skip) {
+      for (let i = 0; i < s.length; i += 4) {
         if (!proj.project(s[i], s[i + 1])) continue
         const x1 = proj.x, y1 = proj.y
         if (!proj.project(s[i + 2], s[i + 3])) continue
@@ -359,7 +337,6 @@ export class Scene {
       ctx.fillStyle = light ? "rgba(255,252,244,0.92)" : "rgba(8,10,18,0.72)"; ctx.fill()
       ctx.strokeStyle = ink; ctx.lineWidth = 1.4; ctx.stroke()
       ctx.fillStyle = ink; ctx.font = `700 ${14 * k}px Geist, system-ui, sans-serif`; ctx.fillText(c.kind, proj.x, proj.y + 0.5)
-      if (this.lite) continue
       ctx.font = `500 ${10 * k}px "Geist Mono", ui-monospace, monospace`; ctx.fillStyle = light ? "#3a3a3a" : "rgba(255,255,255,0.8)"
       ctx.fillText(String(Math.round(c.p)), proj.x, proj.y + 25 * k)
     }
@@ -370,13 +347,10 @@ export class Scene {
     const { proj } = this
     const buckets: Path2D[] = Array.from({ length: 8 }, () => new Path2D())
     const scale = clamp(proj.R / 420, 0.7, 1.6)
-    const every = this.lite ? (this.q > 0.7 ? 2 : this.q > 0.4 ? 3 : this.q > 0.2 ? 5 : 8) : 1, stride = this.lite ? 4 : 2
-    let n = 0
     for (const ln of DATA.streamlines()) {
-      if (n++ % every) continue
       const b = Math.min(7, Math.floor(ln.speed / 3.5)), path = buckets[b], p = ln.pts
       let pen = false
-      for (let i = 0; i < p.length; i += stride) {
+      for (let i = 0; i < p.length; i += 2) {
         if (!proj.project(p[i], p[i + 1]) || proj.cosc < 0.03) { pen = false; continue }
         if (pen) path.lineTo(proj.x, proj.y); else { path.moveTo(proj.x, proj.y); pen = true }
       }
@@ -497,7 +471,7 @@ export class Scene {
     p.age = 0; p.max = 0
   }
 
-  private stepParticles(moving: boolean) {
+  private stepParticles() {
     const ctx = this.ctxT, { w, h, dpr, proj, cfg } = this
     const glow = cfg.wind === "glow"
     const N = Math.round(clamp((w * h) / 250, 700, 5000)) * (glow ? 0.8 : 1)
@@ -506,10 +480,7 @@ export class Scene {
       this.parts.forEach(p => { this.spawn(p); p.age = Math.floor(Math.random() * p.max) })
     }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-    // at rest a streak is the faded trail of where a particle has been; while the globe moves that trail cannot follow it,
-    // so every frame draws a fresh short streak along the wind instead
-    if (moving) ctx.clearRect(0, 0, w, h)
-    else { ctx.globalCompositeOperation = "destination-in"; ctx.fillStyle = `rgba(0,0,0,${glow ? 0.93 : 0.92})`; ctx.fillRect(0, 0, w, h) }
+    ctx.globalCompositeOperation = "destination-in"; ctx.fillStyle = `rgba(0,0,0,${glow ? 0.93 : 0.92})`; ctx.fillRect(0, 0, w, h)
     ctx.globalCompositeOperation = glow ? "lighter" : "source-over"
     const k = 0.11 / proj.R * R2D
     const buckets: Path2D[] = glow || cfg.color === "speed" ? Array.from({ length: 8 }, () => new Path2D()) : [new Path2D()]
@@ -523,20 +494,7 @@ export class Scene {
       if (p.lat > 88 || p.lat < -88 || !proj.project(p.lon, p.lat) || proj.cosc < 0.02) { p.age = p.max; continue }
       if ((proj.x - ax) ** 2 + (proj.y - ay) ** 2 < 0.2) continue // too slow to show as a streak, it would only be a dot
       const path = buckets[byBucket ? Math.min(7, Math.floor(Math.hypot(u, v) / 3.5)) : 0]
-      if (moving) {
-        // a short curved streak that follows the wind for 6 to 22 px whatever the wind speed (a streak as long as the wind
-        // is strong turned a typhoon into long straight rays)
-        const sx = proj.x, sy = proj.y, sp = Math.hypot(u, v)
-        if (sp < 0.3) continue
-        const d = ((6 + 16 * Math.min(sp / 20, 1)) / 2 / proj.R) * R2D
-        const mlon = p.lon + ((u / sp) * d) / Math.max(0.08, Math.cos(p.lat * D2R)), mlat = p.lat + (v / sp) * d
-        const [u2, v2] = DATA.windAt(mlon, mlat), sp2 = Math.hypot(u2, v2) || 1
-        const elon = mlon + ((u2 / sp2) * d) / Math.max(0.08, Math.cos(mlat * D2R)), elat = mlat + (v2 / sp2) * d
-        if (!proj.project(mlon, mlat)) continue
-        const mx = proj.x, my = proj.y
-        if (!proj.project(elon, elat)) continue
-        path.moveTo(sx, sy); path.lineTo(mx, my); path.lineTo(proj.x, proj.y)
-      } else { path.moveTo(ax, ay); path.lineTo(proj.x, proj.y) }
+      path.moveTo(ax, ay); path.lineTo(proj.x, proj.y)
     }
     ctx.lineCap = "round"
     if (!byBucket) { ctx.strokeStyle = this.plainMark(0.8); ctx.lineWidth = 0.85; ctx.stroke(buckets[0]) }
@@ -569,7 +527,7 @@ export class Scene {
         ctx.stroke(f.path)
       }
       ctx.setLineDash([])
-    } else if ((rest || this.lite) && cfg.wind === "shimmer") {
+    } else if (rest && cfg.wind === "shimmer") {
       ctx.lineCap = "round"
       for (const s of this.shimmer) {
         const b = Math.min(7, Math.floor(s.s / 3.5))
