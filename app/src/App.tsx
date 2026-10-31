@@ -268,16 +268,14 @@ export default function App() {
         {/* Phone */}
         {isMobile && (
           <>
-            <header className="ui-gutter pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between gap-2 pt-3">
-              <div className={cn(glass, "lens pointer-events-auto rounded-full p-1.5")}><Wordmark compact /></div>
-              <div className="pointer-events-auto"><PhoneActions onSearch={() => setCmdOpen(true)} onMore={() => setSettingsOpen(true)} /></div>
-            </header>
-            <div className="ui-gutter pointer-events-none absolute inset-x-0 top-[64px] flex items-start [&>*]:pointer-events-auto">
+            {/* One row: the legend on the left, Search and the three-dot button on the right */}
+            <header className="ui-gutter pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between gap-2 pt-3 [&>*]:pointer-events-auto">
               <LookLegend cfg={shownLook} units={units} onScale={() => setScaleOpen(true)} compact />
-            </div>
-            {banner && <div className="ui-gutter absolute inset-x-0 top-[124px]">{banner}</div>}
+              <PhoneActions onSearch={() => setCmdOpen(true)} onMore={() => setSettingsOpen(true)} />
+            </header>
+            {banner && <div className="ui-gutter absolute inset-x-0 top-[100px]">{banner}</div>}
             {pick && (
-              <div className="ui-gutter absolute inset-x-0 top-[124px] flex justify-center">
+              <div className="ui-gutter absolute inset-x-0 top-[100px] flex justify-center">
                 <PointReadout {...pick} units={units} storms={stormStates} onClose={() => setPick(null)} className="w-full max-w-[360px]" />
               </div>
             )}
