@@ -40,8 +40,22 @@ computer, above the storms bar on a phone) switches looks and fine-tunes every l
 - Past-storm replays hide the colours and wind marks in every look, as they did before.
 - On the light Ink look, `main[data-light]` darkens the glass so its text stays readable.
 
+## While the globe moves
+
+The wind lines never disappear while someone holds or drags the globe, flies to a storm or zooms.
+- **Heat:** the faded trails cannot follow a turning globe, so each frame draws every particle as a short streak
+  along the wind (`Globe.tsx`, the particle loop). After release the streaks fade into the normal trails.
+- **Other looks:** `Scene.update` draws a lighter version of every layer each frame (thinned streamlines and pressure
+  lines, full arrows, barbs, shimmer and H and L markers, short particle streaks). How light depends on the recent frame
+  time (`q`: 1, 0.5, 0.25, 0.1), so a slow phone thins its lines before it drops frames. The full drawing replaces it
+  when the globe is still. Simplified country borders are still used during a drag (the detailed map is too heavy).
+- Dialogs and sheets open with focus on the panel, not on the Close button, so no ring shows after a tap; the ring
+  shows only for keyboard focus (`focus-visible`).
+
 ## Checks
 
 - `node tools/e2e/looks.cjs URL OUT_DIR [AXE_PATH]` opens every look on desktop and phone, checks the engine draws,
   saving, the zoom pill, the storm panel next to Customize, and runs axe.
+- `node tools/e2e/looks-drag.cjs URL OUT_DIR` counts bright line pixels while dragging versus at rest and records frame
+  times during a drag, on desktop and on a phone with the CPU slowed 4x.
 - `node tools/e2e/looks-perf.cjs URL` measures long tasks and frame rate per look (also with the CPU slowed 4x).

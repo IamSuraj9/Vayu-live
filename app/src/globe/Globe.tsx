@@ -184,7 +184,10 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
       lastKey = key; lastRot = rotKey; lastScale = pr.scale()
       const rot = pr.rotate(), center: [number, number] = [-rot[0], -rot[1]]
       const k = 0.11 / pr.scale() * (180 / Math.PI)
-      if (moved && !zoomOnly) ctx.clearRect(0, 0, size.w, size.h)
+      // While the globe turns, the old trails cannot follow it. Instead of drawing only one tiny step per particle (which
+      // is invisible), draw each particle as a short streak along the wind, fresh every frame, so the lines stay on screen.
+      const turning = moved && !zoomOnly
+      if (turning) ctx.clearRect(0, 0, size.w, size.h)
       else {
         ctx.globalCompositeOperation = "destination-in"
         ctx.fillStyle = "rgba(0,0,0,0.92)"; ctx.fillRect(0, 0, size.w, size.h)
@@ -200,7 +203,7 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
         p.age++
         if (p.lat > 88 || p.lat < -88 || geoDistance([p.lon, p.lat], center) > 1.55) { p.age = p.max; continue }
         const b = pr([p.lon, p.lat])!
-        ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1])
+        ctx.moveTo(a[0], a[1]); ctx.lineTo(turning ? a[0] + (b[0] - a[0]) * 14 : b[0], turning ? a[1] + (b[1] - a[1]) * 14 : b[1])
       }
       ctx.strokeStyle = "rgba(255,255,255,0.8)"; ctx.lineWidth = 0.85; ctx.stroke()
       frames++
