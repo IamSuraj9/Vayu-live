@@ -201,6 +201,10 @@ html, body { background: #000; }
 .qellon-spin-ccw { animation: qellon-ccw 6s linear infinite; }
 .qellon-spin-cw { animation: qellon-cw 6s linear infinite; }
 .qellon-ping { animation: qellon-ping 2s cubic-bezier(0, 0, .2, 1) infinite; }
+@keyframes qellon-whirl-ccw { to { transform: rotate(-360deg); } }
+@keyframes qellon-whirl-cw { to { transform: rotate(360deg); } }
+.qellon-whirl-ccw, .qellon-whirl-cw { transform-box: view-box; transform-origin: 0 0; animation: qellon-whirl-ccw 4.5s linear infinite; }
+.qellon-whirl-cw { animation-name: qellon-whirl-cw; }
 @keyframes qellon-ring { 0% { transform: scale(0.25); opacity: 0.9; } 100% { transform: scale(1.15); opacity: 0; } }
 .qellon-ring { transform-box: fill-box; transform-origin: center; animation: qellon-ring 2.7s cubic-bezier(0.2, 0, 0.3, 1) infinite; }
 @media (prefers-reduced-motion: reduce) {

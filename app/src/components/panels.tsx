@@ -1,6 +1,6 @@
 import { useId, useState } from "react"
 import {
-  ArrowUpRight, BookOpen, ChevronDown, CircleHelp, Gauge, History, Layers as LayersIcon, MapPin, Navigation,
+  ArrowUpRight, BookOpen, ChevronDown, Ellipsis, Gauge, History, Layers as LayersIcon, MapPin, Navigation,
   Info, Pause, Play, Search, Settings2, Thermometer, Wind, X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -13,7 +13,6 @@ import { Slider } from "@/components/ui/slider"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Kbd } from "@/components/ui/kbd"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -455,6 +454,41 @@ function UnitRow<T extends string>({ id, label, value, options, onChange }: { id
   )
 }
 
+/** The unit choices, shared by the toolbar popover and the phone Settings dialog */
+function UnitsForm({ units, setUnits }: { units: Units; setUnits: (u: Units) => void }) {
+  return (
+    <div className="flex flex-col gap-3">
+      <div><p className="font-medium">Units</p><p className="text-[12.5px] text-muted-foreground">Saved on this device.</p></div>
+      <UnitRow id="u-wind" label="Wind" value={units.wind} onChange={wind => setUnits({ ...units, wind })} options={[["kmh", "km/h"], ["mph", "mph"], ["kt", "kt"], ["ms", "m/s"]]} />
+      <UnitRow id="u-temp" label="Temperature" value={units.temp} onChange={temp => setUnits({ ...units, temp })} options={[["c", "°C"], ["f", "°F"]]} />
+      <UnitRow id="u-press" label="Pressure" value={units.press} onChange={press => setUnits({ ...units, press })} options={[["hpa", "hPa"], ["inhg", "inHg"]]} />
+      <UnitRow id="u-dist" label="Distance" value={units.dist} onChange={dist => setUnits({ ...units, dist })} options={[["km", "km"], ["mi", "mi"], ["nmi", "nmi"]]} />
+      <UnitRow id="u-time" label="Time" value={units.time} onChange={time => setUnits({ ...units, time })} options={[["local", "Local"], ["utc", "UTC"]]} />
+      <Separator className="bg-white/8" />
+      <Button variant="ghost" size="sm" className="self-end rounded-full" onClick={() => setUnits(defaultUnits())}>Reset to my region</Button>
+    </div>
+  )
+}
+
+const LAYER_ROWS: [keyof Layers, string, string][] = [
+  ["particles", "Moving wind", "Animated streaks that follow the wind"],
+  ["colors", "Wind colours", "Shade the globe by wind speed"],
+  ["paths", "Storm paths", "Past and forecast tracks"],
+  ["borders", "Borders and grid", "Country lines and latitude grid"],
+]
+function LayersForm({ layers, setLayers, idPrefix = "layer" }: { layers: Layers; setLayers: (l: Layers) => void; idPrefix?: string }) {
+  return (
+    <div>
+      {LAYER_ROWS.map(([k, label, hint]) => (
+        <label key={k} htmlFor={`${idPrefix}-${k}`} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-xl px-2 py-2 hover:bg-white/[0.05]">
+          <span className="min-w-0 flex-1"><span className="block text-[13.5px]">{label}</span><span className="block text-[12px] text-muted-foreground">{hint}</span></span>
+          <Switch id={`${idPrefix}-${k}`} checked={layers[k]} onCheckedChange={v => setLayers({ ...layers, [k]: v })} />
+        </label>
+      ))}
+    </div>
+  )
+}
+
 export function UnitsPopover({ units, setUnits }: { units: Units; setUnits: (u: Units) => void }) {
   return (
     <Popover>
@@ -469,28 +503,13 @@ export function UnitsPopover({ units, setUnits }: { units: Units; setUnits: (u: 
         <TooltipContent side="bottom">Units</TooltipContent>
       </Tooltip>
       <PopoverContent align="end" sideOffset={10} className="w-[340px] rounded-[24px] p-4">
-        <div className="flex flex-col gap-3">
-          <div><p className="font-medium">Units</p><p className="text-[12.5px] text-muted-foreground">Saved on this device.</p></div>
-          <UnitRow id="u-wind" label="Wind" value={units.wind} onChange={wind => setUnits({ ...units, wind })} options={[["kmh", "km/h"], ["mph", "mph"], ["kt", "kt"], ["ms", "m/s"]]} />
-          <UnitRow id="u-temp" label="Temperature" value={units.temp} onChange={temp => setUnits({ ...units, temp })} options={[["c", "°C"], ["f", "°F"]]} />
-          <UnitRow id="u-press" label="Pressure" value={units.press} onChange={press => setUnits({ ...units, press })} options={[["hpa", "hPa"], ["inhg", "inHg"]]} />
-          <UnitRow id="u-dist" label="Distance" value={units.dist} onChange={dist => setUnits({ ...units, dist })} options={[["km", "km"], ["mi", "mi"], ["nmi", "nmi"]]} />
-          <UnitRow id="u-time" label="Time" value={units.time} onChange={time => setUnits({ ...units, time })} options={[["local", "Local"], ["utc", "UTC"]]} />
-          <Separator className="bg-white/8" />
-          <Button variant="ghost" size="sm" className="self-end rounded-full" onClick={() => setUnits(defaultUnits())}>Reset to my region</Button>
-        </div>
+        <UnitsForm units={units} setUnits={setUnits} />
       </PopoverContent>
     </Popover>
   )
 }
 
 export function LayersPopover({ layers, setLayers }: { layers: Layers; setLayers: (l: Layers) => void }) {
-  const rows: [keyof Layers, string, string][] = [
-    ["particles", "Moving wind", "Animated streaks that follow the wind"],
-    ["colors", "Wind colours", "Shade the globe by wind speed"],
-    ["paths", "Storm paths", "Past and forecast tracks"],
-    ["borders", "Borders and grid", "Country lines and latitude grid"],
-  ]
   return (
     <Popover>
       <Tooltip>
@@ -503,12 +522,7 @@ export function LayersPopover({ layers, setLayers }: { layers: Layers; setLayers
       </Tooltip>
       <PopoverContent align="end" sideOffset={10} className="w-[300px] rounded-[24px] p-2">
         <p className="px-2 pt-1.5 pb-2 font-medium">Map layers</p>
-        {rows.map(([k, label, hint]) => (
-          <label key={k} htmlFor={`layer-${k}`} className="flex cursor-pointer items-center gap-3 rounded-xl px-2 py-2 hover:bg-white/[0.05]">
-            <span className="min-w-0 flex-1"><span className="block text-[13.5px]">{label}</span><span className="block text-[12px] text-muted-foreground">{hint}</span></span>
-            <Switch id={`layer-${k}`} checked={layers[k]} onCheckedChange={v => setLayers({ ...layers, [k]: v })} />
-          </label>
-        ))}
+        <LayersForm layers={layers} setLayers={setLayers} />
       </PopoverContent>
     </Popover>
   )
@@ -673,20 +687,51 @@ export function Toolbar({ children, large }: { children: React.ReactNode; large?
   return <div className={cn(glass, "lens flex items-center gap-0.5 rounded-full p-1", large && "[&_[data-tool]]:size-11 [&_[data-tool-wide]]:h-11")}>{children}</div>
 }
 
-/** Phone toolbar: the scale, glossary and About behind one labelled menu instead of three bare icons */
-export function HelpMenu({ onScale, onGlossary, onAbout }: { onScale: () => void; onGlossary: () => void; onAbout: () => void }) {
-  const item = "gap-3 rounded-xl px-3 py-2.5 text-[14px]"
+/** Phone top right: Search, and a three-dot button that opens Settings (units, map layers and help) */
+export function PhoneActions({ onSearch, onMore }: { onSearch: () => void; onMore: () => void }) {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Help and info" data-tool className="size-8 rounded-full text-foreground/80 hover:bg-white/10"><CircleHelp /></Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" sideOffset={10} className="w-64 rounded-[22px] p-1.5">
-        <DropdownMenuItem className={item} onSelect={onScale}><Gauge />How strong is it? (scale)</DropdownMenuItem>
-        <DropdownMenuItem className={item} onSelect={onGlossary}><BookOpen />What the words mean</DropdownMenuItem>
-        <DropdownMenuItem className={item} onSelect={onAbout}><Info />Sources and official alerts</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="flex items-center gap-2">
+      <div className={cn(glass, "lens rounded-full p-1")}><ToolButton label="Search" className="size-11" onClick={onSearch}><Search /></ToolButton></div>
+      <div className={cn(glass, "lens rounded-full p-1")}><ToolButton label="More: units, map layers and help" className="size-11" onClick={onMore}><Ellipsis /></ToolButton></div>
+    </div>
+  )
+}
+
+export function SettingsDialog({ open, onOpenChange, units, setUnits, layers, setLayers, onScale, onGlossary, onAbout }: {
+  open: boolean; onOpenChange: (o: boolean) => void; units: Units; setUnits: (u: Units) => void; layers: Layers; setLayers: (l: Layers) => void
+  onScale: () => void; onGlossary: () => void; onAbout: () => void
+}) {
+  const go = (f: () => void) => () => { onOpenChange(false); f() }
+  const help: [React.ReactNode, string, () => void][] = [
+    [<Gauge key="g" />, "How strong is it? (scale)", onScale], [<BookOpen key="b" />, "What the words mean", onGlossary], [<Info key="i" />, "Sources and official alerts", onAbout],
+  ]
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="flex max-h-[88vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-md">
+        <div className="grid min-h-0 gap-5 overflow-y-auto p-5">
+          <DialogHeader>
+            <DialogTitle className="text-lg tracking-tight">Settings</DialogTitle>
+            <DialogDescription>Units, map layers and help.</DialogDescription>
+          </DialogHeader>
+          <UnitsForm units={units} setUnits={setUnits} />
+          <Separator className="bg-white/8" />
+          <section aria-labelledby="settings-layers">
+            <p id="settings-layers" className="mb-1 px-2 font-medium">Map layers</p>
+            <LayersForm layers={layers} setLayers={setLayers} idPrefix="set-layer" />
+          </section>
+          <Separator className="bg-white/8" />
+          <section aria-labelledby="settings-help">
+            <p id="settings-help" className="mb-1 px-2 font-medium">Help</p>
+            {help.map(([icon, label, fn]) => (
+              <button key={label} type="button" onClick={go(fn)}
+                className="flex min-h-11 w-full items-center gap-3 rounded-xl px-2 py-2 text-left text-[14px] outline-none hover:bg-white/[0.05] focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-4 [&_svg]:text-muted-foreground">
+                {icon}{label}
+              </button>
+            ))}
+          </section>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 

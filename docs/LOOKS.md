@@ -10,9 +10,13 @@ computer, above the storms bar on a phone) switches looks and fine-tunes every l
   description, and the layer controls (earth, colour fill, palette, wind, wind colour, pressure lines, map lines,
   storm marks). Changing one layer turns the look into a "Custom mix"; "Back to Heat" returns.
 - The legend (bottom left) follows the look: wind speed, six bands, pressure, relief or temperature.
-- The zoom pill (top, left of the toolbar) has a small globe (zoom out), a large globe (zoom in) and a compass that
-  returns to the start view. Every button stays focusable at its limit (`aria-disabled`).
-- The Layers menu still works on top of any look: Moving wind, Wind colours and Borders and grid map onto the look's
+- On a computer, the zoom pill (top, left of the toolbar) has a small globe (zoom out), a large globe (zoom in) and a
+  compass that returns to the start view. Every button stays focusable at its limit (`aria-disabled`).
+- On a phone there are no zoom buttons: pinch to zoom, drag to turn. The top right holds Search and a three-dot button
+  that opens Settings (units, map layers, and links to the strength scale, glossary and sources).
+- The storm marker is two thin spiral arms around a white eye, turning slowly (counter-clockwise north of the
+  equator, clockwise south). A stronger storm draws a larger spiral (`r = 9 + knots / 11`).
+- On a computer the Layers menu still works on top of any look: Moving wind, Wind colours and Borders and grid map onto the look's
   layers (`effectiveCfg` in `looks/presets.ts`); Storm paths hides the tracks.
 
 ## How it is built

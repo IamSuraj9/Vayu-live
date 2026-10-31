@@ -52,13 +52,28 @@ const { chromium } = require('playwright');
     log('Back to Heat:', await name(p).getAttribute('aria-label'));
     await name(p).click(); await p.waitForTimeout(700); // close again
 
-    // zoom pill
-    const reset = p.getByRole('button', { name: 'Back to the start view' });
-    log('reset disabled at the start:', await reset.getAttribute('aria-disabled'));
-    await p.getByRole('button', { name: 'Zoom in' }).click(); await p.waitForTimeout(900);
-    log('reset after zooming in:', await reset.getAttribute('aria-disabled'));
-    await reset.click(); await p.waitForTimeout(1500);
-    log('reset after pressing it:', await reset.getAttribute('aria-disabled'));
+    if (!phone) {
+      // zoom pill (desktop only: phones zoom by pinching)
+      const reset = p.getByRole('button', { name: 'Back to the start view' });
+      log('reset disabled at the start:', await reset.getAttribute('aria-disabled'));
+      await p.getByRole('button', { name: 'Zoom in' }).click(); await p.waitForTimeout(900);
+      log('reset after zooming in:', await reset.getAttribute('aria-disabled'));
+      await reset.click(); await p.waitForTimeout(1500);
+      log('reset after pressing it:', await reset.getAttribute('aria-disabled'));
+    } else {
+      log('zoom buttons on a phone:', await p.getByRole('button', { name: 'Zoom in' }).count());
+      // Search and the three-dot button; the dialog holds units, map layers and help
+      await p.screenshot({ path: `${out}/${label}-5-top.png` });
+      await p.getByRole('button', { name: /^More:/ }).click(); await p.waitForTimeout(700);
+      await p.screenshot({ path: `${out}/${label}-6-settings.png` });
+      const dlg = p.getByRole('dialog');
+      log('settings dialog has units, layers and help:', await dlg.getByText('Units').first().isVisible(), await dlg.getByText('Map layers').first().isVisible(), await dlg.getByText('Help').first().isVisible());
+      await dlg.getByRole('radio', { name: 'mph' }).click(); await p.waitForTimeout(300);
+      log('wind unit now shown in the legend:', (await p.locator('text=/mph/').count()) > 0);
+      await dlg.getByRole('button', { name: /What the words mean/ }).click(); await p.waitForTimeout(600);
+      log('help opens the glossary:', await p.getByRole('dialog').getByText(/glossary|What the words mean/i).first().isVisible());
+      await p.keyboard.press('Escape'); await p.waitForTimeout(400);
+    }
 
     // a storm open next to Customize
     await p.getByRole('button', { name: /^In-fa/ }).first().click().catch(() => {}); await p.waitForTimeout(1500);

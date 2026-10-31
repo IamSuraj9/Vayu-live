@@ -13,6 +13,8 @@ export type LL = { lon: number; lat: number }
 export type TrackPt = LL & { color: string }
 export type Marker = LL & {
   id: string; name: string; color: string; label: string; dim?: boolean
+  /** sustained wind in knots: the marker grows with it */
+  kt?: number
   past: TrackPt[]; ghost?: LL[]; forecast: TrackPt[]
 }
 
@@ -357,20 +359,21 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
         if (!visible(m.lon, m.lat)) return null
         const [x, y] = projection([m.lon, m.lat])!
         const sel = m.id === selectedId
+        const r = 9 + Math.min(m.kt ?? 40, 160) / 11, S = Math.round(2 * r + 8) // a stronger storm draws a larger spiral
         return (
           <button
             key={m.id} type="button" data-storm={m.id}
             onClick={e => { if (e.detail === 0) onSelect(m.id) }}
             className={cn(
-              "group absolute flex -translate-x-[15px] -translate-y-1/2 items-center gap-1.5 rounded-full py-0.5 pr-2.5 pl-0.5 text-left outline-none",
+              "group absolute flex -translate-y-1/2 items-center gap-1.5 rounded-full py-0.5 pr-2.5 pl-0.5 text-left outline-none",
               "focus-visible:ring-2 focus-visible:ring-ring",
               m.dim && "opacity-50",
             )}
-            style={{ left: x, top: y }}
+            style={{ left: x - S / 2 - 2, top: y }}
             aria-label={`${m.name} ${m.label}`}
             aria-pressed={sel}
           >
-            <StormGlyph color={m.color} south={m.lat < 0} selected={sel} reducedMotion={reducedMotion} variant={look.storms} />
+            <StormGlyph color={m.color} south={m.lat < 0} selected={sel} reducedMotion={reducedMotion} variant={look.storms} size={S} glow />
             <span className={cn(
               "rounded-full border px-2.5 py-1 text-[12px] leading-none whitespace-nowrap transition-colors",
               sel ? "liquid-chip-on border-transparent text-neutral-950" : "liquid-chip border-transparent text-white",
@@ -386,9 +389,22 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
   )
 }
 
-export function StormGlyph({ color, south, selected, reducedMotion, size = 30, variant = "spiral" }: { color: string; south?: boolean; selected?: boolean; reducedMotion?: boolean; size?: number; variant?: Cfg["storms"] }) {
+/** Two thin arms that wind outward from a white eye, turning slowly (counter-clockwise north of the equator, clockwise south) */
+function spiralArm(r: number, spin: number, k: number) {
+  let d = ""
+  for (let i = 0; i <= 28; i++) {
+    const th = (i / 28) * Math.PI * 1.9, rho = (0.18 + 0.82 * (i / 28)) * r
+    const a = k * Math.PI - spin * th
+    d += `${i ? "L" : "M"}${(Math.cos(a) * rho).toFixed(2)} ${(Math.sin(a) * rho).toFixed(2)}`
+  }
+  return d
+}
+
+export function StormGlyph({ color, south, selected, reducedMotion, size = 30, variant = "spiral", glow }: { color: string; south?: boolean; selected?: boolean; reducedMotion?: boolean; size?: number; variant?: Cfg["storms"]; glow?: boolean }) {
+  const r = (size - 8) / 2, spin = south ? 1 : -1
   return (
     <span className="relative inline-flex shrink-0 items-center justify-center" style={{ width: size, height: size }}>
+      {glow && <span aria-hidden="true" className="pointer-events-none absolute top-1/2 left-1/2 rounded-full" style={{ width: r * 3.4, height: r * 3.4, transform: "translate(-50%,-50%)", background: `radial-gradient(circle, color-mix(in srgb, ${color} 38%, transparent), transparent 70%)` }} />}
       {selected && <span className="absolute -inset-0.5 rounded-full ring-2 ring-white/90" />}
       {variant === "rings" ? (
         <svg viewBox="-13 -13 26 26" width={size} height={size} aria-hidden="true" style={{ overflow: "visible" }}>
@@ -406,14 +422,11 @@ export function StormGlyph({ color, south, selected, reducedMotion, size = 30, v
           <circle r={2.6} fill="#fff" stroke="#05070d" strokeWidth={1} />
         </svg>
       ) : (
-        <svg viewBox="-13 -13 26 26" width={size} height={size}
-          className={reducedMotion ? undefined : south ? "qellon-spin-cw" : "qellon-spin-ccw"} aria-hidden="true"
-          style={{ transform: south ? "scaleX(-1)" : undefined }}>
-          <path d="M0,-4.4 C 5.5,-11 11.5,-6 11.2,0.5" fill="none" stroke="#000" strokeOpacity={0.6} strokeWidth={4.6} strokeLinecap="round" />
-          <path d="M0,4.4 C -5.5,11 -11.5,6 -11.2,-0.5" fill="none" stroke="#000" strokeOpacity={0.6} strokeWidth={4.6} strokeLinecap="round" />
-          <path d="M0,-4.4 C 5.5,-11 11.5,-6 11.2,0.5" fill="none" stroke={color} strokeWidth={2.8} strokeLinecap="round" />
-          <path d="M0,4.4 C -5.5,11 -11.5,6 -11.2,-0.5" fill="none" stroke={color} strokeWidth={2.8} strokeLinecap="round" />
-          <circle r={4.6} fill={color} stroke="#05070d" strokeWidth={1.4} />
+        <svg viewBox={`${-size / 2} ${-size / 2} ${size} ${size}`} width={size} height={size} aria-hidden="true" style={{ overflow: "visible" }}>
+          <g className={reducedMotion ? undefined : south ? "qellon-whirl-cw" : "qellon-whirl-ccw"}>
+            {[0, 1].map(k => <path key={k} d={spiralArm(r, spin, k)} fill="none" stroke={color} strokeOpacity={0.95} strokeWidth={2.2} strokeLinecap="round" />)}
+          </g>
+          <circle r={2.6} fill="#fff" stroke="rgba(0,0,0,0.45)" strokeWidth={0.8} />
         </svg>
       )}
     </span>

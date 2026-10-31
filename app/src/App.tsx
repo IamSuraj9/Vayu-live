@@ -11,8 +11,8 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import {
-  AboutDialog, CREDIT_SHORT, CommandPalette, HelpMenu, Freshness, GlossaryDialog, LayersPopover, PointReadout, ReplayBar,
-  ScaleDialog, SearchTrigger, StormPanel, StormTabs, ToolButton, Toolbar, UnitsPopover, glass,
+  AboutDialog, CREDIT_SHORT, CommandPalette, Freshness, GlossaryDialog, LayersPopover, PhoneActions, PointReadout, ReplayBar,
+  ScaleDialog, SearchTrigger, SettingsDialog, StormPanel, StormTabs, ToolButton, Toolbar, UnitsPopover, glass,
 } from "@/components/panels"
 import { CustomizeCard, LookLegend, ZoomPill } from "@/components/looks"
 import { type Cfg, effectiveCfg, loadCfg, saveCfg } from "@/looks/presets"
@@ -61,6 +61,7 @@ export default function App() {
   const [scaleOpen, setScaleOpen] = useState(false)
   const [glossOpen, setGlossOpen] = useState(false)
   const [aboutOpen, setAboutOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const [hint, setHint] = useState(() => { try { return !localStorage.getItem(HINT_KEY) } catch { return false } })
   const dismissHint = () => { if (!hint) return; setHint(false); try { localStorage.setItem(HINT_KEY, "1") } catch { /* unavailable */ } }
   const isMobile = useMedia("(max-width: 720px), (max-height: 480px)") // phones, including on their side
@@ -152,7 +153,7 @@ export default function App() {
       const replayingThis = replay?.id === s.id
       const upto = s.track.filter(p => new Date(p.t).getTime() <= st.t)
       return {
-        id: s.id, name: s.name, lon: st.lon, lat: st.lat, color: levelFor(st.kt).color,
+        id: s.id, name: s.name, lon: st.lon, lat: st.lat, color: levelFor(st.kt).color, kt: st.kt,
         label: s.kind === "disturbance" ? `${fmtWindKt(st.kt, units.wind)} · watch` : fmtWindKt(st.kt, units.wind),
         past: [...upto.map(p => ({ lon: p.lon, lat: p.lat, color: levelFor(p.kt).color })), { lon: st.lon, lat: st.lat, color: levelFor(st.kt).color }],
         ghost: replayingThis ? [{ lon: st.lon, lat: st.lat }, ...s.track.filter(p => new Date(p.t).getTime() > st.t).map(p => ({ lon: p.lon, lat: p.lat }))] : undefined,
@@ -204,17 +205,12 @@ export default function App() {
     </div>
   ) : null
   const toolbar = (
-    <Toolbar large={isMobile}>
-      {isMobile && <ToolButtonSearch onOpen={() => setCmdOpen(true)} />}
+    <Toolbar>
       <LayersPopover layers={layers} setLayers={setLayers} />
       <UnitsPopover units={units} setUnits={setUnits} />
-      {isMobile ? (
-        <HelpMenu onScale={() => setScaleOpen(true)} onGlossary={() => setGlossOpen(true)} onAbout={() => setAboutOpen(true)} />
-      ) : (<>
-        <ToolButton label="Storm strength scale" onClick={() => setScaleOpen(true)}><Gauge /></ToolButton>
-        <ToolButton label="What the words mean" onClick={() => setGlossOpen(true)}><BookOpen /></ToolButton>
-        <ToolButton label="About and sources" onClick={() => setAboutOpen(true)}><Info /></ToolButton>
-      </>)}
+      <ToolButton label="Storm strength scale" onClick={() => setScaleOpen(true)}><Gauge /></ToolButton>
+      <ToolButton label="What the words mean" onClick={() => setGlossOpen(true)}><BookOpen /></ToolButton>
+      <ToolButton label="About and sources" onClick={() => setAboutOpen(true)}><Info /></ToolButton>
     </Toolbar>
   )
 
@@ -274,15 +270,14 @@ export default function App() {
           <>
             <header className="ui-gutter pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between gap-2 pt-3">
               <div className={cn(glass, "lens pointer-events-auto rounded-full p-1.5")}><Wordmark compact /></div>
-              <div className="pointer-events-auto">{toolbar}</div>
+              <div className="pointer-events-auto"><PhoneActions onSearch={() => setCmdOpen(true)} onMore={() => setSettingsOpen(true)} /></div>
             </header>
-            <div className="ui-gutter pointer-events-none absolute inset-x-0 top-[64px] flex items-start justify-between gap-2 [&>*]:pointer-events-auto">
+            <div className="ui-gutter pointer-events-none absolute inset-x-0 top-[64px] flex items-start [&>*]:pointer-events-auto">
               <LookLegend cfg={shownLook} units={units} onScale={() => setScaleOpen(true)} compact />
-              {zoomPill}
             </div>
-            {banner && <div className="ui-gutter absolute inset-x-0 top-[132px]">{banner}</div>}
+            {banner && <div className="ui-gutter absolute inset-x-0 top-[124px]">{banner}</div>}
             {pick && (
-              <div className="ui-gutter absolute inset-x-0 top-[132px] flex justify-center">
+              <div className="ui-gutter absolute inset-x-0 top-[124px] flex justify-center">
                 <PointReadout {...pick} units={units} storms={stormStates} onClose={() => setPick(null)} className="w-full max-w-[360px]" />
               </div>
             )}
@@ -320,16 +315,14 @@ export default function App() {
         <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} storms={active} past={PAST} units={units}
           onStorm={id => { setCmdOpen(false); select(id) }}
           onPlace={(lon, lat) => { setCmdOpen(false); select(null); setPick({ lon, lat }); flyTo(lon, lat, Math.max(camera.get().zoom, 2.2)) }} />
+        <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} units={units} setUnits={setUnits} layers={layers} setLayers={setLayers}
+          onScale={() => setScaleOpen(true)} onGlossary={() => setGlossOpen(true)} onAbout={() => setAboutOpen(true)} />
         <ScaleDialog units={units} open={scaleOpen} onOpenChange={setScaleOpen} />
         <GlossaryDialog open={glossOpen} onOpenChange={setGlossOpen} />
         <AboutDialog file={feed.file} live={feed.origin === "live"} reachable={feed.reachable} now={now} units={units} open={aboutOpen} onOpenChange={setAboutOpen} />
       </main>
     </TooltipProvider>
   )
-}
-
-function ToolButtonSearch({ onOpen }: { onOpen: () => void }) {
-  return <SearchTrigger compact onOpen={onOpen} />
 }
 
 function CreditLine({ onAbout }: { onAbout: () => void }) {
