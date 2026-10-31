@@ -40,7 +40,7 @@ export const PRESETS: Preset[] = [
   {
     id: "night", name: "Night", tagline: "Cinematic",
     cfg: { earth: "night", fill: "none", palette: "aurora", wind: "glow", color: "speed", isobars: "off", map: "coast", storms: "rings" },
-    look: "A lit sphere with a real day and night side, a blue atmosphere, city lights, and wind as glowing particles that change colour with speed.",
+    look: "A lit sphere with a day and night side, a blue atmosphere, city lights, and wind as glowing particles that change colour with speed. The shading follows the sun and the city lights are a sample of big cities, for the look only. Neither is weather data.",
     bestFor: "The most atmospheric. Makes the planet feel alive and gives the storms a stage. Good for the first screen and for sharing.",
   },
   {

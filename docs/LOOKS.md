@@ -12,7 +12,8 @@ computer, above the storms bar on a phone) switches looks and fine-tunes every l
 - The legend (bottom left) follows the look: wind speed, six bands, pressure, relief or temperature.
 - On a computer, the zoom pill (top, left of the toolbar) has a small globe (zoom out), a large globe (zoom in) and a
   compass that returns to the start view. Every button stays focusable at its limit (`aria-disabled`).
-- On a phone there are no zoom buttons: pinch to zoom, drag to turn. The top right holds Search and a three-dot button
+- On a phone there are no zoom buttons: pinch to zoom, drag to turn, or double-tap to zoom in on that spot (one finger;
+  once fully zoomed in, a double-tap flies back to the start view). The top right holds Search and a three-dot button
   that opens Settings (units, map layers, and links to the strength scale, glossary and sources).
 - The storm marker is two thin spiral arms around a white eye, turning slowly (counter-clockwise north of the
   equator, clockwise south). A stronger storm draws a larger spiral (`r = 9 + knots / 11`).

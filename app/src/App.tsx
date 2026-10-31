@@ -223,7 +223,7 @@ export default function App() {
     <TooltipProvider delayDuration={250}>
       <main className="relative h-full w-full overflow-hidden bg-black" data-light={look.earth === "paper" || undefined} onPointerDownCapture={dismissHint}>
         <h1 className="sr-only">Qellon storm globe</h1>
-        <Globe markers={markers} selectedId={selectedId} camera={camera} onSelect={id => select(id)}
+        <Globe markers={markers} selectedId={selectedId} camera={camera} home={home} onSelect={id => select(id)}
           pick={pick} onPick={p => setPick(p ? { lon: p.lon, lat: p.lat } : null)} reducedMotion={reduced}
           showParticles={!pastReplay} fieldVersion={fieldVersion} dimField={pastReplay} look={look} layers={pastReplay ? { ...layers, colors: false } : layers}
           offsetY={isMobile && selected ? Math.round(window.innerHeight * 0.24) : 0}

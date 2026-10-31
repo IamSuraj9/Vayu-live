@@ -3,7 +3,7 @@ import { geoDistance, geoGraticule10, geoOrthographic, geoPath } from "d3-geo"
 import { HIGH, LOW, loadHigh } from "./world"
 import { windAt } from "./field"
 import { useWindOverlay, rescaleTrails } from "./overlay"
-import type { Camera, View } from "./camera"
+import { ZOOM_MAX, type Camera, type View } from "./camera"
 import { cn } from "@/lib/utils"
 import { LookLayer } from "./LookLayer"
 import { type Cfg, HEAT, effectiveCfg, sameCfg } from "@/looks/presets"
@@ -22,6 +22,8 @@ type Props = {
   markers: Marker[]; selectedId: string | null; camera: Camera
   onSelect: (id: string | null) => void; pick: LL | null; onPick: (p: (LL & { x: number; y: number }) | null) => void
   reducedMotion: boolean; showParticles: boolean; dimField?: boolean; offsetY?: number; fieldVersion?: number
+  /** where a double-tap on a phone returns to once the globe is zoomed all the way in */
+  home?: View
   look?: Cfg; layers?: Layers; renderPick?: (x: number, y: number, w: number, h: number) => React.ReactNode
 }
 export type Layers = { particles: boolean; colors: boolean; paths: boolean; borders: boolean }
@@ -51,7 +53,7 @@ const graticule = geoGraticule10()
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v))
 const wrapLon = (l: number) => ((l + 540) % 360) - 180
 
-export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, reducedMotion, showParticles: showP, dimField = false, offsetY = 0, fieldVersion = 0, look = HEAT.cfg, layers = ALL_ON, renderPick }: Props) {
+export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, reducedMotion, showParticles: showP, dimField = false, offsetY = 0, fieldVersion = 0, home, look = HEAT.cfg, layers = ALL_ON, renderPick }: Props) {
   // Heat is drawn by the layers below (fast, and what ships today). Every other look is drawn by the look engine, loaded on demand.
   const wantsEngine = !sameCfg(look, HEAT.cfg) && fieldVersion > 0
   const [engineReady, setEngineReady] = useState(false)
@@ -216,6 +218,7 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
   const drag = useRef<{ x: number; y: number; lon: number; lat: number; zoom: number; moved: boolean; dist?: number; storm?: string | null } | null>(null)
   const zoomTo = (z: number) => camera.set({ ...camera.get(), zoom: clamp(z, 0.7, 14) })
   const samples = useRef<{ t: number; lon: number; lat: number }[]>([])
+  const lastTap = useRef<{ t: number; x: number; y: number } | null>(null)
 
   useEffect(() => {
     const el = wrap.current!
@@ -281,6 +284,20 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
     const x = e.clientX - rect.left, y = e.clientY - rect.top
     const [cx, cy] = projection.translate()
     if ((x - cx) ** 2 + (y - cy) ** 2 > projection.scale() ** 2) { onPick(null); return }
+    // Double-tap on a phone: zoom in on the spot. It is a one-finger way to zoom for people who cannot pinch. Once the
+    // globe is zoomed all the way in, a double-tap flies back to the start view.
+    if (e.pointerType !== "mouse") {
+      const now = performance.now(), prev = lastTap.current
+      if (prev && now - prev.t < 320 && Math.hypot(x - prev.x, y - prev.y) < 32) {
+        lastTap.current = null
+        onPick(null)
+        const v = camera.get(), ll = projection.invert!([x, y])
+        if (v.zoom >= ZOOM_MAX * 0.85 && home) camera.flyTo(home, { reduced: reducedMotion })
+        else if (ll) camera.flyTo({ lon: ll[0], lat: ll[1], zoom: v.zoom * 2 }, { reduced: reducedMotion })
+        return
+      }
+      lastTap.current = { t: now, x, y }
+    }
     const ll = projection.invert!([x, y])
     if (ll) onPick({ lon: ll[0], lat: ll[1], x, y })
   }
