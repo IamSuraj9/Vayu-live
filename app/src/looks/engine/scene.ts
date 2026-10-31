@@ -523,7 +523,20 @@ export class Scene {
       if (p.lat > 88 || p.lat < -88 || !proj.project(p.lon, p.lat) || proj.cosc < 0.02) { p.age = p.max; continue }
       if ((proj.x - ax) ** 2 + (proj.y - ay) ** 2 < 0.2) continue // too slow to show as a streak, it would only be a dot
       const path = buckets[byBucket ? Math.min(7, Math.floor(Math.hypot(u, v) / 3.5)) : 0]
-      path.moveTo(ax, ay); path.lineTo(moving ? ax + (proj.x - ax) * 14 : proj.x, moving ? ay + (proj.y - ay) * 14 : proj.y)
+      if (moving) {
+        // a short curved streak that follows the wind for 6 to 22 px whatever the wind speed (a streak as long as the wind
+        // is strong turned a typhoon into long straight rays)
+        const sx = proj.x, sy = proj.y, sp = Math.hypot(u, v)
+        if (sp < 0.3) continue
+        const d = ((6 + 16 * Math.min(sp / 20, 1)) / 2 / proj.R) * R2D
+        const mlon = p.lon + ((u / sp) * d) / Math.max(0.08, Math.cos(p.lat * D2R)), mlat = p.lat + (v / sp) * d
+        const [u2, v2] = DATA.windAt(mlon, mlat), sp2 = Math.hypot(u2, v2) || 1
+        const elon = mlon + ((u2 / sp2) * d) / Math.max(0.08, Math.cos(mlat * D2R)), elat = mlat + (v2 / sp2) * d
+        if (!proj.project(mlon, mlat)) continue
+        const mx = proj.x, my = proj.y
+        if (!proj.project(elon, elat)) continue
+        path.moveTo(sx, sy); path.lineTo(mx, my); path.lineTo(proj.x, proj.y)
+      } else { path.moveTo(ax, ay); path.lineTo(proj.x, proj.y) }
     }
     ctx.lineCap = "round"
     if (!byBucket) { ctx.strokeStyle = this.plainMark(0.8); ctx.lineWidth = 0.85; ctx.stroke(buckets[0]) }

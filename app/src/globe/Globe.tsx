@@ -185,13 +185,26 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
       const rot = pr.rotate(), center: [number, number] = [-rot[0], -rot[1]]
       const k = 0.11 / pr.scale() * (180 / Math.PI)
       // While the globe turns, the old trails cannot follow it. Instead of drawing only one tiny step per particle (which
-      // is invisible), draw each particle as a short streak along the wind, fresh every frame, so the lines stay on screen.
+      // is invisible), draw each particle as a short curved streak along the wind, fresh every frame, so the lines stay on screen.
       const turning = moved && !zoomOnly
       if (turning) ctx.clearRect(0, 0, size.w, size.h)
       else {
         ctx.globalCompositeOperation = "destination-in"
         ctx.fillStyle = "rgba(0,0,0,0.92)"; ctx.fillRect(0, 0, size.w, size.h)
         ctx.globalCompositeOperation = "source-over"
+      }
+      // A short curved streak that follows the wind for 6 to 22 px whatever the wind speed. (Streaks as long as the wind is
+      // strong turned a typhoon into long straight rays.)
+      const bend = (lon: number, lat: number, u: number, v: number, from: [number, number]) => {
+        const sp = Math.hypot(u, v)
+        if (sp < 0.3) return
+        const d = ((6 + 16 * Math.min(sp / 20, 1)) / 2 / pr.scale()) * (180 / Math.PI)
+        const mlon = lon + ((u / sp) * d) / Math.max(0.08, Math.cos((lat * Math.PI) / 180)), mlat = lat + (v / sp) * d
+        const [u2, v2] = windAt(mlon, mlat), sp2 = Math.hypot(u2, v2) || 1
+        const elon = mlon + ((u2 / sp2) * d) / Math.max(0.08, Math.cos((mlat * Math.PI) / 180)), elat = mlat + (v2 / sp2) * d
+        const m = pr([mlon, mlat]), e = pr([elon, elat])
+        if (!m || !e) return
+        ctx.moveTo(from[0], from[1]); ctx.lineTo(m[0], m[1]); ctx.lineTo(e[0], e[1])
       }
       ctx.beginPath()
       for (const p of parts) {
@@ -203,7 +216,8 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
         p.age++
         if (p.lat > 88 || p.lat < -88 || geoDistance([p.lon, p.lat], center) > 1.55) { p.age = p.max; continue }
         const b = pr([p.lon, p.lat])!
-        ctx.moveTo(a[0], a[1]); ctx.lineTo(turning ? a[0] + (b[0] - a[0]) * 14 : b[0], turning ? a[1] + (b[1] - a[1]) * 14 : b[1])
+        if (turning) bend(p.lon, p.lat, u, v, b)
+        else { ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]) }
       }
       ctx.strokeStyle = "rgba(255,255,255,0.8)"; ctx.lineWidth = 0.85; ctx.stroke()
       frames++
