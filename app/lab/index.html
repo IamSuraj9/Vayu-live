@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Globe Style Lab</title>
+    <title>Qellon Customize</title>
     <meta name="claude:viewport-fit-sides" content="cover">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="The same real wind, pressure and storm data drawn in eight different looks. Mix the layers to explore visual directions for the storm globe." />
+    <meta name="description" content="Real wind, pressure and storms on one globe. Start with the Heat look and customize every layer." />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
@@ -16,26 +16,27 @@
 
       <header id="title" class="glass">
         <span class="mark" aria-hidden="true"></span>
-        <div><h1><span class="lg">Globe </span>Style Lab</h1><p>One set of real data, eight looks</p></div>
+        <div><h1>Qellon</h1><p>Real storms on a real wind globe</p></div>
       </header>
 
       <div id="fly" class="glass" role="group" aria-label="Fly to"></div>
 
-      <aside id="panel" class="glass" aria-label="Look details">
+      <aside id="panel" class="glass" aria-label="Customize">
         <button id="fold" type="button" aria-expanded="true" aria-controls="panel-body" aria-label="Show or hide details"><span></span></button>
         <div id="panel-head">
-          <p class="eyebrow" id="d-eyebrow">Direction</p>
+          <p class="eyebrow" id="d-eyebrow">Customize</p>
           <h2 id="d-name"></h2>
           <p id="d-tag"></p>
         </div>
         <div id="panel-body">
           <dl id="notes"></dl>
+          <button id="reset" type="button" hidden>Back to Heat</button>
           <section id="mix" aria-labelledby="mix-h">
-            <h3 id="mix-h">Mix it yourself</h3>
+            <h3 id="mix-h">Fine-tune every layer</h3>
             <div id="mix-controls"></div>
           </section>
           <details id="research">
-            <summary>What the research says</summary>
+            <summary>Why these choices</summary>
             <ul>
               <li>Streamlines with arrowheads and curved barbs are read more accurately than classic straight barbs. <a href="https://journals.ametsoc.org/view/journals/bams/95/10/bams-d-13-00135.1.xml" target="_blank" rel="noreferrer">Ware et al., BAMS 2014</a></li>
               <li>Weather charts draw isobars every 4 hPa from 1000, and mark highs and lows with H and L. <a href="https://www.noaa.gov/jetstream/analyze-appair-pressure-map" target="_blank" rel="noreferrer">NOAA JetStream</a></li>
@@ -54,7 +55,7 @@
         <button type="button" id="zout" aria-label="Zoom out">&minus;</button>
       </div>
 
-      <nav id="strip" aria-label="Directions"></nav>
+      <nav id="strip" aria-label="Looks"></nav>
     </main>
     <script type="module" src="./main.ts"></script>
   </body>

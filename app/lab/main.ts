@@ -14,7 +14,16 @@ const phone = () => matchMedia("(max-width: 860px)").matches
 const mk = (cls: string) => { const c = document.createElement("canvas"); c.className = `layer ${cls}`; stage.insertBefore(c, labelsEl); return c }
 const scene = new Scene({ surface: mk("surface"), marks: mk("marks"), trail: mk("trail"), live: mk("live") }, Math.min(2, window.devicePixelRatio || 1))
 
-let cfg: Cfg = { ...PRESETS[0].cfg }
+const KEY = "qellon-look"
+const DEFAULT = PRESETS[0] // Heat: first-time visitors always start here
+const keys = Object.keys(DEFAULT.cfg) as (keyof Cfg)[]
+function remembered(): Cfg | null {
+  try {
+    const c = JSON.parse(localStorage.getItem(KEY) || "null")
+    return c && keys.every(k => OPTIONS.find(o => o.key === k)!.items.some(i => i[0] === c[k])) ? c as Cfg : null
+  } catch { return null }
+}
+let cfg: Cfg = { ...DEFAULT.cfg }
 let view = { lon: 105, lat: 16, zoom: 1 }
 let lastMove = 0
 let stillStamp = ""
@@ -129,13 +138,15 @@ function applyCfg(fromHash = false) {
   scene.setCfg(cfg); stillStamp = ""
   mix.querySelectorAll<HTMLButtonElement>("button").forEach(b => b.setAttribute("aria-checked", String(cfg[b.dataset.key as keyof Cfg] === b.dataset.val)))
   const p = current()
-  $("#d-eyebrow").textContent = p ? `Direction ${PRESETS.indexOf(p) + 1} of ${PRESETS.length}` : "Your mix"
+  $("#d-eyebrow").textContent = p ? "Customize · Look" : "Customize · Your mix"
+  $<HTMLButtonElement>("#reset").hidden = p === DEFAULT
+  try { localStorage.setItem(KEY, JSON.stringify(cfg)) } catch { /* private window */ }
   $("#d-name").textContent = p ? p.name : "Custom mix"
-  $("#d-tag").textContent = p ? p.tagline : "Built from the choices below"
+  $("#d-tag").textContent = p ? p.tagline : "Built from your choices"
   const notes = $("#notes")
   notes.innerHTML = p
-    ? `<div><dt>The look</dt><dd>${p.look}</dd></div><div><dt>Reads best for</dt><dd>${p.bestFor}</dd></div><div><dt>Watch out</dt><dd class="watch">${p.watch}</dd></div>`
-    : `<div><dt>The look</dt><dd>${optLabel("earth", cfg.earth)} planet, ${cfg.fill === "none" ? "no colour fill" : optLabel("fill", cfg.fill).toLowerCase() + " fill"}, ${optLabel("wind", cfg.wind).toLowerCase()} for wind, ${optLabel("isobars", cfg.isobars).toLowerCase()} for pressure.</dd></div><div><dt>Tip</dt><dd class="watch">Pick a direction in the strip below to reset, or keep changing layers. Some combinations clash on purpose so you can see why.</dd></div>`
+    ? `<div><dt>The look</dt><dd>${p.look}</dd></div><div><dt>Reads best for</dt><dd>${p.bestFor}</dd></div>`
+    : `<div><dt>The look</dt><dd>${optLabel("earth", cfg.earth)} planet, ${cfg.fill === "none" ? "no colour fill" : optLabel("fill", cfg.fill).toLowerCase() + " fill"}, ${optLabel("wind", cfg.wind).toLowerCase()} for wind, ${optLabel("isobars", cfg.isobars).toLowerCase()} for pressure.</dd></div><div><dt>Tip</dt><dd class="watch">Pick a look in the strip below, or keep changing layers. Some combinations clash on purpose so you can see why.</dd></div>`
   document.querySelectorAll<HTMLButtonElement>("#strip button").forEach((b, i) => b.setAttribute("aria-pressed", String(PRESETS[i] === p)))
   if (!fromHash) { try { history.replaceState(null, "", p ? `#${p.id}` : location.pathname) } catch { /* the viewer may block it */ } }
   legend()
@@ -189,6 +200,7 @@ function select(p: Preset) { cfg = { ...p.cfg }; applyCfg() }
 
 // ---------------------------------------------------------------- panel fold on phones
 const panel = $("#panel"), fold = $("#fold")
+$("#fold").setAttribute("aria-label", "Show or hide Customize")
 fold.onclick = () => { const c = panel.classList.toggle("collapsed"); fold.setAttribute("aria-expanded", String(!c)); layout() }
 if (phone()) { panel.classList.add("collapsed"); fold.setAttribute("aria-expanded", "false") }
 $("#research").addEventListener("toggle", () => {})
@@ -199,9 +211,12 @@ $("#snapshot").textContent = `Snapshot, not live. Wind, pressure and temperature
 void t0
 
 // ---------------------------------------------------------------- start
+$("#reset").onclick = () => select(DEFAULT)
 const hash = location.hash.slice(1)
 const start = PRESETS.find(p => p.id === hash)
+const saved = remembered()
 if (start) cfg = { ...start.cfg }
+else if (saved) cfg = saved
 layout()
 scene.setView(view)
 applyCfg(true)

@@ -128,3 +128,8 @@ h1, h2, h3, p, dl, dd, ul { margin: 0; }
   #strip b { margin-top: 5px; font-size: 12.5px; } #strip small { font-size: 11px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+#reset { margin-top: 14px; border: 1px solid var(--line); background: var(--well); border-radius: 999px; padding: 7px 14px; font-size: 12.5px; cursor: pointer; }
+#reset:hover { background: rgba(255, 255, 255, 0.12); }
+#reset[hidden] { display: none; }
+#reset:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
