@@ -54,6 +54,17 @@ function bilinear(arr: Float32Array, lon: number, lat: number) {
   return a * (1 - fx) * (1 - fy) + b * fx * (1 - fy) + c * (1 - fx) * fy + d * fx * fy
 }
 
+/** The current field on a 1° grid (360 x 181, lon 0..359, north row first): u and v in m/s, t in K, p in hPa. Null until a field has loaded. */
+export function oneDegree() {
+  if (!FIELD_READY) return null
+  const n = 360 * 181, u = new Float32Array(n), v = new Float32Array(n), t = new Float32Array(n), p = new Float32Array(n)
+  for (let j = 0; j < 181; j++) for (let i = 0; i < 360; i++) {
+    const k = j * 360 + i, lat = 90 - j
+    u[k] = bilinear(U, i, lat); v[k] = bilinear(V, i, lat); t[k] = bilinear(T, i, lat); p[k] = bilinear(P, i, lat) / 100
+  }
+  return { u, v, t, p }
+}
+
 export function windAt(lon: number, lat: number): [number, number] {
   return [bilinear(U, lon, lat), bilinear(V, lon, lat)]
 }
