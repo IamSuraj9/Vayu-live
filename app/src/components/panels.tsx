@@ -1,7 +1,7 @@
 import { useId, useState } from "react"
 import {
-  ArrowUpRight, BookOpen, ChevronDown, CircleHelp, Compass, Gauge, History, Layers as LayersIcon, MapPin, Minus, Navigation,
-  Info, Pause, Play, Plus, Search, Settings2, Thermometer, Wind, X,
+  ArrowUpRight, BookOpen, ChevronDown, CircleHelp, Gauge, History, Layers as LayersIcon, MapPin, Navigation,
+  Info, Pause, Play, Search, Settings2, Thermometer, Wind, X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -21,12 +21,12 @@ import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, C
 import { cn } from "@/lib/utils"
 import { LEVELS, headline, levelFor } from "@/lib/strength"
 import {
-  type Units, defaultUnits, fmtAgo, fmtDist, fmtPress, fmtSpeedKmh, fmtTempK, fmtTime, fmtWindKt, fmtWindMs, windFromKt, windFromMs, WIND_LABEL,
+  type Units, defaultUnits, fmtAgo, fmtDist, fmtPress, fmtSpeedKmh, fmtTempK, fmtTime, fmtWindKt, fmtWindMs, windFromKt, WIND_LABEL,
 } from "@/lib/units"
 import { bearing, compass, compassShort, distanceKm, fmtLatLon, windWords } from "@/lib/geo"
 import { type Storm, type State, type StormFile, type Liveness, trend, whereNow, startMs, endMs } from "@/lib/storms"
 import { CITIES } from "@/data/cities"
-import { StormGlyph, RAMP_CSS, type Layers } from "@/globe/Globe"
+import { StormGlyph, type Layers } from "@/globe/Globe"
 import { FIELD_SOURCE, FIELD_TIME, sampleAt } from "@/globe/field"
 
 /* ---------- shared bits ---------- */
@@ -766,36 +766,6 @@ export function ReplayBar({ storm, at, playing, speed, units, onToggle, onSeek, 
         {[1, 2, 4].map(s => <ToggleGroupItem key={s} value={String(s)} className="h-7 min-w-9 rounded-full px-2 font-mono text-[11.5px]">{s}×</ToggleGroupItem>)}
       </ToggleGroup>
       <Button variant="ghost" size="icon" className="size-8 shrink-0 rounded-full" onClick={onClose} aria-label="Stop replay"><X /></Button>
-    </div>
-  )
-}
-
-export function MapControls({ onZoomIn, onZoomOut, onReset }: { onZoomIn: () => void; onZoomOut: () => void; onReset: () => void }) {
-  return (
-    <div className={cn(glass, "lens flex flex-col items-center gap-0.5 rounded-full p-1")}>
-      <ToolButton label="Zoom in" shortcut="+" onClick={onZoomIn}><Plus /></ToolButton>
-      <ToolButton label="Zoom out" shortcut="−" onClick={onZoomOut}><Minus /></ToolButton>
-      <Separator className="my-0.5 w-5 bg-white/10" />
-      <ToolButton label="Back to the start view" onClick={onReset}><Compass /></ToolButton>
-    </div>
-  )
-}
-
-export function Legend({ units, onScale }: { units: Units; onScale: () => void }) {
-  const ticks = [0, 10, 20, 30, 40]
-  return (
-    <div className={cn(glass, "flex w-[248px] flex-col gap-3 rounded-[22px] px-3.5 py-3")}>
-      <div>
-        <p className="flex items-baseline justify-between text-[12px]"><span className="text-muted-foreground">Wind speed</span><span className="font-mono text-[11px] text-muted-foreground">{WIND_LABEL[units.wind]}</span></p>
-        <div className="mt-2 h-1.5 rounded-full" style={{ background: RAMP_CSS }} aria-hidden="true" />
-        <div className="mt-1.5 flex justify-between font-mono text-[10.5px] text-muted-foreground tabular-nums">
-          {ticks.map(t => <span key={t}>{Math.round(windFromMs(t, units.wind))}{t === 40 ? "+" : ""}</span>)}
-        </div>
-      </div>
-      <button type="button" onClick={onScale} className="group flex flex-col gap-1.5 rounded-lg text-left outline-none focus-visible:ring-2 focus-visible:ring-ring">
-        <span className="flex items-baseline justify-between text-[12px]"><span className="text-muted-foreground">Storm strength</span><span className="text-[11.5px] text-foreground/80 group-hover:underline">How it works</span></span>
-        <span className="flex gap-1" aria-hidden="true">{LEVELS.map(l => <span key={l.key} className="h-1.5 flex-1 rounded-full" style={{ background: l.color }} />)}</span>
-      </button>
     </div>
   )
 }

@@ -41,6 +41,7 @@ Needs Node 20+.
 | `app/public/data/wind.json` | 0.5° wind, temperature and pressure field. Built at deploy time, not committed |
 | `.github/workflows/` | `refresh-storms.yml` (every 3 hours), `deploy.yml` (builds and publishes after each refresh and push to main) and `ci.yml` (tests and app build on every push) |
 | `docs/DEPLOY.md` | How to connect Cloudflare Pages |
+| `docs/LOOKS.md` | The eight looks, the Customize card and how the drawing engine fits in |
 | `trigger/` | Cloudflare Worker that starts the storm refresh every 3 hours (GitHub's own timer is only a backup). Setup in `docs/TIMER.md` |
 | `docs/research/` | Research, product plan, and the Phase 0 data spike with the v0.2 plan |
 | `docs/ATTRIBUTION.md` | Data sources, licences and credits |

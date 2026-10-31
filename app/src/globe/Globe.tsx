@@ -5,6 +5,8 @@ import { windAt } from "./field"
 import { useWindOverlay, rescaleTrails } from "./overlay"
 import type { Camera, View } from "./camera"
 import { cn } from "@/lib/utils"
+import { LookLayer } from "./LookLayer"
+import { type Cfg, HEAT, effectiveCfg, sameCfg } from "@/looks/presets"
 
 export type { View } from "./camera"
 export type LL = { lon: number; lat: number }
@@ -18,7 +20,7 @@ type Props = {
   markers: Marker[]; selectedId: string | null; camera: Camera
   onSelect: (id: string | null) => void; pick: LL | null; onPick: (p: (LL & { x: number; y: number }) | null) => void
   reducedMotion: boolean; showParticles: boolean; dimField?: boolean; offsetY?: number; fieldVersion?: number
-  layers?: Layers; renderPick?: (x: number, y: number, w: number, h: number) => React.ReactNode
+  look?: Cfg; layers?: Layers; renderPick?: (x: number, y: number, w: number, h: number) => React.ReactNode
 }
 export type Layers = { particles: boolean; colors: boolean; paths: boolean; borders: boolean }
 const ALL_ON: Layers = { particles: true, colors: true, paths: true, borders: true }
@@ -47,8 +49,13 @@ const graticule = geoGraticule10()
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v))
 const wrapLon = (l: number) => ((l + 540) % 360) - 180
 
-export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, reducedMotion, showParticles: showP, dimField = false, offsetY = 0, fieldVersion = 0, layers = ALL_ON, renderPick }: Props) {
-  const showParticles = showP && layers.particles
+export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, reducedMotion, showParticles: showP, dimField = false, offsetY = 0, fieldVersion = 0, look = HEAT.cfg, layers = ALL_ON, renderPick }: Props) {
+  // Heat is drawn by the layers below (fast, and what ships today). Every other look is drawn by the look engine, loaded on demand.
+  const wantsEngine = !sameCfg(look, HEAT.cfg) && fieldVersion > 0
+  const [engineReady, setEngineReady] = useState(false)
+  useEffect(() => { if (!wantsEngine) setEngineReady(false) }, [wantsEngine])
+  const legacyOn = !(wantsEngine && engineReady)
+  const showParticles = showP && layers.particles && legacyOn
   const wrap = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLCanvasElement>(null)
   const mapRef = useRef<HTMLCanvasElement>(null)
@@ -127,6 +134,7 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
     const ctx = c.getContext("2d")!
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     ctx.clearRect(0, 0, size.w, size.h)
+    if (!legacyOn) return
     const p = geoPath(projection, ctx)
     if (!layers.colors) { ctx.beginPath(); p({ type: "Sphere" }); ctx.fillStyle = "#0d0f14"; ctx.fill() }
     if (layers.borders) {
@@ -135,9 +143,9 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
     }
     ctx.beginPath(); p(lines.coastline); ctx.strokeStyle = "rgba(255,255,255,0.7)"; ctx.lineWidth = 0.85; ctx.stroke()
     ctx.beginPath(); p({ type: "Sphere" }); ctx.strokeStyle = "rgba(255,255,255,0.14)"; ctx.lineWidth = 1; ctx.stroke()
-  }, [projection, size, dpr, layers.colors, layers.borders, lines])
+  }, [projection, size, dpr, layers.colors, layers.borders, lines, legacyOn])
 
-  useWindOverlay(overlayRef, projection, size, dpr, layers.colors && fieldReady, LUT, fieldVersion)
+  useWindOverlay(overlayRef, projection, size, dpr, layers.colors && fieldReady && legacyOn, LUT, fieldVersion)
 
   // Animated particles that follow the wind (in lon/lat space, projected each frame)
   useEffect(() => {
@@ -296,6 +304,10 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
       role="application"
       style={{ cursor: interacting ? "grabbing" : "grab" }}
     >
+      {wantsEngine && (
+        <LookLayer cfg={effectiveCfg(look, layers, dimField)} camera={camera} size={size} dpr={dpr} base={base} oy={oy}
+          fieldVersion={fieldVersion} reducedMotion={reducedMotion} onReady={() => setEngineReady(true)} />
+      )}
       <canvas ref={overlayRef} className="absolute inset-0 h-full w-full transition-opacity duration-500" style={{ opacity: !fieldReady ? 0 : dimField ? 0.28 : 1 }} />
       <canvas ref={mapRef} className="absolute inset-0 h-full w-full" />
       <canvas ref={partRef} className="absolute inset-0 h-full w-full" />
@@ -314,14 +326,15 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
                 return d ? (
                   <g key={i}>
                     <path d={d} fill="none" stroke="rgba(0,0,0,0.55)" strokeWidth={sel ? 5.5 : 4} strokeLinecap="round" />
-                    <path d={d} fill="none" stroke={p.color} strokeWidth={sel ? 3 : 2} strokeLinecap="round" />
+                    {look.storms === "rings" && <path d={d} fill="none" stroke={p.color} strokeOpacity={0.25} strokeWidth={sel ? 8 : 6.5} strokeLinecap="round" />}
+                    <path d={d} fill="none" stroke={p.color} strokeWidth={sel ? 3 : 2} strokeLinecap="round" strokeDasharray={look.storms === "eye" ? "0.1 5.5" : undefined} />
                   </g>
                 ) : null
               })}
               {m.forecast.length > 0 && (
                 <>
                   <path d={svgPath({ type: "LineString", coordinates: [[m.lon, m.lat], ...m.forecast.map(f => [f.lon, f.lat])] }) ?? ""}
-                    fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth={sel ? 2.2 : 1.6} strokeDasharray="6 5" strokeLinecap="round" />
+                    fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth={sel ? 2.2 : 1.6} strokeDasharray={look.storms === "eye" ? "0.1 5.5" : "6 5"} strokeLinecap="round" />
                   {m.forecast.map((f, i) => {
                     if (!visible(f.lon, f.lat)) return null
                     const xy = projection([f.lon, f.lat])!
@@ -357,7 +370,7 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
             aria-label={`${m.name} ${m.label}`}
             aria-pressed={sel}
           >
-            <StormGlyph color={m.color} south={m.lat < 0} selected={sel} reducedMotion={reducedMotion} />
+            <StormGlyph color={m.color} south={m.lat < 0} selected={sel} reducedMotion={reducedMotion} variant={look.storms} />
             <span className={cn(
               "rounded-full border px-2.5 py-1 text-[12px] leading-none whitespace-nowrap transition-colors",
               sel ? "liquid-chip-on border-transparent text-neutral-950" : "liquid-chip border-transparent text-white",
@@ -373,19 +386,36 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
   )
 }
 
-export function StormGlyph({ color, south, selected, reducedMotion, size = 30 }: { color: string; south?: boolean; selected?: boolean; reducedMotion?: boolean; size?: number }) {
+export function StormGlyph({ color, south, selected, reducedMotion, size = 30, variant = "spiral" }: { color: string; south?: boolean; selected?: boolean; reducedMotion?: boolean; size?: number; variant?: Cfg["storms"] }) {
   return (
     <span className="relative inline-flex shrink-0 items-center justify-center" style={{ width: size, height: size }}>
       {selected && <span className="absolute -inset-0.5 rounded-full ring-2 ring-white/90" />}
-      <svg viewBox="-13 -13 26 26" width={size} height={size}
-        className={reducedMotion ? undefined : south ? "qellon-spin-cw" : "qellon-spin-ccw"} aria-hidden="true"
-        style={{ transform: south ? "scaleX(-1)" : undefined }}>
-        <path d="M0,-4.4 C 5.5,-11 11.5,-6 11.2,0.5" fill="none" stroke="#000" strokeOpacity={0.6} strokeWidth={4.6} strokeLinecap="round" />
-        <path d="M0,4.4 C -5.5,11 -11.5,6 -11.2,-0.5" fill="none" stroke="#000" strokeOpacity={0.6} strokeWidth={4.6} strokeLinecap="round" />
-        <path d="M0,-4.4 C 5.5,-11 11.5,-6 11.2,0.5" fill="none" stroke={color} strokeWidth={2.8} strokeLinecap="round" />
-        <path d="M0,4.4 C -5.5,11 -11.5,6 -11.2,-0.5" fill="none" stroke={color} strokeWidth={2.8} strokeLinecap="round" />
-        <circle r={4.6} fill={color} stroke="#05070d" strokeWidth={1.4} />
-      </svg>
+      {variant === "rings" ? (
+        <svg viewBox="-13 -13 26 26" width={size} height={size} aria-hidden="true" style={{ overflow: "visible" }}>
+          {[0, 1, 2].map(i => (
+            <circle key={i} r={11} fill="none" stroke={color} strokeWidth={1.6} className={reducedMotion ? undefined : "qellon-ring"}
+              style={reducedMotion ? { opacity: 0.7 - i * 0.2, transform: `scale(${0.45 + i * 0.28})` } : { animationDelay: `${i * -0.9}s` }} />
+          ))}
+          <circle r={4.2} fill={color} stroke="#05070d" strokeWidth={1.4} />
+        </svg>
+      ) : variant === "eye" ? (
+        <svg viewBox="-13 -13 26 26" width={size} height={size} aria-hidden="true">
+          <circle r={7.4} fill="#000" fillOpacity={0.45} stroke="#000" strokeOpacity={0.6} strokeWidth={4.4} />
+          <circle r={7.4} fill={color} fillOpacity={0.25} stroke={color} strokeWidth={2.2} />
+          <path d="M0 -9.4V-12.6M0 9.4V12.6M-9.4 0H-12.6M9.4 0H12.6" stroke="#fff" strokeWidth={1.6} strokeLinecap="round" />
+          <circle r={2.6} fill="#fff" stroke="#05070d" strokeWidth={1} />
+        </svg>
+      ) : (
+        <svg viewBox="-13 -13 26 26" width={size} height={size}
+          className={reducedMotion ? undefined : south ? "qellon-spin-cw" : "qellon-spin-ccw"} aria-hidden="true"
+          style={{ transform: south ? "scaleX(-1)" : undefined }}>
+          <path d="M0,-4.4 C 5.5,-11 11.5,-6 11.2,0.5" fill="none" stroke="#000" strokeOpacity={0.6} strokeWidth={4.6} strokeLinecap="round" />
+          <path d="M0,4.4 C -5.5,11 -11.5,6 -11.2,-0.5" fill="none" stroke="#000" strokeOpacity={0.6} strokeWidth={4.6} strokeLinecap="round" />
+          <path d="M0,-4.4 C 5.5,-11 11.5,-6 11.2,0.5" fill="none" stroke={color} strokeWidth={2.8} strokeLinecap="round" />
+          <path d="M0,4.4 C -5.5,11 -11.5,6 -11.2,-0.5" fill="none" stroke={color} strokeWidth={2.8} strokeLinecap="round" />
+          <circle r={4.6} fill={color} stroke="#05070d" strokeWidth={1.4} />
+        </svg>
+      )}
     </span>
   )
 }

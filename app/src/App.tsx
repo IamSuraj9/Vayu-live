@@ -11,9 +11,11 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import {
-  AboutDialog, CREDIT_SHORT, CommandPalette, HelpMenu, Freshness, GlossaryDialog, LayersPopover, Legend, MapControls, PointReadout, ReplayBar,
+  AboutDialog, CREDIT_SHORT, CommandPalette, HelpMenu, Freshness, GlossaryDialog, LayersPopover, PointReadout, ReplayBar,
   ScaleDialog, SearchTrigger, StormPanel, StormTabs, ToolButton, Toolbar, UnitsPopover, glass,
 } from "@/components/panels"
+import { CustomizeCard, LookLegend, ZoomPill } from "@/components/looks"
+import { type Cfg, effectiveCfg, loadCfg, saveCfg } from "@/looks/presets"
 import { cn } from "@/lib/utils"
 
 function useMedia(q: string) {
@@ -40,6 +42,9 @@ function loadLayers(): Layers {
 export default function App() {
   const [units, setUnitsState] = useState<Units>(loadUnits)
   const setUnits = (u: Units) => { setUnitsState(u); saveUnits(u) }
+  const [look, setLookState] = useState<Cfg>(loadCfg)
+  const setLook = (c: Cfg) => { setLookState(c); saveCfg(c) }
+  const [customizeOpen, setCustomizeOpen] = useState(false)
   const [layers, setLayersState] = useState<Layers>(loadLayers)
   const setLayers = (l: Layers) => { setLayersState(l); try { localStorage.setItem(LAYERS_KEY, JSON.stringify(l)) } catch { /* unavailable */ } }
   const feed = useStormFeed()
@@ -58,9 +63,10 @@ export default function App() {
   const [aboutOpen, setAboutOpen] = useState(false)
   const [hint, setHint] = useState(() => { try { return !localStorage.getItem(HINT_KEY) } catch { return false } })
   const dismissHint = () => { if (!hint) return; setHint(false); try { localStorage.setItem(HINT_KEY, "1") } catch { /* unavailable */ } }
-  const isMobile = useMedia("(max-width: 720px)")
+  const isMobile = useMedia("(max-width: 720px), (max-height: 480px)") // phones, including on their side
   const reduced = useMedia("(prefers-reduced-motion: reduce)")
-  const [camera] = useState(() => createCamera({ ...START, zoom: typeof window !== "undefined" && window.innerWidth < 720 ? 1.15 : 1 }))
+  const [home] = useState<View>(() => ({ ...START, zoom: typeof window !== "undefined" && window.innerWidth < 720 ? 1.15 : 1 }))
+  const [camera] = useState(() => createCamera(home))
 
   // Storm file age: the pipeline runs every 3 h, so more than STALE_HOURS means it has missed runs
   const fileAgeH = (now - new Date(feed.file.fetchedAt).getTime()) / HOUR
@@ -92,11 +98,12 @@ export default function App() {
 
   const flyTo = (lon: number, lat: number, zoom?: number) => camera.flyTo({ lon, lat, zoom }, { reduced })
   const zoomBy = (f: number) => camera.zoomBy(f, { reduced })
+  const zoomPill = <ZoomPill camera={camera} home={home} large={isMobile} onZoomIn={() => zoomBy(1.5)} onZoomOut={() => zoomBy(1 / 1.5)} onReset={() => flyTo(home.lon, home.lat, home.zoom)} />
 
   const startReplay = (id: string) => {
     const s = ALL.find(x => x.id === id)
     if (!s) return
-    setSelectedId(id); setSheetOpen(false); setPick(null)
+    setSelectedId(id); setSheetOpen(false); setPick(null); setCustomizeOpen(false)
     const atEnd = replay?.id === id && replay.at >= endMs(s)
     setReplay({ id, at: replay?.id === id && !atEnd ? replay.at : startMs(s) })
     setPlaying(true)
@@ -105,6 +112,7 @@ export default function App() {
   }
   const select = (id: string | null) => {
     setSelectedId(id); setSheetOpen(false)
+    if (id) setCustomizeOpen(false) // keep the storm details roomy: Customize folds back to its short form
     if (id) setPick(null)
     if (!id) { setReplay(null); setPlaying(false); return }
     if (replay && replay.id !== id) { setReplay(null); setPlaying(false) }
@@ -210,13 +218,18 @@ export default function App() {
     </Toolbar>
   )
 
+  const shownLook = effectiveCfg(look, layers, pastReplay)
+  const customize = (className?: string) => (
+    <CustomizeCard cfg={look} onChange={setLook} open={customizeOpen} onOpenChange={setCustomizeOpen} compact={isMobile} className={className} />
+  )
+
   return (
     <TooltipProvider delayDuration={250}>
-      <main className="relative h-full w-full overflow-hidden bg-black" onPointerDownCapture={dismissHint}>
+      <main className="relative h-full w-full overflow-hidden bg-black" data-light={look.earth === "paper" || undefined} onPointerDownCapture={dismissHint}>
         <h1 className="sr-only">Qellon storm globe</h1>
         <Globe markers={markers} selectedId={selectedId} camera={camera} onSelect={id => select(id)}
           pick={pick} onPick={p => setPick(p ? { lon: p.lon, lat: p.lat } : null)} reducedMotion={reduced}
-          showParticles={!pastReplay} fieldVersion={fieldVersion} dimField={pastReplay} layers={pastReplay ? { ...layers, colors: false } : layers}
+          showParticles={!pastReplay} fieldVersion={fieldVersion} dimField={pastReplay} look={look} layers={pastReplay ? { ...layers, colors: false } : layers}
           offsetY={isMobile && selected ? Math.round(window.innerHeight * 0.24) : 0}
           renderPick={isMobile ? undefined : (x, y, w, h) => {
             const W = 284, left = x + 20 + W > w - 16 ? x - 20 - W : x + 20
@@ -228,7 +241,7 @@ export default function App() {
         {/* Desktop */}
         {!isMobile && (
           <>
-            <aside className={cn(glass, "absolute top-4 left-[max(16px,env(safe-area-inset-left,0px))] flex max-h-[calc(100%-32px)] w-[336px] flex-col")} aria-label="Storms">
+            <aside className={cn(glass, "absolute top-4 left-[max(16px,env(safe-area-inset-left,0px))] flex max-h-[calc(100%-248px)] w-[336px] flex-col")} aria-label="Storms">
               <div className="flex items-center justify-between px-4 pt-4 pb-3">
                 <Wordmark />
               </div>
@@ -239,20 +252,20 @@ export default function App() {
                 <CreditLine onAbout={() => setAboutOpen(true)} />
               </div>
             </aside>
-            <div className="absolute top-4 right-[max(16px,env(safe-area-inset-right,0px))]">{toolbar}</div>
-            {banner && <div key={bannerKey} className="absolute top-4 left-1/2 w-[min(520px,calc(100%-800px))] min-w-[360px] -translate-x-1/2"><div className="q-pop origin-top">{banner}</div></div>}
-            {panelEl && (
-              <section key={selected!.id} className={cn(glass, "q-enter absolute top-[68px] right-[max(16px,env(safe-area-inset-right,0px))] w-[384px] origin-top-right flex-col overflow-hidden")}
-                style={{ maxHeight: "calc(100% - 68px - 16px)", display: "flex" }} aria-label="Storm details">
-                <div className="min-h-0 flex-1 overflow-y-auto">{panelEl}</div>
-              </section>
-            )}
-            <div className={cn("absolute bottom-4 flex flex-col items-end gap-3", panelEl ? "right-[416px]" : "right-[max(16px,env(safe-area-inset-right,0px))]")}>
-              <MapControls onZoomIn={() => zoomBy(1.5)} onZoomOut={() => zoomBy(1 / 1.5)} onReset={() => flyTo(START.lon, START.lat, START.zoom)} />
-              {!panelEl && <Legend units={units} onScale={() => setScaleOpen(true)} />}
+            <div className="absolute top-4 right-[max(16px,env(safe-area-inset-right,0px))] flex items-center gap-3">{zoomPill}{toolbar}</div>
+            {banner && <div key={bannerKey} className="absolute top-4 left-1/2 w-[min(520px,calc(100%-1000px))] min-w-[320px] -translate-x-1/2"><div className="q-pop origin-top">{banner}</div></div>}
+            {/* Right column: storm details (when a storm is open) above Customize */}
+            <div className="pointer-events-none absolute top-[68px] right-[max(16px,env(safe-area-inset-right,0px))] bottom-4 flex w-[360px] flex-col justify-end gap-3 [&>*]:pointer-events-auto">
+              {panelEl && (
+                <section key={selected!.id} className={cn(glass, "q-enter flex min-h-[160px] shrink origin-bottom-right flex-col overflow-hidden")} aria-label="Storm details">
+                  <div className="min-h-0 flex-1 overflow-y-auto">{panelEl}</div>
+                </section>
+              )}
+              {customize("max-h-[70%] shrink-0")}
             </div>
-            {replayBar && <div className="q-rise absolute bottom-4 left-[368px] right-[472px] mx-auto max-w-[620px]">{replayBar}</div>}
-            {hintEl && <div className="q-rise absolute bottom-4 left-[368px] right-[472px] flex justify-center">{hintEl}</div>}
+            <div className="absolute bottom-4 left-[max(16px,env(safe-area-inset-left,0px))]"><LookLegend cfg={shownLook} units={units} onScale={() => setScaleOpen(true)} /></div>
+            {replayBar && <div className="q-rise absolute bottom-[324px] left-4 right-4 mx-auto max-w-[620px] xl:bottom-4 xl:left-[368px] xl:right-[392px]">{replayBar}</div>}
+            {hintEl && <div className="q-rise absolute bottom-[324px] left-4 right-4 flex justify-center xl:bottom-4 xl:left-[368px] xl:right-[392px]">{hintEl}</div>}
           </>
         )}
 
@@ -263,15 +276,20 @@ export default function App() {
               <div className={cn(glass, "lens pointer-events-auto rounded-full p-1.5")}><Wordmark compact /></div>
               <div className="pointer-events-auto">{toolbar}</div>
             </header>
-            {banner && <div className="ui-gutter absolute inset-x-0 top-[64px]">{banner}</div>}
+            <div className="ui-gutter pointer-events-none absolute inset-x-0 top-[64px] flex items-start justify-between gap-2 [&>*]:pointer-events-auto">
+              <LookLegend cfg={shownLook} units={units} onScale={() => setScaleOpen(true)} compact />
+              {zoomPill}
+            </div>
+            {banner && <div className="ui-gutter absolute inset-x-0 top-[132px]">{banner}</div>}
             {pick && (
-              <div className="ui-gutter absolute inset-x-0 top-[64px] flex justify-center">
+              <div className="ui-gutter absolute inset-x-0 top-[132px] flex justify-center">
                 <PointReadout {...pick} units={units} storms={stormStates} onClose={() => setPick(null)} className="w-full max-w-[360px]" />
               </div>
             )}
             <div className="ui-gutter absolute inset-x-0 bottom-0 flex flex-col gap-2 pb-3">
               {replayBar && <div className="q-rise">{replayBar}</div>}
               {hintEl && !panelEl && <div className="q-rise">{hintEl}</div>}
+              {!panelEl && !replayBar && customize("max-h-[min(64vh,560px)]")}
               {panelEl ? (
                 <section key={selected!.id} className={cn(glass, "q-rise flex max-h-[52vh] flex-col overflow-hidden")} aria-label="Storm details">
                   <div className="min-h-0 flex-1 overflow-y-auto">{panelEl}</div>
