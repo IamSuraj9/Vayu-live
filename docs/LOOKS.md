@@ -5,7 +5,7 @@ computer, above the storms bar on a phone) switches looks and fine-tunes every l
 
 ## What a visitor sees
 
-- First visit: Heat. Later visits: the last look they chose, saved on the device (`qellon.look.v1`).
+- First visit: Heat. Later visits: the last look they chose, saved on the device (`vayu.look.v1`).
 - The card shows three looks (Heat, Ink, Night). "More looks and layers" or the arrow opens all eight, a short
   description, and the layer controls (earth, colour fill, palette, wind, wind colour, pressure lines, map lines,
   storm marks). Changing one layer turns the look into a "Custom mix"; "Back to Heat" returns.

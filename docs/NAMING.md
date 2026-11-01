@@ -7,14 +7,16 @@ air. The earlier working name, Qellon, came from the first repository name the o
 - **Renamed:** the wordmark and hidden page heading, the page title, the "Vayu shows it as issued" sentence in the
   storm panel, `README.md`, the `app/package.json` name, and the internal CSS ids and classes (`vayu-lens`,
   `vayu-ping`, `vayu-spin-*`, `vayu-whirl-*`, `vayu-ring`).
-- **Left alone:** the saved-settings keys `qellon.units.v1`, `qellon.layers.v2`, `qellon.look.v1` and
-  `qellon.hint.v1`. Renaming them would reset every tester's units, layers and chosen look. They are never shown.
+- **Saved-settings keys:** renamed too, from `qellon.*` to `vayu.units.v1`, `vayu.layers.v2`, `vayu.look.v1` and
+  `vayu.hint.v1`. It costs nothing, because a browser keeps these per address and the move to `vayu-live.pages.dev` already
+  starts every tester from the defaults. Do not rename them again later without a reason: that resets saved choices.
 - **Site address:** `vayu-live.pages.dev` (chosen 1 Nov 2026, IST). `storm-globe.pages.dev` redirects to it once this is
   merged, see `docs/DEPLOY.md`. A custom domain was considered and left for later: the free `pages.dev` address is enough
   for testing, and the owner found `wayu.site` expensive at GoDaddy (it also would not have matched the name).
-- **Not renamed yet:** the GitHub repository (`Qellon-Visualizer`), the User-Agent link in `pipeline/fetch.py`, the
-  timer's repository name in `trigger/worker.js`, and the three research notes in `docs/research/`, which are history written under the old name.
-  The next steps are below.
+- **Repository:** renamed from `Qellon-Visualizer` to `Vayu-live` by the owner on 1 Nov 2026 (IST). The timer Worker
+  (`trigger/worker.js`) and the User-Agent link in `pipeline/fetch.py` use the new name; the Worker must be pasted into
+  Cloudflare by hand, see `docs/TIMER.md`.
+- **Not renamed:** the three research notes in `docs/research/`, which are history written under the old name.
 
 ## Why Vayu (web search on 1 Nov 2026, IST; trademarks and social handles are **not** checked)
 - Easy to say (VAH-yoo), short, and the meaning fits an Indian-made wind and storm app.
@@ -47,9 +49,7 @@ Every name comes from the words and science of storms. Searched on 29 Oct and 1 
   `vayu-live` and `vayu-globe` were free on 1 Nov 2026.
 
 ## Next steps
-1. **Repository (optional):** rename it under Settings on GitHub. Old links redirect. Then update `REPO` in
-   `trigger/worker.js` and its test, the User-Agent link in `pipeline/fetch.py`, and the repository name in
-   `docs/TIMER.md`. The timer's token is limited to this repository, so check that it still works after the rename.
+1. **Timer:** paste the updated `trigger/worker.js` into the Cloudflare Worker, then check the next tick (`docs/TIMER.md`).
 2. **After the testers have moved** (a few weeks): delete the old `storm-globe` project in Cloudflare and remove the
    redirect step from `.github/workflows/deploy.yml`.
 3. **Before a wider launch:** search the trademark registers for "Vayu" and "Vayuh" (Vāyuh Inc., a US storm-risk

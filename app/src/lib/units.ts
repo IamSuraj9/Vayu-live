@@ -15,7 +15,7 @@ export function defaultUnits(): Units {
     : { wind: "kmh", temp: "c", press: "hpa", dist: "km", time: "local" }
 }
 
-const KEY = "qellon.units.v1"
+const KEY = "vayu.units.v1"
 export function loadUnits(): Units {
   try {
     const raw = localStorage.getItem(KEY)

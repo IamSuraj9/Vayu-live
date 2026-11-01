@@ -13,7 +13,7 @@ Free: no card needed. Workers free plan allows 5 timers and 100,000 requests a d
 1. GitHub, top right: your picture, **Settings**. Bottom of the left menu: **Developer settings**.
 2. **Personal access tokens**, **Fine-grained tokens**, **Generate new token**.
 3. Name: `storm-refresh-timer`. Expiration: the longest allowed (1 year). Put the date in your calendar.
-4. Resource owner: `IamSuraj9`. Repository access: **Only select repositories**, then `Qellon-Visualizer`.
+4. Resource owner: `IamSuraj9`. Repository access: **Only select repositories**, then `Vayu-live` (called `Qellon-Visualizer` until 1 Nov 2026; a fine-grained token follows the repository through a rename, so the existing token keeps working).
 5. Permissions, **Repository permissions**, **Actions: Read and write**. Leave everything else as it is.
 6. **Generate token**, then copy it. It is shown once. Do not paste it into chat.
 
@@ -39,3 +39,9 @@ They run on every push. It was also run once in Cloudflare's own runtime (`wrang
 - **No runs at all:** open the Worker, **Triggers**, and check the cron is listed.
 - The backup GitHub schedule may still run, and the app shows "Storm data is N hours old" after 6 hours without a refresh.
 - The token can only start workflows on this one repository. It cannot read code or change files. To revoke it, delete it under GitHub Developer settings.
+
+## After a repository rename
+The repository name is written in `trigger/worker.js` (`REPO`), and Cloudflare runs its own pasted copy of that file, so a
+rename needs three things: change `REPO`, paste the file into the Worker (Edit code, Deploy), and check the next tick.
+GitHub redirects the old name, but do not rely on it: a redirected POST can silently turn into a GET and the refresh would
+stop. The repository was renamed from `Qellon-Visualizer` to `Vayu-live` on 1 Nov 2026 (IST).

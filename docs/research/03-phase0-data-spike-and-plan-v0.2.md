@@ -1,5 +1,7 @@
 # Qellon Visualizer: Phase 0 data spike results and Plan v0.2
 
+> Written under the working name Qellon. The product is now called Vayu and the repository is `Vayu-live`. This note is kept as written.
+
 Run on 2026-10-29 around 06:05-06:10 UTC, from the cloud session, using live requests. Raw responses are saved as test fixtures in `data/fixtures/2026-10-29/` (folders: cira, nhc, gdacs, gfs, ibtracs).
 
 ## 1. Product scope (decided in conversation)

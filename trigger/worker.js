@@ -8,7 +8,7 @@
 // A hiccup on GitHub's side (5xx, rate limit, network error, no answer in 15 s) is retried up to 3 times.
 // A settings problem (bad token, wrong repository) is not retried: it fails at once so the Worker's logs show it.
 
-const REPO = "IamSuraj9/Qellon-Visualizer"
+const REPO = "IamSuraj9/Vayu-live" // renamed from Qellon-Visualizer on 1 Nov 2026; keep in step with the repository name
 const WORKFLOW = "refresh-storms.yml"
 const ATTEMPTS = 3
 const WAIT_MS = 15000

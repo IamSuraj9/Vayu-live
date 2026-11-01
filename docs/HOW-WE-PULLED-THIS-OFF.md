@@ -149,8 +149,8 @@ matched the name `Vayu`), and the owner's rule of free hosting won for now. We a
 address, so the site never looks like Vāyuh Inc.
 
 **What changed in the product (pull request 3).** The wordmark, page title, hidden heading, one sentence in the storm
-panel, the README, the package name and the internal CSS names say Vayu. The saved-settings keys keep their `qellon.*`
-names on purpose. The deploy workflow now publishes to the `vayu-live` project by default, and a last step publishes a
+panel, the README, the package name and the internal CSS names say Vayu. The saved-settings keys moved from `qellon.*`
+to `vayu.*` in the same release (they reset on the new address anyway). The deploy workflow now publishes to the `vayu-live` project by default, and a last step publishes a
 permanent redirect on the old `storm-globe` project. A browser keeps saved settings per address, so testers start from
 the defaults once on the new address.
 
@@ -230,8 +230,8 @@ How it works:
 5. **Caching rules** (`app/public/_headers`): `/data/*` is `no-cache`, so a browser always asks "is there a newer
    copy?" (a cheap check). `/assets/*` has content-hashed file names, so it is cached for a year as `immutable`.
    `X-Content-Type-Options: nosniff` and a strict referrer policy apply everywhere.
-6. **Free-plan fit** (limits checked 29 Oct 2026): about 250 publishes a month, 3 data files against a 20,000 file
-   limit, and a largest file of about 2 MB against 25 MiB.
+6. **Free-plan fit** (limits checked 29 Oct 2026): about 250 publishes a month, about 20 files against a 20,000 file
+   limit, and a largest file of about 1.4 MB (`wind.json`) against 25 MiB.
 7. **Address:** `.pages.dev` only, no paid domain. A plain name is usually taken, a name with a suffix is free.
    The project name is the repository variable `CF_PAGES_PROJECT`, and if it is not set the workflow uses `vayu-live`.
 8. **The old address.** `storm-globe.pages.dev` was the first address testers received. The last step of `deploy.yml`
@@ -264,7 +264,7 @@ There are **four different credentials** and they are easy to mix up. Each has o
 
 | # | Credential | Lives where | Who uses it | What it can do | How to rotate or revoke |
 |---|---|---|---|---|---|
-| 1 | **Claude's GitHub access** (the GitHub app connection of this coding session) | Managed by the session, scoped to the repository `IamSuraj9/Qellon-Visualizer` | Claude, to read code, push branches named `claude/...`, open and merge pull requests, start workflows | Only that repository. Claude never sees a token value | Disconnect GitHub in your Claude settings, or uninstall the Claude GitHub app on GitHub |
+| 1 | **Claude's GitHub access** (the GitHub app connection of this coding session) | Managed by the session, scoped to the repository `IamSuraj9/Vayu-live` (`Qellon-Visualizer` until 1 Nov 2026) | Claude, to read code, push branches named `claude/...`, open and merge pull requests, start workflows | Only that repository. Claude never sees a token value | Disconnect GitHub in your Claude settings, or uninstall the Claude GitHub app on GitHub |
 | 2 | **`GITHUB_TOKEN`** (automatic, made fresh for each Actions run) | Created by GitHub inside each run, never stored | The workflows. `refresh-storms.yml` has `contents: write` so it can commit the data file. `deploy.yml` has `contents: read` | One repository, only while that run lasts | Nothing to rotate. Permissions are set in the workflow file |
 | 3 | **`CLOUDFLARE_API_TOKEN`** plus **`CLOUDFLARE_ACCOUNT_ID`** | Repository secrets: GitHub, Settings, Secrets and variables, Actions | `deploy.yml`, through wrangler | Edit Cloudflare Pages in your account, nothing else (no DNS, no billing, no Workers) | Cloudflare, My Profile, API Tokens, roll or delete. Then update the secret |
 | 4 | **Fine-grained personal access token** `storm-refresh-timer`, saved as the Worker secret **`GITHUB_TOKEN`** (same name as #2, different thing) | A secret on the Cloudflare Worker | The Worker, to start the refresh | **Actions: read and write on this one repository only.** It cannot read code or change files. Expires after one year (created around 29 Oct 2026, so set a reminder for the autumn of 2027) | GitHub, Settings, Developer settings, Personal access tokens. Make a new one and replace the Worker secret |
@@ -376,7 +376,7 @@ numbers, because that would overstate strength.
 
 Wind: km/h, mph, kt, m/s (from knots: x1.852, x1.15078, x1, x0.514444). Temperature: °C, °F. Pressure: hPa, inHg.
 Distance: km, mi, nmi. Time: local or UTC. Defaults follow the browser language (US English gets mph, °F, inHg, mi).
-Choices are saved on the device (`qellon.units.v*`). Layers are saved as `qellon.layers.v2`, the look as `qellon.look.v1`.
+Choices are saved on the device (`vayu.units.v*`). Layers are saved as `vayu.layers.v2`, the look as `vayu.look.v1`.
 On a computer the units sit in the toolbar. On a phone they sit in Settings, behind the three-dot button.
 
 ### 3.6 App architecture
@@ -549,11 +549,21 @@ and Geist Mono (SIL Open Font License). The in-app credit line reads "Real data:
   the last step of `deploy.yml`.
 - **Before any wider launch:** search the trademark registers for "Vayu" and "Vayuh", and decide on a custom domain.
 
+### 4.4a Renaming the repository (done on 1 Nov 2026, IST)
+
+1. GitHub, repository **Settings**, **General**, **Repository name**, then **Rename**. Old links and `git` remotes redirect.
+   Fine-grained tokens follow the repository, so the timer's token keeps working.
+2. Change `REPO` in `trigger/worker.js` and paste the whole file into the Cloudflare Worker `storm-refresh-timer`
+   (Edit code, Deploy). Cloudflare runs its own copy, so merging a pull request does not update it. Do this before the next
+   timer tick, because the old name only redirects and a redirected POST can silently turn into a GET.
+3. In the coding session, attach the repository again under its new name (its access is by name).
+4. Check that the next timer tick starts a **Refresh storm data** run by `workflow_dispatch`.
+
 ### 4.4 Renaming checklist (what we did on 1 Nov, and what to repeat)
 
 1. In the app: the wordmark, hidden heading, page title, `package.json`, and any sentence that uses the name. Leave the
-   saved-settings keys (`qellon.units.v*`, `qellon.layers.v*`, `qellon.look.v1`, `qellon.hint.v1`) as they are, or every
-   tester loses their saved choices (they reset anyway when the address changes).
+   saved-settings keys (`vayu.units.v*`, `vayu.layers.v*`, `vayu.look.v1`, `vayu.hint.v1`) alone once they exist, because
+   renaming them resets every tester's saved choices (the 1 Nov move to a new address reset them once anyway).
 2. Choose the address and check it is free: a name with no DNS record on `pages.dev` is free.
 3. Set the repository variable `CF_PAGES_PROJECT`, or change the default in `deploy.yml`, then run **Deploy site** on a
    branch first and check the preview.

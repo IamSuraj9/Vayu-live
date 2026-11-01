@@ -1,5 +1,7 @@
 # Qellon Visualizer: Product Plan v0.1 (plan first, feasibility second)
 
+> Written under the working name Qellon. The product is now called Vayu and the repository is `Vayu-live`. This note is kept as written.
+
 Written 2026-10-28. Follows cyclone-visualizer-research.md in the same folder. Items marked UNVERIFIED have not been confirmed from a fetched page.
 
 ## 1. Concept

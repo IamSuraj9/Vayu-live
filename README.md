@@ -3,19 +3,20 @@
 A storm globe for everyone: every active cyclone, hurricane, typhoon and depression, with its name, plain-language strength,
 wind speed, direction, past path and forecast path, on a moving wind map. Educational project, web only.
 
-> **Status (29 Oct 2026): the app runs on live data and is ready to publish on Cloudflare Pages (day 3).
-> Publishing starts once the Cloudflare secrets are added, see `docs/DEPLOY.md`.**
+> **Status (1 Nov 2026, IST): live at https://vayu-live.pages.dev, refreshed every 3 hours from public agency data.**
 > It is not a warning service.
 >
-> The project is called Vayu, after the Vedic god of wind. The repository and the site address keep their earlier names for now, see `docs/NAMING.md`.
+> The project is called Vayu, after the Vedic god of wind, and the repository is `Vayu-live`. The first address,
+> `storm-globe.pages.dev`, redirects to the new one. The history of the name is in `docs/NAMING.md`.
 
-![Storm panel](docs/screenshots/d2-infa.jpg)
+![Vayu: the storm list, a storm open, and Customize](docs/screenshots/vayu-storm-panel.jpg)
 
 ## What the prototype does
 - Globe with animated wind streaks and wind-speed colours (orthographic projection, canvas)
 - Active storms with strength in words, wind speed, moving speed and direction, past and forecast path
 - Click anywhere for local wind, temperature and pressure; unit switch (km/h, mph, kt, m/s; C/F; hPa/inHg; km/mi/nmi; local/UTC)
 - Search (Ctrl/Cmd+K), layer toggles, phone layout
+- Customize: eight looks (Heat, Ink, Night, Dots, Chart, Relief, Bands, Ribbons) and per-layer controls; the last choice is remembered on the device, see `docs/LOOKS.md`
 - Replay of past storms: Fani 2019, Amphan 2020, Dana 2024, Phailin 2013 (IBTrACS)
 - Live data: loads `data/storms.json` on open and every 10 minutes, and `data/wind.json` (0.5° GFS) when it is published.
   Falls back to the copy built into the app, with a banner when the data can't be reached or is more than 6 hours old.
@@ -28,7 +29,8 @@ wind speed, direction, past path and forecast path, on a moving wind map. Educat
 cd app
 npm ci
 npm run dev        # http://localhost:5173
-npm run build      # one self-contained file in app/dist/index.html
+npm run build      # the site in app/dist: index.html plus hashed files in assets/
+npm run build:single   # one self-contained HTML file, for previews
 ```
 Needs Node 20+.
 
@@ -72,8 +74,11 @@ python3 tools/decode_gfs.py   data/fixtures/2026-10-29/gfs/gfs_2026102900.grb2 a
 1. ~~Live storm pipeline with fallback and tests~~ (done)
 2. ~~App reads the live file; real stale and error states; About and credits; 0.5° wind field~~ (done)
 3. ~~Deploy workflow for Cloudflare Pages with the wind field built at each deploy; screen-size and keyboard checks~~ (done)
-4. Add the Cloudflare secrets and publish; check in Safari and Firefox on real devices
-5. Pick a name
+4. ~~Add the Cloudflare secrets and publish~~ (done: `vayu-live.pages.dev`, refreshed by a Cloudflare timer)
+5. ~~Pick a name~~ (done: Vayu, 1 Nov 2026)
+6. Test on more real devices and browsers (Safari, Firefox, low-end phones)
+7. Before a wider launch: search the trademark registers for "Vayu" and "Vayuh" (`docs/NAMING.md`)
+8. In a few weeks: delete the old `storm-globe` project and the redirect step (`docs/DEPLOY.md`)
 
 ## Licence
 Code: MIT, see `LICENSE`. Data keeps its sources' terms, see `docs/ATTRIBUTION.md`.

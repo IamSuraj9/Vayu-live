@@ -51,7 +51,7 @@ To change the name again, add the repository variable `CF_PAGES_PROJECT` (**Sett
 ## What is published
 | File | Size | Updated |
 |---|---|---|
-| `index.html` (the whole app in one file) | about 2 MB, 700 KB compressed | every deploy |
+| `index.html` and `assets/` (the app, the look engine, the maps and the look thumbnails, with hashed file names) | about 18 files, about 4 MB in total, of which the largest is the 757 KB detailed map | every deploy |
 | `data/storms.json` | about 12 KB | every 3 hours |
 | `data/wind.json` (0.5° GFS wind, temperature, pressure) | about 1.4 MB, 400 KB compressed | every deploy, from the newest GFS run |
 
@@ -59,5 +59,5 @@ If the GFS download fails, the workflow reuses the wind file already on the site
 the 1° field built into it.
 
 This stays inside the free plan (limits checked 29 Oct 2026): about 250 publishes a month against 500 builds a month
-(that limit is for Cloudflare's own Git builds; these are uploads from GitHub, so even counted they fit), 3 files
-against 20,000, and 2 MB against 25 MiB per file.
+(that limit is for Cloudflare's own Git builds; these are uploads from GitHub, so even counted they fit), about 20 files
+against 20,000, and a largest file of 1.4 MB (`wind.json`) against 25 MiB.

@@ -1,5 +1,7 @@
 # Qellon Visualizer: Cyclone Visualization Research (v0.1)
 
+> Written under the working name Qellon. The product is now called Vayu and the repository is `Vayu-live`. This note is kept as written.
+
 Date of research: 2026-10-27. Status: first pass. Items marked UNVERIFIED were not confirmed from a fetched page.
 
 ## 1. Context: Cyclone Arnab (as of 27 Oct 2026)

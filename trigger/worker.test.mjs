@@ -29,7 +29,7 @@ test("sends one correct request to GitHub", async () => {
   const r = await tick(() => status(204))
   assert.ok(r.ok); assert.equal(r.calls.length, 1)
   const { url, init } = r.calls[0]
-  assert.equal(url, "https://api.github.com/repos/IamSuraj9/Qellon-Visualizer/actions/workflows/refresh-storms.yml/dispatches")
+  assert.equal(url, "https://api.github.com/repos/IamSuraj9/Vayu-live/actions/workflows/refresh-storms.yml/dispatches")
   assert.equal(init.method, "POST")
   assert.equal(init.headers.Authorization, "Bearer ghp_test")
   assert.equal(init.headers.Accept, "application/vnd.github+json")
@@ -141,7 +141,7 @@ test("over real HTTP: headers and body arrive intact, and a stray newline in the
   globalThis.fetch = real; server.close()
   assert.equal(got.length, 1)
   assert.equal(got[0].method, "POST")
-  assert.equal(got[0].url, "/repos/IamSuraj9/Qellon-Visualizer/actions/workflows/refresh-storms.yml/dispatches")
+  assert.equal(got[0].url, "/repos/IamSuraj9/Vayu-live/actions/workflows/refresh-storms.yml/dispatches")
   assert.equal(got[0].headers.authorization, "Bearer ghp_real")
   assert.equal(got[0].headers["x-github-api-version"], "2022-11-28")
   assert.equal(got[0].headers["user-agent"], "storm-refresh-timer")
