@@ -12,9 +12,9 @@ air. The earlier working name, Qellon, came from the first repository name the o
 - **Site address:** `vayu-live.pages.dev` (chosen 1 Nov 2026, IST). `storm-globe.pages.dev` redirects to it once this is
   merged, see `docs/DEPLOY.md`. A custom domain was considered and left for later: the free `pages.dev` address is enough
   for testing, and the owner found `wayu.site` expensive at GoDaddy (it also would not have matched the name).
-- **Repository:** to be renamed from `Qellon-Visualizer` to `Cyclone-Visualiser` (the owner's choice: a plain description
-  that does not depend on the product name). Only the owner can do it, under GitHub **Settings**, **General**. The timer
-  Worker and the User-Agent link already accept or use the new name, see `docs/TIMER.md`.
+- **Repository:** renamed from `Qellon-Visualizer` to `Vayu-live` by the owner on 1 Nov 2026 (IST). The timer Worker
+  (`trigger/worker.js`) and the User-Agent link in `pipeline/fetch.py` use the new name; the Worker must be pasted into
+  Cloudflare by hand, see `docs/TIMER.md`.
 - **Not renamed:** the three research notes in `docs/research/`, which are history written under the old name.
 
 ## Why Vayu (web search on 1 Nov 2026, IST; trademarks and social handles are **not** checked)
@@ -48,8 +48,7 @@ Every name comes from the words and science of storms. Searched on 29 Oct and 1 
   `vayu-live` and `vayu-globe` were free on 1 Nov 2026.
 
 ## Next steps
-1. **Repository:** rename it (see above and section 4.4a of `docs/HOW-WE-PULLED-THIS-OFF.md`), then check the timer's next
-   tick and remove the old name from `REPOS` in `trigger/worker.js`.
+1. **Timer:** paste the updated `trigger/worker.js` into the Cloudflare Worker, then check the next tick (`docs/TIMER.md`).
 2. **After the testers have moved** (a few weeks): delete the old `storm-globe` project in Cloudflare and remove the
    redirect step from `.github/workflows/deploy.yml`.
 3. **Before a wider launch:** search the trademark registers for "Vayu" and "Vayuh" (Vāyuh Inc., a US storm-risk

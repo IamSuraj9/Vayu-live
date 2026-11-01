@@ -7,7 +7,7 @@ import time
 import urllib.error
 import urllib.request
 
-USER_AGENT = "storm-globe-educational/0.1 (+https://github.com/IamSuraj9/Cyclone-Visualiser)"
+USER_AGENT = "storm-globe-educational/0.1 (+https://github.com/IamSuraj9/Vayu-live)"
 
 
 class FetchError(Exception):

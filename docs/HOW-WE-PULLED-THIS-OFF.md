@@ -109,7 +109,7 @@ We list these because they explain why some parts of the system look cautious.
    shapes, broken XML headers, "nan" and "inf" numbers, a damaged previous file). Every source now runs inside a safety
    net and every point is checked before it is written. About 16,000 fuzz runs now give no crashes.
 3. **The first timer Worker had no retry, no timeout and did not trim the token.** A pasted secret often ends in a
-   newline. It was hardened and has 15 tests.
+   newline. It was hardened and has 12 tests.
 4. **Stray build files were committed twice** (a 1.3 MB lab build and scratch files). We rebuilt the branches clean and
    added the folders to `.gitignore`.
 5. **The freshness label showed the age of the newest storm report** ("6 h ago"), which looks stale even when the
@@ -264,7 +264,7 @@ There are **four different credentials** and they are easy to mix up. Each has o
 
 | # | Credential | Lives where | Who uses it | What it can do | How to rotate or revoke |
 |---|---|---|---|---|---|
-| 1 | **Claude's GitHub access** (the GitHub app connection of this coding session) | Managed by the session, scoped to the repository `IamSuraj9/Cyclone-Visualiser` (`Qellon-Visualizer` until it was renamed) | Claude, to read code, push branches named `claude/...`, open and merge pull requests, start workflows | Only that repository. Claude never sees a token value | Disconnect GitHub in your Claude settings, or uninstall the Claude GitHub app on GitHub |
+| 1 | **Claude's GitHub access** (the GitHub app connection of this coding session) | Managed by the session, scoped to the repository `IamSuraj9/Vayu-live` (`Qellon-Visualizer` until 1 Nov 2026) | Claude, to read code, push branches named `claude/...`, open and merge pull requests, start workflows | Only that repository. Claude never sees a token value | Disconnect GitHub in your Claude settings, or uninstall the Claude GitHub app on GitHub |
 | 2 | **`GITHUB_TOKEN`** (automatic, made fresh for each Actions run) | Created by GitHub inside each run, never stored | The workflows. `refresh-storms.yml` has `contents: write` so it can commit the data file. `deploy.yml` has `contents: read` | One repository, only while that run lasts | Nothing to rotate. Permissions are set in the workflow file |
 | 3 | **`CLOUDFLARE_API_TOKEN`** plus **`CLOUDFLARE_ACCOUNT_ID`** | Repository secrets: GitHub, Settings, Secrets and variables, Actions | `deploy.yml`, through wrangler | Edit Cloudflare Pages in your account, nothing else (no DNS, no billing, no Workers) | Cloudflare, My Profile, API Tokens, roll or delete. Then update the secret |
 | 4 | **Fine-grained personal access token** `storm-refresh-timer`, saved as the Worker secret **`GITHUB_TOKEN`** (same name as #2, different thing) | A secret on the Cloudflare Worker | The Worker, to start the refresh | **Actions: read and write on this one repository only.** It cannot read code or change files. Expires after one year (created around 29 Oct 2026, so set a reminder for the autumn of 2027) | GitHub, Settings, Developer settings, Personal access tokens. Make a new one and replace the Worker secret |
@@ -499,7 +499,7 @@ chip with WebGL, about 2 to 3 days of work. We chose to wait for tester feedback
 | Check | Where | When |
 |---|---|---|
 | 27 pipeline tests in total: storm tests on saved agency responses, including damaged ones (wrong shapes, broken XML, nan and inf, a damaged previous file), plus 5 wind tests that are skipped without `eccodes` | `pipeline/tests/` | every push and every refresh |
-| 15 timer Worker tests (request shape, retries, bad tokens, the repository rename, 200 simultaneous ticks, a real round trip) | `trigger/worker.test.mjs` | every push |
+| 12 timer Worker tests (request shape, retries, bad tokens, 200 simultaneous ticks, a real round trip) | `trigger/worker.test.mjs` | every push |
 | App type check and production build | the Checks workflow | every push and pull request |
 | Browser checks of the looks, the card, saving, the zoom pill, Settings, and axe | `tools/e2e/looks.cjs` | by hand before releases |
 | Frame rate and long tasks for every look | `tools/e2e/looks-perf.cjs` | by hand |
@@ -549,15 +549,15 @@ and Geist Mono (SIL Open Font License). The in-app credit line reads "Real data:
   the last step of `deploy.yml`.
 - **Before any wider launch:** search the trademark registers for "Vayu" and "Vayuh", and decide on a custom domain.
 
-### 4.4a Renaming the repository (done after the product rename)
+### 4.4a Renaming the repository (done on 1 Nov 2026, IST)
 
-1. Paste the new `trigger/worker.js` into the Cloudflare Worker `storm-refresh-timer` (Edit code, Deploy). It accepts both
-   names, so the order of this step and step 2 does not matter.
-2. GitHub, repository **Settings**, **General**, **Repository name**, then **Rename**. Old links and `git` remotes redirect.
+1. GitHub, repository **Settings**, **General**, **Repository name**, then **Rename**. Old links and `git` remotes redirect.
    Fine-grained tokens follow the repository, so the timer's token keeps working.
-3. In this session, attach the repository again by its new name (the session's access is by name).
-4. Check that the next timer tick starts a **Refresh storm data** run by `workflow_dispatch`, and that the live site still
-   updates. Then remove the old name from `REPOS` in `trigger/worker.js` and paste it once more.
+2. Change `REPO` in `trigger/worker.js` and paste the whole file into the Cloudflare Worker `storm-refresh-timer`
+   (Edit code, Deploy). Cloudflare runs its own copy, so merging a pull request does not update it. Do this before the next
+   timer tick, because the old name only redirects and a redirected POST can silently turn into a GET.
+3. In the coding session, attach the repository again under its new name (its access is by name).
+4. Check that the next timer tick starts a **Refresh storm data** run by `workflow_dispatch`.
 
 ### 4.4 Renaming checklist (what we did on 1 Nov, and what to repeat)
 
