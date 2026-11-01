@@ -9,17 +9,21 @@ air. The earlier working name, Qellon, came from the first repository name the o
   `vayu-ping`, `vayu-spin-*`, `vayu-whirl-*`, `vayu-ring`).
 - **Left alone:** the saved-settings keys `qellon.units.v1`, `qellon.layers.v2`, `qellon.look.v1` and
   `qellon.hint.v1`. Renaming them would reset every tester's units, layers and chosen look. They are never shown.
-- **Not renamed yet:** the GitHub repository (`Qellon-Visualizer`), the Cloudflare project and address
-  (`storm-globe.pages.dev`), the User-Agent link in `pipeline/fetch.py`, the timer's repository name in
-  `trigger/worker.js`, and the three research notes in `docs/research/`, which are history written under the old name.
-  The steps for the address and the repository are below.
+- **Site address:** `vayu-live.pages.dev` (chosen 1 Nov 2026, IST). `storm-globe.pages.dev` redirects to it once this is
+  merged, see `docs/DEPLOY.md`. A custom domain was considered and left for later: the free `pages.dev` address is enough
+  for testing, and the owner's preferred `.site` names were priced as premium.
+- **Not renamed yet:** the GitHub repository (`Qellon-Visualizer`), the User-Agent link in `pipeline/fetch.py`, the
+  timer's repository name in `trigger/worker.js`, and the three research notes in `docs/research/`, which are history written under the old name.
+  The next steps are below.
 
 ## Why Vayu (web search on 1 Nov 2026, IST; trademarks and social handles are **not** checked)
 - Easy to say (VAH-yoo), short, and the meaning fits an Indian-made wind and storm app.
 - **Crowded in weather, with no big product:** VayuMet (a weather site), VayuDrishti (air quality), a hackathon app
   called "Vayu" for disaster alerts, and an Android weather app under the package `com.vayu.weather`. Cyclone Vayu
   (June 2019, near Gujarat) is a named storm, so a search for "Vayu cyclone" returns news about it.
-- `vayu.pages.dev` is **taken**. A suffixed address is needed, for example `vayu-live.pages.dev` (not yet confirmed free).
+- **Closest clash:** Vāyuh Inc. (vayuh.ai, Oakland, California) sells AI storm and wind risk models to insurers and
+  sounds the same. Nothing found says it holds a trademark, but trademarks were not searched (see Next steps).
+- `vayu.pages.dev` is **taken** by an unrelated spam page, so the address is `vayu-live.pages.dev`.
 
 ## Other candidates that were considered
 Every name comes from the words and science of storms. Searched on 29 Oct and 1 Nov 2026.
@@ -40,15 +44,14 @@ Every name comes from the words and science of storms. Searched on 29 Oct and 1 
 - Addresses on `.pages.dev` (checked 29 Oct 2026): the plain names (`kyklos`, `taifu`, `coriolis`, `typhon`, `aeolus`,
   `gyre`, `tufan`, `eyewall`) are **taken** by other people, and so is `vayu` (checked 1 Nov 2026). A name with a suffix
   was free on 29 Oct, for example `kyklos-live.pages.dev`. A clean address needs a paid domain, which is not wanted for now.
+  `vayu-live` and `vayu-globe` were free on 1 Nov 2026.
 
-## Next steps: address and repository (about 10 minutes, ask Claude to do it)
+## Next steps
 1. **Repository (optional):** rename it under Settings on GitHub. Old links redirect. Then update `REPO` in
    `trigger/worker.js` and its test, the User-Agent link in `pipeline/fetch.py`, and the repository name in
    `docs/TIMER.md`. The timer's token is limited to this repository, so check that it still works after the rename.
-2. **Site address:** add the repository variable `CF_PAGES_PROJECT` (Settings, Secrets and variables, Actions,
-   Variables) with the new project name, for example `vayu-live`, and run **Deploy site**. Cloudflare creates the new
-   project. See `docs/DEPLOY.md`.
-3. **Keep old links alive:** the testers' links point at the current address, `storm-globe.pages.dev`. After the new
-   site is up, publish a small "We have moved" page at the old address that redirects to the new one, and keep it for a
-   few weeks. Delete the old project only after that.
-4. Tell the testers the final link.
+2. **After the testers have moved** (a few weeks): delete the old `storm-globe` project in Cloudflare and remove the
+   redirect step from `.github/workflows/deploy.yml`.
+3. **Before a wider launch:** search the trademark registers for "Vayu" and "Vayuh" (Vāyuh Inc., a US storm-risk
+   company, sounds the same), and consider a custom domain once the name is final.
+4. Tell the testers the final link, and that their saved units and look reset once because the address changed.

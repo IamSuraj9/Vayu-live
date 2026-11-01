@@ -1,4 +1,4 @@
-// Stress test against a URL: node tools/e2e/stress.cjs https://storm-globe.pages.dev/ OUT_DIR
+// Stress test against a URL: node tools/e2e/stress.cjs https://vayu-live.pages.dev/ OUT_DIR
 // Load time, frame rate (idle, dragging, zooming), long tasks, memory growth, abuse and offline, per environment.
 const { chromium } = require('playwright');
 const [url, out] = process.argv.slice(2);
