@@ -171,7 +171,7 @@ export function Freshness({ lead, ago, bad }: { lead: string; ago: string | null
   return (
     <div className="flex items-center gap-2.5 text-[12px] text-muted-foreground">
       <span className="relative flex size-2">
-        {!bad && <span className="qellon-ping absolute inline-flex size-full rounded-full bg-live" />}
+        {!bad && <span className="vayu-ping absolute inline-flex size-full rounded-full bg-live" />}
         <span className={cn("relative inline-flex size-2 rounded-full", bad ? "bg-warn" : "bg-live")} />
       </span>
       {ago ? (
@@ -323,7 +323,7 @@ export function StormPanel({ storm, state, live, units, now, replaying, onClose,
           <>
             <div className="glass-well mt-2 rounded-xl px-2 pt-1"><ForecastChart storm={storm} nowKt={state.kt} units={units} /></div>
             <p className="mt-2 text-[12px] leading-relaxed text-muted-foreground">
-              Published by {storm.authority ?? (storm.source.startsWith("NHC") ? "NHC" : "JTWC")} at {fmtTime(storm.forecastIssued!, units.time)}. Qellon shows it as issued and does not make its own forecasts.
+              Published by {storm.authority ?? (storm.source.startsWith("NHC") ? "NHC" : "JTWC")} at {fmtTime(storm.forecastIssued!, units.time)}. Vayu shows it as issued and does not make its own forecasts.
             </p>
           </>
         ) : (

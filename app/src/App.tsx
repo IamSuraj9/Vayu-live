@@ -222,7 +222,7 @@ export default function App() {
   return (
     <TooltipProvider delayDuration={250}>
       <main className="relative h-full w-full overflow-hidden bg-black" data-light={look.earth === "paper" || undefined} onPointerDownCapture={dismissHint}>
-        <h1 className="sr-only">Qellon storm globe</h1>
+        <h1 className="sr-only">Vayu storm globe</h1>
         <Globe markers={markers} selectedId={selectedId} camera={camera} home={home} onSelect={id => select(id)}
           pick={pick} onPick={p => setPick(p ? { lon: p.lon, lat: p.lat } : null)} reducedMotion={reduced}
           showParticles={!pastReplay} fieldVersion={fieldVersion} dimField={pastReplay} look={look} layers={pastReplay ? { ...layers, colors: false } : layers}
@@ -342,7 +342,7 @@ function Wordmark({ compact }: { compact?: boolean }) {
           <circle r="3.6" fill="currentColor" />
         </svg>
       </span>
-      <span className={cn("text-[17px] leading-none font-semibold tracking-tight", compact && "sr-only")}>Qellon</span>
+      <span className={cn("text-[17px] leading-none font-semibold tracking-tight", compact && "sr-only")}>Vayu</span>
     </span>
   )
 }
