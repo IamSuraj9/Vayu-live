@@ -426,7 +426,7 @@ export function StormGlyph({ color, south, selected, reducedMotion, size = 30, v
       {variant === "rings" ? (
         <svg viewBox="-13 -13 26 26" width={size} height={size} aria-hidden="true" style={{ overflow: "visible" }}>
           {[0, 1, 2].map(i => (
-            <circle key={i} r={11} fill="none" stroke={color} strokeWidth={1.6} className={reducedMotion ? undefined : "qellon-ring"}
+            <circle key={i} r={11} fill="none" stroke={color} strokeWidth={1.6} className={reducedMotion ? undefined : "vayu-ring"}
               style={reducedMotion ? { opacity: 0.7 - i * 0.2, transform: `scale(${0.45 + i * 0.28})` } : { animationDelay: `${i * -0.9}s` }} />
           ))}
           <circle r={4.2} fill={color} stroke="#05070d" strokeWidth={1.4} />
@@ -440,7 +440,7 @@ export function StormGlyph({ color, south, selected, reducedMotion, size = 30, v
         </svg>
       ) : (
         <svg viewBox={`${-size / 2} ${-size / 2} ${size} ${size}`} width={size} height={size} aria-hidden="true" style={{ overflow: "visible" }}>
-          <g className={reducedMotion ? undefined : south ? "qellon-whirl-cw" : "qellon-whirl-ccw"}>
+          <g className={reducedMotion ? undefined : south ? "vayu-whirl-cw" : "vayu-whirl-ccw"}>
             {[0, 1].map(k => <path key={k} d={spiralArm(r, spin, k)} fill="none" stroke={color} strokeOpacity={0.95} strokeWidth={2.2} strokeLinecap="round" />)}
           </g>
           <circle r={2.6} fill="#fff" stroke="rgba(0,0,0,0.45)" strokeWidth={0.8} />

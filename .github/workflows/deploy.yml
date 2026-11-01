@@ -24,7 +24,9 @@ concurrency:
   cancel-in-progress: true # only the newest build matters
 
 env:
-  PROJECT: ${{ vars.CF_PAGES_PROJECT || 'storm-globe' }}
+  PROJECT: ${{ vars.CF_PAGES_PROJECT || 'vayu-live' }}
+  # The first address testers were given. After the move it only redirects to the new one.
+  LEGACY_PROJECT: storm-globe
 
 jobs:
   deploy:
@@ -79,3 +81,31 @@ jobs:
           # main publishes the live site; any other branch publishes a preview copy at
           # https://<branch-name>.<project>.pages.dev and leaves the live site alone
           npx --yes wrangler@4 pages deploy app/dist --project-name="$PROJECT" --branch="$BRANCH" --commit-dirty=true
+
+      # Testers have links to the old address. Publish a redirect there, from the same build step as the real site:
+      # main redirects to the new live address, and a branch preview redirects to the same branch preview of the new
+      # project. It runs on pushes and manual runs, not after every storm refresh, so the old project is touched rarely.
+      # A failure here never fails the deploy of the real site.
+      - name: Keep the old address working
+        if: github.event_name != 'workflow_run'
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ] || [ "$PROJECT" = "$LEGACY_PROJECT" ]; then
+            echo "::notice::Nothing to redirect"
+            exit 0
+          fi
+          if [ "$BRANCH" = main ]; then
+            target="https://$PROJECT.pages.dev"
+          else
+            slug=$(printf '%s' "$BRANCH" | tr 'A-Z' 'a-z' | sed 's/[^a-z0-9]/-/g')
+            target="https://$slug.$PROJECT.pages.dev"
+          fi
+          mkdir -p moved
+          printf '/* %s/:splat 301\n' "$target" > moved/_redirects
+          cat moved/_redirects
+          npx --yes wrangler@4 pages deploy moved --project-name="$LEGACY_PROJECT" --branch="$BRANCH" --commit-dirty=true \
+            || echo "::warning::Could not publish the redirect on the old address"

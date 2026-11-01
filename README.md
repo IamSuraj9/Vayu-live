@@ -1,4 +1,4 @@
-# Qellon Visualizer
+# Vayu
 
 A storm globe for everyone: every active cyclone, hurricane, typhoon and depression, with its name, plain-language strength,
 wind speed, direction, past path and forecast path, on a moving wind map. Educational project, web only.
@@ -7,7 +7,7 @@ wind speed, direction, past path and forecast path, on a moving wind map. Educat
 > Publishing starts once the Cloudflare secrets are added, see `docs/DEPLOY.md`.**
 > It is not a warning service.
 >
-> The project name is a placeholder and will change.
+> The project is called Vayu, after the Vedic god of wind. The repository and the site address keep their earlier names for now, see `docs/NAMING.md`.
 
 ![Storm panel](docs/screenshots/d2-infa.jpg)
 
@@ -78,4 +78,4 @@ python3 tools/decode_gfs.py   data/fixtures/2026-10-29/gfs/gfs_2026102900.grb2 a
 Code: MIT, see `LICENSE`. Data keeps its sources' terms, see `docs/ATTRIBUTION.md`.
 
 ## Not an official warning
-Qellon shows data as published by weather agencies and does not make its own forecasts. Follow your national agency for warnings.
+Vayu shows data as published by weather agencies and does not make its own forecasts. Follow your national agency for warnings.
