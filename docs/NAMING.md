@@ -11,7 +11,7 @@ air. The earlier working name, Qellon, came from the first repository name the o
   `qellon.hint.v1`. Renaming them would reset every tester's units, layers and chosen look. They are never shown.
 - **Site address:** `vayu-live.pages.dev` (chosen 1 Nov 2026, IST). `storm-globe.pages.dev` redirects to it once this is
   merged, see `docs/DEPLOY.md`. A custom domain was considered and left for later: the free `pages.dev` address is enough
-  for testing, and the owner's preferred `.site` names were priced as premium.
+  for testing, and the owner found `wayu.site` expensive at GoDaddy (it also would not have matched the name).
 - **Not renamed yet:** the GitHub repository (`Qellon-Visualizer`), the User-Agent link in `pipeline/fetch.py`, the
   timer's repository name in `trigger/worker.js`, and the three research notes in `docs/research/`, which are history written under the old name.
   The next steps are below.

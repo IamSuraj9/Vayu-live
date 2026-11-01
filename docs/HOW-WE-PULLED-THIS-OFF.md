@@ -1,10 +1,11 @@
 # How We Pulled This Off
 
-The full story and the specification of the storm globe (working name **Qellon**): what we studied, what we built, how
-it is hosted on Cloudflare, how GitHub and the tokens fit together, and exactly how every part behaves.
+The full story and the specification of **Vayu**, the storm globe (its working name was **Qellon**, until 1 Nov 2026): what
+we studied, what we built, how it is hosted on Cloudflare, how GitHub and the tokens fit together, and exactly how every
+part behaves.
 
-Written 31 Oct 2026, after the Customize release (pull request 2). All times are in IST (UTC+5:30) unless a
-line says UTC. No secret values appear anywhere in this file, only their names and where they live.
+Written 31 Oct 2026, after the Customize release (pull request 2), and updated on 1 Nov 2026 (IST) for the new name and
+the new address (pull request 3). All times are in IST (UTC+5:30) unless a line says UTC. No secret values appear anywhere in this file, only their names and where they live.
 
 **How to read it.** Part 1 is the story in plain language. Part 2 is how the pieces connect. Part 3 is the specification
 (what the system must do and how it does it today). Part 4 is how to run and fix it. Part 5 is what is still open.
@@ -22,7 +23,8 @@ say it is going, all on top of a moving wind map. It is educational, web only, f
 service. You asked for these hard rules, and they shaped everything:
 
 - Every data source must be free and public. No payments, no accounts, no keys for data.
-- No custom domain for now. The name is a placeholder and will change after testing.
+- No custom domain for now (one was considered on 1 Nov and left for later, see 1.5). The name was a placeholder,
+  Qellon, and became Vayu on 1 Nov.
 - Black background, Geist and Geist Mono type, liquid glass look, Apple-style motion.
 - Keep it simple. Do not overwhelm the user.
 - Private repository, MIT licence, Suraj Kumar as owner.
@@ -95,6 +97,7 @@ Ware 2023). Heat is the familiar wind-speed colour map you already had.
 | 29 Oct | The stale-data banner appeared. GitHub's own timer had skipped every scheduled run | Cloudflare timer, time budgets, freshness guard |
 | 29 Oct | Style Lab: eight looks in one renderer | `claude/style-lab` (the lab itself is not merged) |
 | 31 Oct | Customize release: live looks in the app, new layout, zoom pill, phone controls, spiral storm marker | pull request 2 |
+| 1 Nov | The name: Qellon becomes Vayu, the site moves to `vayu-live.pages.dev`, the old address redirects | pull request 3 |
 
 ### 1.4 What went wrong, and what it taught us
 
@@ -117,6 +120,42 @@ We list these because they explain why some parts of the system look cautious.
 7. **A preview showed "storm data is 6 hours old".** A preview carries the storm data from when its branch was
    created, and nothing refreshes it. It was not a fault in the live site.
 
+### 1.5 How the product got its name (1 Nov 2026)
+
+**Where Qellon came from.** Nobody chose it as a product name. It was the repository name you typed in your first
+message on 27 Oct ("a different GitHub repo named Qellon Visualizer"), and it stayed as the working name. You did not like
+it, so `docs/NAMING.md` kept a list of storm-science names for after testing.
+
+**What we did on 1 Nov.** We searched the web for each candidate and for its address on `pages.dev`. A name is free there
+when it has no DNS record (we calibrated that on a made-up name and on our own site). Names from many mythologies and
+from storm science were checked. These are the results that mattered:
+- **Dropped because already used:** Gyre (an ocean app launched days earlier), Eyewall (three weather apps), Vortix (a
+  weather radar app with hurricane tracking), Njord (sailing and ship software), Stribog, Fujin (a Chinese town that fills
+  the search results with forecasts), Wayu (villages in Kenya and Ethiopia with forecast pages, the Wayuu people, a
+  wind-energy company), Vayuh (see below).
+- **Clear in weather but not chosen:** Kyklos (Greek for circle, the root of cyclone, but you found it strange), Coriolis,
+  Hurakan (the Maya storm god, the root of "hurricane"), Rudra and Oya.
+- **Chosen: Vayu**, the Vedic god of wind and the Sanskrit word for air (वायु). Short, easy to say, and it fits an Indian
+  wind and storm app.
+
+**The risk we accepted.** Vayu is crowded in weather: VayuMet, VayuDrishti, a hackathon app, an Android weather app, and
+the 2019 Cyclone Vayu. Closest of all is **Vāyuh Inc.** (vayuh.ai, Oakland, California), a venture-backed company selling
+AI storm and wind risk models to insurers, which sounds the same. Nothing found says it holds a trademark, but
+**trademarks were not searched**. We chose to keep the name for testing and search before any wider launch.
+
+**The address.** `vayu.pages.dev` is held by an unrelated spam page. We chose `vayu-live.pages.dev` over `vayu-globe` and
+`vayu-atlas`. A custom domain was considered (the owner found `wayu.site` expensive at GoDaddy, and it would not have
+matched the name `Vayu`), and the owner's rule of free hosting won for now. We also decided not to put `vayuh` in any
+address, so the site never looks like Vāyuh Inc.
+
+**What changed in the product (pull request 3).** The wordmark, page title, hidden heading, one sentence in the storm
+panel, the README, the package name and the internal CSS names say Vayu. The saved-settings keys keep their `qellon.*`
+names on purpose. The deploy workflow now publishes to the `vayu-live` project by default, and a last step publishes a
+permanent redirect on the old `storm-globe` project. A browser keeps saved settings per address, so testers start from
+the defaults once on the new address.
+
+**Not built:** a Devanagari wordmark ("Vayu · वायु") was mocked up in three layouts and left for you to decide.
+
 ---
 
 ## Part 2. How the pieces connect
@@ -137,8 +176,8 @@ We list these because they explain why some parts of the system look cautious.
                                                v
                                  +---------------------------+   wrangler       +--------------------+
                                  | Deploy site (GitHub       | ---------------> | Pages project      |
-                                 | Action): builds wind.json,| (API token       | storm-globe        |
-                                 | builds the React app      |  + account ID)   | storm-globe        |
+                                 | Action): builds wind.json,| (API token       | vayu-live          |
+                                 | builds the React app      |  + account ID)   | (free plan)        |
                                  +---------------------------+                  | .pages.dev         |
                                                ^                                +---------+----------+
         push to main / manual run on a branch  |                                          |
@@ -176,24 +215,31 @@ and does no building.
 
 How it works:
 1. **One-time setup (you did this):** a free Cloudflare account, an API token with the single permission Account,
-   Cloudflare Pages, Edit, and your account ID. The Pages project `storm-globe` is created automatically by the
-   first deploy.
+   Cloudflare Pages, Edit, and your account ID. The Pages project `vayu-live` (first `storm-globe`, until 1 Nov) is created
+   automatically by the first deploy.
 2. **Storing the credentials:** the token and the ID are saved as two GitHub repository secrets
    (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`). GitHub hides them in logs.
 3. **Each deploy** (`.github/workflows/deploy.yml`): check out the code, build the wind files from the newest GFS run
    (if that download fails, reuse the wind files already on the live site, and if that fails too the app uses a
    built-in 1° field), run `npm ci` and `npm run build`, then `wrangler pages deploy app/dist`.
 4. **Production vs preview:** the branch name decides. Deploying `main` replaces the live site at
-   `https://storm-globe.pages.dev`. Deploying any other branch publishes a copy at
-   `https://<branch-with-dashes>.storm-globe.pages.dev` and leaves the live site alone. This is how every preview in
-   this project worked, for example `claude-customize-looks.storm-globe.pages.dev`.
+   `https://vayu-live.pages.dev`. Deploying any other branch publishes a copy at
+   `https://<branch-with-dashes>.vayu-live.pages.dev` and leaves the live site alone. This is how every preview in
+   this project worked, for example `claude-rename-vayu.vayu-live.pages.dev` (before 1 Nov the same previews lived under
+   `storm-globe`).
 5. **Caching rules** (`app/public/_headers`): `/data/*` is `no-cache`, so a browser always asks "is there a newer
    copy?" (a cheap check). `/assets/*` has content-hashed file names, so it is cached for a year as `immutable`.
    `X-Content-Type-Options: nosniff` and a strict referrer policy apply everywhere.
 6. **Free-plan fit** (limits checked 29 Oct 2026): about 250 publishes a month, 3 data files against a 20,000 file
    limit, and a largest file of about 2 MB against 25 MiB.
 7. **Address:** `.pages.dev` only, no paid domain. A plain name is usually taken, a name with a suffix is free.
-   Renaming is done with the repository variable `CF_PAGES_PROJECT` (see `docs/NAMING.md`).
+   The project name is the repository variable `CF_PAGES_PROJECT`, and if it is not set the workflow uses `vayu-live`.
+8. **The old address.** `storm-globe.pages.dev` was the first address testers received. The last step of `deploy.yml`
+   publishes a file with one rule (`/* https://vayu-live.pages.dev/:splat 301`) on that old project, so every old link
+   goes to the same path on the new address. It runs on pushes and manual runs, not after refreshes, and a failure there
+   never fails the real deploy. From a branch it redirects to the same branch preview of the new project, which is how
+   we tested it before the merge, and then again from `main` after the merge. Keep the old project for a few weeks,
+   then delete it and remove that step.
 
 ### 2.4 The Cloudflare timer (why a second Cloudflare piece exists)
 
@@ -477,7 +523,7 @@ and Geist Mono (SIL Open Font License). The in-app credit line reads "Real data:
 
 | I want to... | Do this |
 |---|---|
-| See a change before it goes live | GitHub, Actions, **Deploy site**, Run workflow, pick the branch. Open `https://<branch-with-dashes>.storm-globe.pages.dev` |
+| See a change before it goes live | GitHub, Actions, **Deploy site**, Run workflow, pick the branch. Open `https://<branch-with-dashes>.vayu-live.pages.dev` |
 | Refresh the data now | Actions, **Refresh storm data**, Run workflow (it always refreshes) |
 | Publish the live site again | Actions, **Deploy site**, Run workflow on `main` |
 | Run the app on my computer | `cd app`, `npm ci`, `npm run dev` (needs Node 20 or newer) |
@@ -499,20 +545,28 @@ and Geist Mono (SIL Open Font License). The in-app credit line reads "Real data:
 
 - **About one year after the token was made (late Oct 2027):** the timer's GitHub token expires. Set a reminder a few weeks before.
 - **Every few months:** look at the Actions usage and the Cloudflare free-plan limits.
-- **After the testers' round:** rename the app (`docs/NAMING.md` has the options and the step list).
+- **A few weeks after 1 Nov:** once the testers have moved, delete the old `storm-globe` project in Cloudflare and remove
+  the last step of `deploy.yml`.
+- **Before any wider launch:** search the trademark registers for "Vayu" and "Vayuh", and decide on a custom domain.
 
-### 4.4 Renaming checklist (short form)
+### 4.4 Renaming checklist (what we did on 1 Nov, and what to repeat)
 
-In the app: the wordmark, the page title and meta, `package.json`, the About wording. Leave the saved-settings keys
-(`qellon.units.v*`, `qellon.layers.v*`, `qellon.look.v1`) as they are, or every tester loses their saved choices. Set the
-repository variable `CF_PAGES_PROJECT` to the new project name and run **Deploy site**. Publish a "We have moved" page at
-the old address for a few weeks. Tell the testers the final link.
+1. In the app: the wordmark, hidden heading, page title, `package.json`, and any sentence that uses the name. Leave the
+   saved-settings keys (`qellon.units.v*`, `qellon.layers.v*`, `qellon.look.v1`, `qellon.hint.v1`) as they are, or every
+   tester loses their saved choices (they reset anyway when the address changes).
+2. Choose the address and check it is free: a name with no DNS record on `pages.dev` is free.
+3. Set the repository variable `CF_PAGES_PROJECT`, or change the default in `deploy.yml`, then run **Deploy site** on a
+   branch first and check the preview.
+4. The old address redirects through the last step of `deploy.yml` (`LEGACY_PROJECT`). Update that name if the address
+   changes again.
+5. Tell the testers the final link. Details and the full record are in `docs/NAMING.md`.
 
 ---
 
 ## Part 5. What is still open
 
-1. **Rename** from the placeholder, after testing. Candidates: Kyklos (first), Coriolis, Taifu, Typhon, Aeolus, Gyre.
+1. **Trademark search** for "Vayu" and "Vayuh" (Indian and US registers) before any wider launch. Vāyuh Inc., a US storm-risk
+   company, sounds the same. Hurakan and Rudra are the clean fallbacks if the name has to change.
 2. **Smoothness on phones.** Decide on the WebGL rewrite (2 to 3 days) after tester feedback. A smaller step, drawing at
    lower resolution while moving, is half a day.
 3. **Previews go stale** after about 6 hours. The deploy could pull the newest storm data when it builds a preview.
@@ -524,7 +578,9 @@ the old address for a few weeks. Tell the testers the final link.
    test against the free plan's 10 ms limit.
 9. **Branch cleanup** on GitHub: delete the finished branches. The Style Lab branch `claude/style-lab` is unmerged and
    is kept for reference.
-10. **Not checked:** trademarks and social handles for any new name.
+10. **Not checked:** trademarks, and social handles for Vayu.
+11. **Old address:** delete the `storm-globe` project and the redirect step after a few weeks.
+12. **Custom domain** (left for later) and the **Devanagari wordmark** (mocked up, not built).
 
 ---
 
