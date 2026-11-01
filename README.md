@@ -9,7 +9,7 @@ wind speed, direction, past path and forecast path, on a moving wind map. Educat
 >
 > The project is called Vayu, after the Vedic god of wind. The repository and the site address keep their earlier names for now, see `docs/NAMING.md`.
 
-![Storm panel](docs/screenshots/d2-infa.jpg)
+![Vayu: the storm list, a storm open, and Customize](docs/screenshots/vayu-storm-panel.jpg)
 
 ## What the prototype does
 - Globe with animated wind streaks and wind-speed colours (orthographic projection, canvas)

@@ -35,8 +35,10 @@ const fs = require('fs');
 
   const stale = await page('l3-stale', d => shift(d, 9)); await stale.close();
   const off = await page('l4-offline', 'offline'); console.log('offline title:', await off.getByRole('alert').innerText().catch(() => 'none')); await off.close();
-  const ended = await page('l5-ended', d => { shift(d, 1); const a = d.storms.find(s => s.id === 'io022026'); a.status = 'ended'; return d });
-  await ended.locator('aside').getByRole('button', { name: /^Arnab/ }).click(); await ended.waitForTimeout(1500);
+  // any storm will do: the first one in the file (a fixed id broke the test whenever that storm left the live feed)
+  let endedName = ''
+  const ended = await page('l5-ended', d => { shift(d, 1); const a = d.storms[0]; a.status = 'ended'; endedName = a.name; return d });
+  await ended.locator('aside').getByRole('button', { name: new RegExp('^' + endedName) }).click(); await ended.waitForTimeout(1500);
   await ended.screenshot({ path: `${out}/l6-ended-panel.png` }); await ended.close();
   const empty = await page('l7-empty', d => { shift(d, 1); d.storms = []; return d }); await empty.close();
   const phone = await page('l8-phone', d => shift(d, 1), { phone: true });
