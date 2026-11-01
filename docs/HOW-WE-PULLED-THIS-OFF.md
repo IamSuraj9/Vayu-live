@@ -230,8 +230,8 @@ How it works:
 5. **Caching rules** (`app/public/_headers`): `/data/*` is `no-cache`, so a browser always asks "is there a newer
    copy?" (a cheap check). `/assets/*` has content-hashed file names, so it is cached for a year as `immutable`.
    `X-Content-Type-Options: nosniff` and a strict referrer policy apply everywhere.
-6. **Free-plan fit** (limits checked 29 Oct 2026): about 250 publishes a month, 3 data files against a 20,000 file
-   limit, and a largest file of about 2 MB against 25 MiB.
+6. **Free-plan fit** (limits checked 29 Oct 2026): about 250 publishes a month, about 20 files against a 20,000 file
+   limit, and a largest file of about 1.4 MB (`wind.json`) against 25 MiB.
 7. **Address:** `.pages.dev` only, no paid domain. A plain name is usually taken, a name with a suffix is free.
    The project name is the repository variable `CF_PAGES_PROJECT`, and if it is not set the workflow uses `vayu-live`.
 8. **The old address.** `storm-globe.pages.dev` was the first address testers received. The last step of `deploy.yml`
