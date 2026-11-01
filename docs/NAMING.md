@@ -7,8 +7,9 @@ air. The earlier working name, Qellon, came from the first repository name the o
 - **Renamed:** the wordmark and hidden page heading, the page title, the "Vayu shows it as issued" sentence in the
   storm panel, `README.md`, the `app/package.json` name, and the internal CSS ids and classes (`vayu-lens`,
   `vayu-ping`, `vayu-spin-*`, `vayu-whirl-*`, `vayu-ring`).
-- **Left alone:** the saved-settings keys `qellon.units.v1`, `qellon.layers.v2`, `qellon.look.v1` and
-  `qellon.hint.v1`. Renaming them would reset every tester's units, layers and chosen look. They are never shown.
+- **Saved-settings keys:** renamed too, from `qellon.*` to `vayu.units.v1`, `vayu.layers.v2`, `vayu.look.v1` and
+  `vayu.hint.v1`. It costs nothing, because a browser keeps these per address and the move to `vayu-live.pages.dev` already
+  starts every tester from the defaults. Do not rename them again later without a reason: that resets saved choices.
 - **Site address:** `vayu-live.pages.dev` (chosen 1 Nov 2026, IST). `storm-globe.pages.dev` redirects to it once this is
   merged, see `docs/DEPLOY.md`. A custom domain was considered and left for later: the free `pages.dev` address is enough
   for testing, and the owner found `wayu.site` expensive at GoDaddy (it also would not have matched the name).

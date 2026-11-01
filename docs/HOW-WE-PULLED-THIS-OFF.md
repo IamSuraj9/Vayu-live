@@ -149,8 +149,8 @@ matched the name `Vayu`), and the owner's rule of free hosting won for now. We a
 address, so the site never looks like Vāyuh Inc.
 
 **What changed in the product (pull request 3).** The wordmark, page title, hidden heading, one sentence in the storm
-panel, the README, the package name and the internal CSS names say Vayu. The saved-settings keys keep their `qellon.*`
-names on purpose. The deploy workflow now publishes to the `vayu-live` project by default, and a last step publishes a
+panel, the README, the package name and the internal CSS names say Vayu. The saved-settings keys moved from `qellon.*`
+to `vayu.*` in the same release (they reset on the new address anyway). The deploy workflow now publishes to the `vayu-live` project by default, and a last step publishes a
 permanent redirect on the old `storm-globe` project. A browser keeps saved settings per address, so testers start from
 the defaults once on the new address.
 
@@ -376,7 +376,7 @@ numbers, because that would overstate strength.
 
 Wind: km/h, mph, kt, m/s (from knots: x1.852, x1.15078, x1, x0.514444). Temperature: °C, °F. Pressure: hPa, inHg.
 Distance: km, mi, nmi. Time: local or UTC. Defaults follow the browser language (US English gets mph, °F, inHg, mi).
-Choices are saved on the device (`qellon.units.v*`). Layers are saved as `qellon.layers.v2`, the look as `qellon.look.v1`.
+Choices are saved on the device (`vayu.units.v*`). Layers are saved as `vayu.layers.v2`, the look as `vayu.look.v1`.
 On a computer the units sit in the toolbar. On a phone they sit in Settings, behind the three-dot button.
 
 ### 3.6 App architecture
@@ -562,8 +562,8 @@ and Geist Mono (SIL Open Font License). The in-app credit line reads "Real data:
 ### 4.4 Renaming checklist (what we did on 1 Nov, and what to repeat)
 
 1. In the app: the wordmark, hidden heading, page title, `package.json`, and any sentence that uses the name. Leave the
-   saved-settings keys (`qellon.units.v*`, `qellon.layers.v*`, `qellon.look.v1`, `qellon.hint.v1`) as they are, or every
-   tester loses their saved choices (they reset anyway when the address changes).
+   saved-settings keys (`vayu.units.v*`, `vayu.layers.v*`, `vayu.look.v1`, `vayu.hint.v1`) alone once they exist, because
+   renaming them resets every tester's saved choices (the 1 Nov move to a new address reset them once anyway).
 2. Choose the address and check it is free: a name with no DNS record on `pages.dev` is free.
 3. Set the repository variable `CF_PAGES_PROJECT`, or change the default in `deploy.yml`, then run **Deploy site** on a
    branch first and check the preview.

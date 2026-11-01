@@ -31,8 +31,8 @@ function useMedia(q: string) {
 
 const HOUR = 3.6e6
 const START: View = { lon: 100, lat: 15, zoom: 1 }
-const LAYERS_KEY = "qellon.layers.v2"
-const HINT_KEY = "qellon.hint.v1"
+const LAYERS_KEY = "vayu.layers.v2"
+const HINT_KEY = "vayu.hint.v1"
 
 function loadLayers(): Layers {
   try { const raw = localStorage.getItem(LAYERS_KEY); if (raw) return { particles: true, colors: true, paths: true, borders: true, ...JSON.parse(raw) } } catch { /* unavailable */ }

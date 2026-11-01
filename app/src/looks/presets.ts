@@ -92,7 +92,7 @@ export function effectiveCfg(c: Cfg, layers: { particles: boolean; colors: boole
   return e
 }
 
-const KEY = "qellon.look.v1"
+const KEY = "vayu.look.v1"
 /** The look this person chose last time, or Heat on a first visit */
 export function loadCfg(): Cfg {
   try {
