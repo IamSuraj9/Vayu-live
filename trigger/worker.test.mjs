@@ -29,7 +29,7 @@ test("sends one correct request to GitHub", async () => {
   const r = await tick(() => status(204))
   assert.ok(r.ok); assert.equal(r.calls.length, 1)
   const { url, init } = r.calls[0]
-  assert.equal(url, "https://api.github.com/repos/IamSuraj9/Qellon-Visualizer/actions/workflows/refresh-storms.yml/dispatches")
+  assert.equal(url, "https://api.github.com/repos/IamSuraj9/Cyclone-Visualiser/actions/workflows/refresh-storms.yml/dispatches")
   assert.equal(init.method, "POST")
   assert.equal(init.headers.Authorization, "Bearer ghp_test")
   assert.equal(init.headers.Accept, "application/vnd.github+json")
@@ -65,11 +65,31 @@ test("a token pasted with spaces or a newline still works", async () => {
 })
 
 test("settings problems fail at once and are not retried", async () => {
-  for (const code of [400, 401, 403, 404, 410, 422]) {
+  for (const code of [400, 401, 403, 410, 422]) {
     const r = await tick(() => status(code, '{"message":"Resource not accessible by personal access token"}'))
     assert.equal(r.ok, false, String(code)); assert.equal(r.calls.length, 1, `${code} must not be retried`)
     assert.match(r.err.message, new RegExp(`GitHub answered ${code}`))
   }
+})
+
+test("before the rename: the new name says 404, so the old name is tried and works", async () => {
+  const r = await tick((n) => (n === 1 ? status(404, '{"message":"Not Found"}') : status(204)))
+  assert.ok(r.ok); assert.equal(r.calls.length, 2)
+  assert.match(r.calls[0].url, /repos\/IamSuraj9\/Cyclone-Visualiser\//)
+  assert.match(r.calls[1].url, /repos\/IamSuraj9\/Qellon-Visualizer\//)
+  assert.equal(r.calls[1].init.method, "POST", "the second try is also a POST")
+})
+
+test("after the rename: the new name works at once and the old name is never called", async () => {
+  const r = await tick(() => status(204))
+  assert.ok(r.ok); assert.equal(r.calls.length, 1)
+  assert.match(r.calls[0].url, /Cyclone-Visualiser/)
+})
+
+test("a 404 from both names (for example a token without access) fails at once, with both tried and no retries", async () => {
+  const r = await tick(() => status(404, '{"message":"Not Found"}'))
+  assert.equal(r.ok, false); assert.equal(r.calls.length, 2, "one call per name, no retry")
+  assert.match(r.err.message, /GitHub answered 404/)
 })
 
 test("a hiccup on GitHub's side is retried until it works", async () => {
@@ -141,7 +161,7 @@ test("over real HTTP: headers and body arrive intact, and a stray newline in the
   globalThis.fetch = real; server.close()
   assert.equal(got.length, 1)
   assert.equal(got[0].method, "POST")
-  assert.equal(got[0].url, "/repos/IamSuraj9/Qellon-Visualizer/actions/workflows/refresh-storms.yml/dispatches")
+  assert.equal(got[0].url, "/repos/IamSuraj9/Cyclone-Visualiser/actions/workflows/refresh-storms.yml/dispatches")
   assert.equal(got[0].headers.authorization, "Bearer ghp_real")
   assert.equal(got[0].headers["x-github-api-version"], "2022-11-28")
   assert.equal(got[0].headers["user-agent"], "storm-refresh-timer")
