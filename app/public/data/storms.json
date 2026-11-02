@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-02T06:00:00Z",
- "fetchedAt": "2026-11-02T09:20:11Z",
+ "fetchedAt": "2026-11-02T11:13:24Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -9,10 +9,13 @@
    "errors": []
   },
   "gdacs": {
-   "ok": true,
+   "ok": false,
    "events": 2,
-   "used": 2,
-   "errors": []
+   "used": 0,
+   "errors": [
+    "MURASU-26: https://www.gdacs.org/gdacsapi/api/events/getepisodedata?eventtype=TC&eventid=1001346&episodeid=6: The read operation timed out",
+    "IN-FA-26: time budget used up before https://www.gdacs.org/gdacsapi/api/events/getepisodedata?eventtype=TC&eventid=1001343&episodeid=40 (The read operation timed out)"
+   ]
   },
   "tcvitals": {
    "ok": true,
@@ -233,54 +236,11 @@
      "hpa": 983
     }
    ],
-   "forecast": [
-    {
-     "h": 12,
-     "lat": 23.0,
-     "lon": 139.8,
-     "kt": 70
-    },
-    {
-     "h": 24,
-     "lat": 23.4,
-     "lon": 139.0,
-     "kt": 75
-    },
-    {
-     "h": 36,
-     "lat": 24.1,
-     "lon": 138.6,
-     "kt": 80
-    },
-    {
-     "h": 48,
-     "lat": 25.2,
-     "lon": 138.4,
-     "kt": 80
-    },
-    {
-     "h": 60,
-     "lat": 26.9,
-     "lon": 139.0,
-     "kt": 70
-    },
-    {
-     "h": 72,
-     "lat": 29.9,
-     "lon": 141.6,
-     "kt": 65
-    },
-    {
-     "h": 96,
-     "lat": 38.2,
-     "lon": 152.0,
-     "kt": 55
-    }
-   ],
-   "forecastIssued": "2026-11-02T06:00:00Z",
-   "forecastBase": "2026-11-02T06:00:00Z",
-   "source": "JTWC via GDACS + NOAA tcvitals",
-   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001343",
+   "forecast": [],
+   "forecastIssued": null,
+   "forecastBase": null,
+   "source": "NOAA tcvitals",
+   "sourceUrl": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261102/06/atmos/gfs.t06z.syndata.tcvitals.tm00",
    "authority": "JTWC",
    "official": [
     "JMA (Japan Meteorological Agency)",
@@ -294,7 +254,7 @@
    },
    "codes": {
     "atcf": "wp302026",
-    "gdacs": 1001343,
+    "gdacs": null,
     "code": "30W"
    }
   },
@@ -346,36 +306,11 @@
      "hpa": 991
     }
    ],
-   "forecast": [
-    {
-     "h": 12,
-     "lat": 15.3,
-     "lon": 80.2,
-     "kt": 65
-    },
-    {
-     "h": 24,
-     "lat": 16.0,
-     "lon": 79.9,
-     "kt": 50
-    },
-    {
-     "h": 36,
-     "lat": 16.4,
-     "lon": 79.9,
-     "kt": 35
-    },
-    {
-     "h": 48,
-     "lat": 16.6,
-     "lon": 79.6,
-     "kt": 25
-    }
-   ],
-   "forecastIssued": "2026-11-02T06:00:00Z",
-   "forecastBase": "2026-11-02T06:00:00Z",
-   "source": "JTWC via GDACS + NOAA tcvitals",
-   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001346",
+   "forecast": [],
+   "forecastIssued": null,
+   "forecastBase": null,
+   "source": "NOAA tcvitals",
+   "sourceUrl": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261102/06/atmos/gfs.t06z.syndata.tcvitals.tm00",
    "authority": "JTWC",
    "official": [
     "IMD (India Meteorological Department)",
@@ -389,7 +324,7 @@
    },
    "codes": {
     "atcf": "io042026",
-    "gdacs": 1001346,
+    "gdacs": null,
     "code": "04B"
    }
   }
