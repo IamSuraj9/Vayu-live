@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-03T06:00:00Z",
- "fetchedAt": "2026-11-03T09:20:15Z",
+ "fetchedAt": "2026-11-03T12:20:11Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -9,10 +9,8 @@
    "errors": []
   },
   "gdacs": {
-   "ok": true,
-   "events": 2,
-   "used": 2,
-   "errors": []
+   "ok": false,
+   "error": "not well-formed (invalid token): line 116, column 111"
   },
   "tcvitals": {
    "ok": true,
@@ -257,48 +255,11 @@
      "hpa": 982
     }
    ],
-   "forecast": [
-    {
-     "h": 12,
-     "lat": 23.8,
-     "lon": 138.6,
-     "kt": 75
-    },
-    {
-     "h": 24,
-     "lat": 24.9,
-     "lon": 138.4,
-     "kt": 75
-    },
-    {
-     "h": 36,
-     "lat": 26.8,
-     "lon": 139.0,
-     "kt": 75
-    },
-    {
-     "h": 48,
-     "lat": 30.0,
-     "lon": 141.6,
-     "kt": 65
-    },
-    {
-     "h": 60,
-     "lat": 34.7,
-     "lon": 147.1,
-     "kt": 65
-    },
-    {
-     "h": 72,
-     "lat": 40.3,
-     "lon": 154.7,
-     "kt": 65
-    }
-   ],
-   "forecastIssued": "2026-11-03T06:00:00Z",
-   "forecastBase": "2026-11-03T06:00:00Z",
-   "source": "JTWC via GDACS + NOAA tcvitals",
-   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001343",
+   "forecast": [],
+   "forecastIssued": null,
+   "forecastBase": null,
+   "source": "NOAA tcvitals",
+   "sourceUrl": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261103/06/atmos/gfs.t06z.syndata.tcvitals.tm00",
    "authority": "JTWC",
    "official": [
     "JMA (Japan Meteorological Agency)",
@@ -312,7 +273,7 @@
    },
    "codes": {
     "atcf": "wp302026",
-    "gdacs": 1001343,
+    "gdacs": null,
     "code": "30W"
    }
   },
@@ -388,24 +349,11 @@
      "hpa": 984
     }
    ],
-   "forecast": [
-    {
-     "h": 12,
-     "lat": 16.3,
-     "lon": 80.0,
-     "kt": 35
-    },
-    {
-     "h": 24,
-     "lat": 16.8,
-     "lon": 79.7,
-     "kt": 20
-    }
-   ],
-   "forecastIssued": "2026-11-03T06:00:00Z",
-   "forecastBase": "2026-11-03T06:00:00Z",
-   "source": "JTWC via GDACS + NOAA tcvitals",
-   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001346",
+   "forecast": [],
+   "forecastIssued": null,
+   "forecastBase": null,
+   "source": "NOAA tcvitals",
+   "sourceUrl": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261103/06/atmos/gfs.t06z.syndata.tcvitals.tm00",
    "authority": "JTWC",
    "official": [
     "IMD (India Meteorological Department)",
@@ -419,7 +367,7 @@
    },
    "codes": {
     "atcf": "io042026",
-    "gdacs": 1001346,
+    "gdacs": null,
     "code": "04B"
    }
   }
