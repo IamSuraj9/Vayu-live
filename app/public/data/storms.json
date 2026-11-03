@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-02T18:00:00Z",
- "fetchedAt": "2026-11-03T00:20:11Z",
+ "snapshot": "2026-11-03T00:00:00Z",
+ "fetchedAt": "2026-11-03T03:20:13Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-02T18:00:00Z",
+   "cycle": "2026-11-03T00:00:00Z",
    "storms": 2,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261102/18/atmos/gfs.t18z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261103/00/atmos/gfs.t00z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -31,7 +31,7 @@
    "basin": "Bay of Bengal",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-02T18:00:00Z",
+   "updated": "2026-11-03T00:00:00Z",
    "track": [
     {
      "t": "2026-11-01T00:00:00Z",
@@ -79,32 +79,38 @@
      "t": "2026-11-02T18:00:00Z",
      "lat": 15.1,
      "lon": 80.5,
+     "kt": 85
+    },
+    {
+     "t": "2026-11-03T00:00:00Z",
+     "lat": 15.5,
+     "lon": 80.3,
      "kt": 85,
-     "hpa": 973
+     "hpa": 974
     }
    ],
    "forecast": [
     {
      "h": 12,
-     "lat": 15.9,
-     "lon": 80.2,
-     "kt": 70
+     "lat": 16.2,
+     "lon": 80.0,
+     "kt": 55
     },
     {
      "h": 24,
-     "lat": 16.4,
-     "lon": 80.0,
-     "kt": 50
+     "lat": 16.6,
+     "lon": 79.8,
+     "kt": 35
     },
     {
      "h": 36,
-     "lat": 16.8,
-     "lon": 79.7,
-     "kt": 30
+     "lat": 17.0,
+     "lon": 79.3,
+     "kt": 20
     }
    ],
-   "forecastIssued": "2026-11-02T18:00:00Z",
-   "forecastBase": "2026-11-02T18:00:00Z",
+   "forecastIssued": "2026-11-03T00:00:00Z",
+   "forecastBase": "2026-11-03T00:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001346",
    "authority": "JTWC",
@@ -114,9 +120,9 @@
    ],
    "windAvg": "1-minute",
    "people": {
-    "count": 2379267,
+    "count": 1934956,
     "alert": "Red",
-    "modified": "Tue, 03 Nov 2026 00:07:36 GMT"
+    "modified": "Tue, 03 Nov 2026 02:02:00 GMT"
    },
    "codes": {
     "atcf": "io042026",
@@ -132,7 +138,7 @@
    "basin": "Western Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-02T18:00:00Z",
+   "updated": "2026-11-03T00:00:00Z",
    "track": [
     {
      "t": "2026-10-25T06:00:00Z",
@@ -342,56 +348,56 @@
      "t": "2026-11-02T18:00:00Z",
      "lat": 23.2,
      "lon": 139.9,
-     "kt": 65,
-     "hpa": 985
+     "kt": 65
+    },
+    {
+     "t": "2026-11-03T00:00:00Z",
+     "lat": 23.1,
+     "lon": 139.3,
+     "kt": 70,
+     "hpa": 984
     }
    ],
    "forecast": [
     {
      "h": 12,
-     "lat": 23.6,
-     "lon": 139.2,
-     "kt": 70
-    },
-    {
-     "h": 24,
-     "lat": 24.1,
+     "lat": 23.5,
      "lon": 138.7,
      "kt": 75
     },
     {
+     "h": 24,
+     "lat": 24.4,
+     "lon": 138.3,
+     "kt": 75
+    },
+    {
      "h": 36,
-     "lat": 25.4,
-     "lon": 138.6,
+     "lat": 26.0,
+     "lon": 138.5,
      "kt": 75
     },
     {
      "h": 48,
-     "lat": 27.2,
-     "lon": 139.1,
+     "lat": 28.4,
+     "lon": 139.8,
      "kt": 65
     },
     {
      "h": 60,
-     "lat": 30.1,
-     "lon": 141.6,
+     "lat": 32.1,
+     "lon": 143.6,
      "kt": 60
     },
     {
      "h": 72,
-     "lat": 34.4,
-     "lon": 146.5,
-     "kt": 55
-    },
-    {
-     "h": 96,
-     "lat": 45.4,
-     "lon": 162.9,
+     "lat": 37.4,
+     "lon": 150.0,
      "kt": 65
     }
    ],
-   "forecastIssued": "2026-11-02T18:00:00Z",
-   "forecastBase": "2026-11-02T18:00:00Z",
+   "forecastIssued": "2026-11-03T00:00:00Z",
+   "forecastBase": "2026-11-03T00:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001343",
    "authority": "JTWC",
@@ -403,7 +409,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Mon, 02 Nov 2026 20:07:28 GMT"
+    "modified": "Tue, 03 Nov 2026 01:52:13 GMT"
    },
    "codes": {
     "atcf": "wp302026",
