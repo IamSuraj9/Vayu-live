@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-05T06:00:00Z",
- "fetchedAt": "2026-11-05T12:20:13Z",
+ "fetchedAt": "2026-11-05T15:20:14Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-05T06:00:00Z",
+   "cycle": "2026-11-05T12:00:00Z",
    "storms": 1,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261105/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261105/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
