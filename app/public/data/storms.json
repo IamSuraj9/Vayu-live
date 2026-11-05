@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-05T06:00:00Z",
- "fetchedAt": "2026-11-05T17:26:12Z",
+ "fetchedAt": "2026-11-05T21:20:15Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-05T12:00:00Z",
-   "storms": 1,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261105/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
+   "cycle": "2026-11-05T18:00:00Z",
+   "storms": 0,
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261105/18/atmos/gfs.t18z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -29,7 +29,7 @@
    "rawName": "IN-FA",
    "kind": "typhoon",
    "basin": "Western Pacific",
-   "status": "active",
+   "status": "ended",
    "stale": false,
    "updated": "2026-11-05T06:00:00Z",
    "track": [
@@ -301,8 +301,7 @@
      "t": "2026-11-05T06:00:00Z",
      "lat": 29.4,
      "lon": 141.5,
-     "kt": 60,
-     "hpa": 983
+     "kt": 60
     }
    ],
    "forecast": [
@@ -321,7 +320,7 @@
    ],
    "forecastIssued": "2026-11-05T06:00:00Z",
    "forecastBase": "2026-11-05T06:00:00Z",
-   "source": "JTWC via GDACS + NOAA tcvitals",
+   "source": "JTWC via GDACS",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001343",
    "authority": "JTWC",
    "official": [
@@ -337,7 +336,7 @@
    "codes": {
     "atcf": "wp302026",
     "gdacs": 1001343,
-    "code": "30W"
+    "code": null
    }
   }
  ]
