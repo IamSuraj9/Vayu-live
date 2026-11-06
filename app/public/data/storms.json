@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-06T18:00:00Z",
- "fetchedAt": "2026-11-06T21:20:11Z",
+ "fetchedAt": "2026-11-06T23:11:53Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -10,8 +10,8 @@
   },
   "gdacs": {
    "ok": true,
-   "events": 2,
-   "used": 2,
+   "events": 3,
+   "used": 3,
    "errors": []
   },
   "tcvitals": {
@@ -223,10 +223,14 @@
     "https://www.nhc.noaa.gov/?cpac"
    ],
    "windAvg": "1-minute",
-   "people": null,
+   "people": {
+    "count": 0,
+    "alert": "Green",
+    "modified": "Fri, 06 Nov 2026 21:35:12 GMT"
+   },
    "codes": {
     "atcf": "cp042026",
-    "gdacs": null,
+    "gdacs": 1001348,
     "code": null
    }
   },
