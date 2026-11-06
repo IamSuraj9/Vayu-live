@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-05T06:00:00Z",
- "fetchedAt": "2026-11-06T06:20:10Z",
+ "snapshot": "2026-11-06T06:00:00Z",
+ "fetchedAt": "2026-11-06T09:20:10Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -10,19 +10,107 @@
   },
   "gdacs": {
    "ok": true,
-   "events": 1,
-   "used": 1,
+   "events": 2,
+   "used": 2,
    "errors": []
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-06T00:00:00Z",
+   "cycle": "2026-11-06T06:00:00Z",
    "storms": 0,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261106/00/atmos/gfs.t00z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261106/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
  "storms": [
+  {
+   "id": "gdacs-1001347",
+   "name": "Thirtyone",
+   "rawName": "THIRTYONE",
+   "kind": "typhoon",
+   "basin": "Western Pacific",
+   "status": "active",
+   "stale": false,
+   "updated": "2026-11-06T06:00:00Z",
+   "track": [
+    {
+     "t": "2026-11-06T06:00:00Z",
+     "lat": 18.0,
+     "lon": 149.0,
+     "kt": 25
+    }
+   ],
+   "forecast": [
+    {
+     "h": 12,
+     "lat": 19.1,
+     "lon": 145.9,
+     "kt": 35
+    },
+    {
+     "h": 24,
+     "lat": 20.3,
+     "lon": 143.0,
+     "kt": 45
+    },
+    {
+     "h": 36,
+     "lat": 21.3,
+     "lon": 140.3,
+     "kt": 55
+    },
+    {
+     "h": 48,
+     "lat": 22.1,
+     "lon": 137.3,
+     "kt": 70
+    },
+    {
+     "h": 60,
+     "lat": 22.7,
+     "lon": 135.0,
+     "kt": 90
+    },
+    {
+     "h": 72,
+     "lat": 23.3,
+     "lon": 134.1,
+     "kt": 100
+    },
+    {
+     "h": 96,
+     "lat": 23.8,
+     "lon": 136.1,
+     "kt": 95
+    },
+    {
+     "h": 120,
+     "lat": 25.0,
+     "lon": 140.2,
+     "kt": 75
+    }
+   ],
+   "forecastIssued": "2026-11-06T06:00:00Z",
+   "forecastBase": "2026-11-06T06:00:00Z",
+   "source": "JTWC via GDACS",
+   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001347",
+   "authority": "JTWC",
+   "official": [
+    "JMA (Japan Meteorological Agency)",
+    "https://www.jma.go.jp/bosai/map.html#contents=typhoon&lang=en"
+   ],
+   "windAvg": "1-minute",
+   "people": {
+    "count": 0,
+    "alert": "Green",
+    "modified": "Fri, 06 Nov 2026 08:05:09 GMT"
+   },
+   "codes": {
+    "atcf": null,
+    "gdacs": 1001347,
+    "code": null
+   }
+  },
   {
    "id": "wp302026",
    "name": "In-fa",
