@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-06T06:00:00Z",
- "fetchedAt": "2026-11-06T12:20:12Z",
+ "snapshot": "2026-11-06T12:00:00Z",
+ "fetchedAt": "2026-11-06T15:20:12Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,83 +16,90 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-06T06:00:00Z",
-   "storms": 0,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261106/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
+   "cycle": "2026-11-06T12:00:00Z",
+   "storms": 1,
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261106/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
  "storms": [
   {
-   "id": "gdacs-1001347",
+   "id": "wp312026",
    "name": "Thirtyone",
    "rawName": "THIRTYONE",
    "kind": "typhoon",
    "basin": "Western Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-06T06:00:00Z",
+   "updated": "2026-11-06T12:00:00Z",
    "track": [
     {
      "t": "2026-11-06T06:00:00Z",
      "lat": 18.0,
      "lon": 149.0,
      "kt": 25
+    },
+    {
+     "t": "2026-11-06T12:00:00Z",
+     "lat": 17.9,
+     "lon": 147.5,
+     "kt": 30,
+     "hpa": 1006
     }
    ],
    "forecast": [
     {
      "h": 12,
-     "lat": 19.1,
-     "lon": 145.9,
+     "lat": 18.7,
+     "lon": 144.5,
      "kt": 35
     },
     {
      "h": 24,
-     "lat": 20.3,
-     "lon": 143.0,
+     "lat": 19.9,
+     "lon": 141.7,
      "kt": 45
     },
     {
      "h": 36,
-     "lat": 21.3,
-     "lon": 140.3,
+     "lat": 21.0,
+     "lon": 139.1,
      "kt": 55
     },
     {
      "h": 48,
-     "lat": 22.1,
-     "lon": 137.3,
+     "lat": 21.8,
+     "lon": 136.7,
      "kt": 70
     },
     {
      "h": 60,
      "lat": 22.7,
-     "lon": 135.0,
+     "lon": 135.2,
      "kt": 90
     },
     {
      "h": 72,
-     "lat": 23.3,
-     "lon": 134.1,
+     "lat": 23.5,
+     "lon": 135.3,
      "kt": 100
     },
     {
      "h": 96,
-     "lat": 23.8,
-     "lon": 136.1,
+     "lat": 24.7,
+     "lon": 139.2,
      "kt": 95
     },
     {
      "h": 120,
-     "lat": 25.0,
-     "lon": 140.2,
+     "lat": 26.2,
+     "lon": 144.9,
      "kt": 75
     }
    ],
-   "forecastIssued": "2026-11-06T06:00:00Z",
-   "forecastBase": "2026-11-06T06:00:00Z",
-   "source": "JTWC via GDACS",
+   "forecastIssued": "2026-11-06T12:00:00Z",
+   "forecastBase": "2026-11-06T12:00:00Z",
+   "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001347",
    "authority": "JTWC",
    "official": [
@@ -101,14 +108,14 @@
    ],
    "windAvg": "1-minute",
    "people": {
-    "count": 0,
+    "count": 2127,
     "alert": "Green",
-    "modified": "Fri, 06 Nov 2026 11:05:08 GMT"
+    "modified": "Fri, 06 Nov 2026 14:07:06 GMT"
    },
    "codes": {
-    "atcf": null,
+    "atcf": "wp312026",
     "gdacs": 1001347,
-    "code": null
+    "code": "31W"
    }
   },
   {
