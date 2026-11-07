@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-07T00:00:00Z",
- "fetchedAt": "2026-11-07T03:20:11Z",
+ "fetchedAt": "2026-11-07T06:01:28Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -10,8 +10,8 @@
   },
   "gdacs": {
    "ok": true,
-   "events": 3,
-   "used": 3,
+   "events": 2,
+   "used": 2,
    "errors": []
   },
   "tcvitals": {
@@ -340,7 +340,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Sat, 07 Nov 2026 02:20:09 GMT"
+    "modified": "Sat, 07 Nov 2026 05:50:09 GMT"
    },
    "codes": {
     "atcf": "wp312026",
