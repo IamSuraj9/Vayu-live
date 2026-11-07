@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-07T06:00:00Z",
- "fetchedAt": "2026-11-07T12:20:12Z",
+ "snapshot": "2026-11-07T12:00:00Z",
+ "fetchedAt": "2026-11-07T15:20:13Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,13 +16,126 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-07T06:00:00Z",
+   "cycle": "2026-11-07T12:00:00Z",
    "storms": 2,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261107/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261107/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
  "storms": [
+  {
+   "id": "wp312026",
+   "name": "Cempaka",
+   "rawName": "CEMPAKA",
+   "kind": "typhoon",
+   "basin": "Western Pacific",
+   "status": "active",
+   "stale": false,
+   "updated": "2026-11-07T12:00:00Z",
+   "track": [
+    {
+     "t": "2026-11-06T06:00:00Z",
+     "lat": 18.0,
+     "lon": 149.0,
+     "kt": 25
+    },
+    {
+     "t": "2026-11-06T12:00:00Z",
+     "lat": 17.9,
+     "lon": 147.5,
+     "kt": 30
+    },
+    {
+     "t": "2026-11-06T18:00:00Z",
+     "lat": 18.4,
+     "lon": 145.8,
+     "kt": 30
+    },
+    {
+     "t": "2026-11-07T00:00:00Z",
+     "lat": 19.0,
+     "lon": 144.2,
+     "kt": 35
+    },
+    {
+     "t": "2026-11-07T06:00:00Z",
+     "lat": 20.0,
+     "lon": 142.8,
+     "kt": 45
+    },
+    {
+     "t": "2026-11-07T12:00:00Z",
+     "lat": 20.6,
+     "lon": 141.6,
+     "kt": 60,
+     "hpa": 992
+    }
+   ],
+   "forecast": [
+    {
+     "h": 12,
+     "lat": 21.7,
+     "lon": 138.9,
+     "kt": 75
+    },
+    {
+     "h": 24,
+     "lat": 22.6,
+     "lon": 136.5,
+     "kt": 85
+    },
+    {
+     "h": 36,
+     "lat": 23.4,
+     "lon": 135.1,
+     "kt": 95
+    },
+    {
+     "h": 48,
+     "lat": 24.1,
+     "lon": 135.4,
+     "kt": 100
+    },
+    {
+     "h": 60,
+     "lat": 24.8,
+     "lon": 137.3,
+     "kt": 90
+    },
+    {
+     "h": 72,
+     "lat": 25.7,
+     "lon": 140.8,
+     "kt": 80
+    },
+    {
+     "h": 96,
+     "lat": 27.3,
+     "lon": 147.5,
+     "kt": 50
+    }
+   ],
+   "forecastIssued": "2026-11-07T12:00:00Z",
+   "forecastBase": "2026-11-07T12:00:00Z",
+   "source": "JTWC via GDACS + NOAA tcvitals",
+   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001347",
+   "authority": "JTWC",
+   "official": [
+    "JMA (Japan Meteorological Agency)",
+    "https://www.jma.go.jp/bosai/map.html#contents=typhoon&lang=en"
+   ],
+   "windAvg": "1-minute",
+   "people": {
+    "count": 0,
+    "alert": "Green",
+    "modified": "Sat, 07 Nov 2026 14:05:55 GMT"
+   },
+   "codes": {
+    "atcf": "wp312026",
+    "gdacs": 1001347,
+    "code": "31W"
+   }
+  },
   {
    "id": "cp042026",
    "name": "Pena",
@@ -31,7 +144,7 @@
    "basin": "Central Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-07T06:00:00Z",
+   "updated": "2026-11-07T12:00:00Z",
    "track": [
     {
      "t": "2026-11-02T12:00:00Z",
@@ -169,66 +282,73 @@
      "lon": -151.8,
      "kt": 45,
      "hpa": 1000
+    },
+    {
+     "t": "2026-11-07T12:00:00Z",
+     "lat": 11.4,
+     "lon": -152.8,
+     "kt": 45,
+     "hpa": 998
     }
    ],
    "forecast": [
     {
      "h": 3,
      "lat": 11.4,
-     "lon": -152.4,
+     "lon": -153.3,
      "kt": 45
     },
     {
      "h": 12,
-     "lat": 11.4,
-     "lon": -153.9,
-     "kt": 50
+     "lat": 11.5,
+     "lon": -154.5,
+     "kt": 55
     },
     {
      "h": 24,
      "lat": 11.4,
-     "lon": -155.7,
+     "lon": -156.4,
      "kt": 55
     },
     {
      "h": 36,
-     "lat": 11.2,
-     "lon": -157.5,
+     "lat": 11.4,
+     "lon": -157.9,
      "kt": 60
     },
     {
      "h": 48,
-     "lat": 11.2,
-     "lon": -159.2,
+     "lat": 11.3,
+     "lon": -159.8,
      "kt": 60
     },
     {
      "h": 60,
-     "lat": 11.2,
-     "lon": -160.9,
+     "lat": 11.3,
+     "lon": -161.7,
      "kt": 60
     },
     {
      "h": 72,
-     "lat": 11.3,
-     "lon": -162.9,
+     "lat": 11.5,
+     "lon": -163.6,
      "kt": 60
     },
     {
      "h": 96,
      "lat": 11.6,
-     "lon": -167.3,
+     "lon": -168.3,
      "kt": 65
     },
     {
      "h": 120,
-     "lat": 12.9,
-     "lon": -173.4,
+     "lat": 13.0,
+     "lon": -174.8,
      "kt": 65
     }
    ],
-   "forecastIssued": "2026-11-07T09:00:00Z",
-   "forecastBase": "2026-11-07T06:00:00Z",
+   "forecastIssued": "2026-11-07T15:00:00Z",
+   "forecastBase": "2026-11-07T12:00:00Z",
    "source": "NHC",
    "sourceUrl": "https://www.nhc.noaa.gov/",
    "authority": "NHC",
@@ -240,125 +360,12 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Sat, 07 Nov 2026 09:05:51 GMT"
+    "modified": "Sat, 07 Nov 2026 14:50:38 GMT"
    },
    "codes": {
     "atcf": "cp042026",
     "gdacs": 1001348,
     "code": "04C"
-   }
-  },
-  {
-   "id": "wp312026",
-   "name": "Cempaka",
-   "rawName": "CEMPAKA",
-   "kind": "typhoon",
-   "basin": "Western Pacific",
-   "status": "active",
-   "stale": false,
-   "updated": "2026-11-07T06:00:00Z",
-   "track": [
-    {
-     "t": "2026-11-06T06:00:00Z",
-     "lat": 18.0,
-     "lon": 149.0,
-     "kt": 25
-    },
-    {
-     "t": "2026-11-06T12:00:00Z",
-     "lat": 17.9,
-     "lon": 147.5,
-     "kt": 30
-    },
-    {
-     "t": "2026-11-06T18:00:00Z",
-     "lat": 18.4,
-     "lon": 145.8,
-     "kt": 30
-    },
-    {
-     "t": "2026-11-07T00:00:00Z",
-     "lat": 19.0,
-     "lon": 144.2,
-     "kt": 35
-    },
-    {
-     "t": "2026-11-07T06:00:00Z",
-     "lat": 20.0,
-     "lon": 142.8,
-     "kt": 45,
-     "hpa": 999
-    }
-   ],
-   "forecast": [
-    {
-     "h": 12,
-     "lat": 21.2,
-     "lon": 140.1,
-     "kt": 60
-    },
-    {
-     "h": 24,
-     "lat": 22.2,
-     "lon": 137.3,
-     "kt": 75
-    },
-    {
-     "h": 36,
-     "lat": 23.0,
-     "lon": 135.3,
-     "kt": 90
-    },
-    {
-     "h": 48,
-     "lat": 23.8,
-     "lon": 134.7,
-     "kt": 100
-    },
-    {
-     "h": 60,
-     "lat": 24.4,
-     "lon": 135.9,
-     "kt": 95
-    },
-    {
-     "h": 72,
-     "lat": 25.1,
-     "lon": 138.6,
-     "kt": 85
-    },
-    {
-     "h": 96,
-     "lat": 27.2,
-     "lon": 145.4,
-     "kt": 55
-    },
-    {
-     "h": 120,
-     "lat": 28.0,
-     "lon": 150.4,
-     "kt": 35
-    }
-   ],
-   "forecastIssued": "2026-11-07T06:00:00Z",
-   "forecastBase": "2026-11-07T06:00:00Z",
-   "source": "JTWC via GDACS + NOAA tcvitals",
-   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001347",
-   "authority": "JTWC",
-   "official": [
-    "JMA (Japan Meteorological Agency)",
-    "https://www.jma.go.jp/bosai/map.html#contents=typhoon&lang=en"
-   ],
-   "windAvg": "1-minute",
-   "people": {
-    "count": 172,
-    "alert": "Green",
-    "modified": "Sat, 07 Nov 2026 09:35:08 GMT"
-   },
-   "codes": {
-    "atcf": "wp312026",
-    "gdacs": 1001347,
-    "code": "31W"
    }
   },
   {
@@ -369,12 +376,19 @@
    "basin": "South-West Indian Ocean",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-07T06:00:00Z",
+   "updated": "2026-11-07T12:00:00Z",
    "track": [
     {
      "t": "2026-11-07T06:00:00Z",
-     "lat": -13.45,
-     "lon": 54.06,
+     "lat": -13.55,
+     "lon": 54.07,
+     "kt": 35,
+     "hpa": 1008
+    },
+    {
+     "t": "2026-11-07T12:00:00Z",
+     "lat": -13.9,
+     "lon": 53.42,
      "kt": 35,
      "hpa": 1008
     }
@@ -382,43 +396,37 @@
    "forecast": [
     {
      "h": 12,
-     "lat": -13.78,
-     "lon": 52.99,
+     "lat": -13.76,
+     "lon": 51.96,
      "kt": 40
     },
     {
      "h": 24,
-     "lat": -13.67,
-     "lon": 51.73,
+     "lat": -13.06,
+     "lon": 50.42,
      "kt": 35
     },
     {
      "h": 36,
-     "lat": -13.13,
-     "lon": 50.57,
+     "lat": -12.3,
+     "lon": 49.56,
      "kt": 35
     },
     {
      "h": 48,
-     "lat": -12.65,
-     "lon": 49.75,
+     "lat": -11.54,
+     "lon": 48.64,
      "kt": 30
     },
     {
      "h": 60,
-     "lat": -12.17,
-     "lon": 48.84,
-     "kt": 30
-    },
-    {
-     "h": 72,
-     "lat": -11.7,
-     "lon": 47.28,
+     "lat": -10.74,
+     "lon": 47.23,
      "kt": 25
     }
    ],
-   "forecastIssued": "2026-11-07T06:00:00Z",
-   "forecastBase": "2026-11-07T06:00:00Z",
+   "forecastIssued": "2026-11-07T12:00:00Z",
+   "forecastBase": "2026-11-07T12:00:00Z",
    "source": "RSMC via GDACS",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001349",
    "authority": "RSMC",
@@ -430,7 +438,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Sat, 07 Nov 2026 07:35:09 GMT"
+    "modified": "Sat, 07 Nov 2026 13:05:41 GMT"
    },
    "codes": {
     "atcf": null,
