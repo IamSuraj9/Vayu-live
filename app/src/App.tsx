@@ -4,7 +4,7 @@ import { Globe, type LL, type Layers, type Marker, type View } from "@/globe/Glo
 import { createCamera } from "@/globe/camera"
 import { PAST, type Storm, endMs, liveness, startMs, stateAt } from "@/lib/storms"
 import { STALE_HOURS, useNow, useStormFeed, useWindField } from "@/lib/live"
-import { levelFor } from "@/lib/strength"
+import { headline, levelFor } from "@/lib/strength"
 import { type Units, fmtAgo, fmtChecked, fmtTime, fmtWindKt, loadUnits, saveUnits } from "@/lib/units"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -153,7 +153,7 @@ export default function App() {
       const replayingThis = replay?.id === s.id
       const upto = s.track.filter(p => new Date(p.t).getTime() <= st.t)
       return {
-        id: s.id, name: s.name, lon: st.lon, lat: st.lat, color: levelFor(st.kt).color, kt: st.kt,
+        id: s.id, name: s.name, hint: `${s.kind === "disturbance" ? "being watched" : headline(st.kt, s.basin).toLowerCase()}, ${s.basin}`, lon: st.lon, lat: st.lat, color: levelFor(st.kt).color, kt: st.kt,
         label: s.kind === "disturbance" ? `${fmtWindKt(st.kt, units.wind)} · watch` : fmtWindKt(st.kt, units.wind),
         past: [...upto.map(p => ({ lon: p.lon, lat: p.lat, color: levelFor(p.kt).color })), { lon: st.lon, lat: st.lat, color: levelFor(st.kt).color }],
         ghost: replayingThis ? [{ lon: st.lon, lat: st.lat }, ...s.track.filter(p => new Date(p.t).getTime() > st.t).map(p => ({ lon: p.lon, lat: p.lat }))] : undefined,
@@ -201,7 +201,7 @@ export default function App() {
     <div className={cn(glass, "flex items-center gap-2 rounded-[22px] py-1.5 pr-1.5 pl-3.5 text-[13px] leading-snug text-foreground/90")}>
       <MousePointerClick className="size-4 shrink-0 text-brand" aria-hidden="true" />
       <p>{isMobile ? "Tap" : "Click"} a storm to see its path, or anywhere on the globe for local weather</p>
-      <Button variant="ghost" size="icon" className="size-8 shrink-0 rounded-full" aria-label="Dismiss tip" onClick={dismissHint}><X /></Button>
+      <Button variant="ghost" size="icon" className="size-11 shrink-0 rounded-full" aria-label="Dismiss tip" onClick={dismissHint}><X /></Button>
     </div>
   ) : null
   const toolbar = (
@@ -327,7 +327,7 @@ function CreditLine({ onAbout }: { onAbout: () => void }) {
   return (
     <p className="text-[11.5px] text-muted-foreground">
       {CREDIT_SHORT} ·{" "}
-      <button type="button" onClick={onAbout} className="rounded underline decoration-white/25 underline-offset-2 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">Sources and official alerts</button>
+      <button type="button" onClick={onAbout} className="-my-2 rounded py-2 underline decoration-white/25 underline-offset-2 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">Sources and official alerts</button>
     </p>
   )
 }

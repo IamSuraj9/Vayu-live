@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command"
+import { FEEDBACK_URL } from "@/lib/contact"
 import { cn } from "@/lib/utils"
 import { LEVELS, headline, levelFor } from "@/lib/strength"
 import {
@@ -118,10 +119,10 @@ export function StormTabs({ storms, live, now, unknown, past, units, selectedId,
       <TabsList className="relative mx-3 mt-1 grid h-9 w-auto grid-cols-2 rounded-full p-[3px]">
         <span aria-hidden="true" className="tab-thumb liquid-thumb pointer-events-none absolute inset-y-[3px] left-[3px] w-[calc(50%-3px)] rounded-full"
           style={{ transform: tab === "past" ? "translateX(100%)" : "translateX(0)" }} />
-        <TabsTrigger value="active" className="relative z-10 rounded-full text-[13px]">
+        <TabsTrigger value="active" className="relative z-10 min-h-10 rounded-full text-[13px]">
           Active <span className="ml-1 rounded-full bg-white/10 px-1.5 font-mono text-[10.5px] tabular-nums">{current}</span>
         </TabsTrigger>
-        <TabsTrigger value="past" className="relative z-10 rounded-full text-[13px]">Past storms</TabsTrigger>
+        <TabsTrigger value="past" className="relative z-10 min-h-10 rounded-full text-[13px]">Past storms</TabsTrigger>
       </TabsList>
       <TabsContent value="active" tabIndex={-1} className="mt-2 px-1.5 pb-1.5">
         {storms.length === 0 ? (
@@ -160,7 +161,7 @@ export function StormTabs({ storms, live, now, unknown, past, units, selectedId,
             )
           })}
         </ul>
-        <p className="px-2.5 pt-2 pb-1 text-[12px] text-muted-foreground">Tracks from the IBTrACS archive. More storms can be added later.</p>
+        <p className="px-2.5 pt-2 pb-1 text-[12px] text-muted-foreground">Tracks of past storms, from the IBTrACS archive.</p>
       </TabsContent>
     </Tabs>
   )
@@ -447,7 +448,7 @@ function UnitRow<T extends string>({ id, label, value, options, onChange }: { id
       <ToggleGroup type="single" value={value} aria-labelledby={id} onValueChange={v => v && onChange(v as T)}
         className="glass-well rounded-full p-[3px]">
         {options.map(([v, l]) => (
-          <ToggleGroupItem key={v} value={v} className="h-7 min-w-10 rounded-full px-2.5 text-[12px]">{l}</ToggleGroupItem>
+          <ToggleGroupItem key={v} value={v} className="h-9 min-w-11 rounded-full px-3 text-[12px] sm:h-7 sm:min-w-10 sm:px-2.5">{l}</ToggleGroupItem>
         ))}
       </ToggleGroup>
     </div>
@@ -536,7 +537,7 @@ export function ScaleDialog({ units, open, onOpenChange }: { units: Units; open:
         <div className="grid min-h-0 gap-4 overflow-y-auto p-6">
         <DialogHeader>
           <DialogTitle className="text-xl tracking-tight">How strong is it?</DialogTitle>
-          <DialogDescription>One scale for every ocean, based on the steady wind at the centre. Draft wording for review.</DialogDescription>
+          <DialogDescription>One scale for every ocean, based on the steady wind at the centre.</DialogDescription>
         </DialogHeader>
         <ol className="flex flex-col gap-1.5">
           {LEVELS.map(l => (
@@ -675,6 +676,16 @@ export function AboutDialog({ file, live, reachable, now, units, open, onOpenCha
             {file.credits} Wind: GFS model, NOAA/NCEP. Past storms: IBTrACS, NOAA NCEI. Map: Natural Earth.
             Winds are 1-minute averages, so they can read higher than figures from agencies that use 3- or 10-minute averages.
           </p>
+          {FEEDBACK_URL && (
+            <section>
+              <h3 className="text-[13px] font-medium">Feedback</h3>
+              <p className="mt-1 text-[12.5px] text-muted-foreground">This is a hobby project. Tell me what is confusing, or if a storm looks wrong.</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <a href={FEEDBACK_URL} target="_blank" rel="noreferrer" className="glass-well inline-flex min-h-11 items-center gap-1 rounded-full px-4 text-[13px] hover:text-foreground">Send feedback<ArrowUpRight className="size-3.5" aria-hidden="true" /></a>
+                <a href={FEEDBACK_URL} target="_blank" rel="noreferrer" className="glass-well inline-flex min-h-11 items-center gap-1 rounded-full px-4 text-[13px] hover:text-foreground">Report a data problem<ArrowUpRight className="size-3.5" aria-hidden="true" /></a>
+              </div>
+            </section>
+          )}
           <p className="border-t border-white/8 pt-3 text-[12px] text-muted-foreground">MIT licence · © 2026 Suraj Kumar</p>
         </div>
       </DialogContent>

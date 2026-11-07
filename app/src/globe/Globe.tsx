@@ -13,6 +13,8 @@ export type LL = { lon: number; lat: number }
 export type TrackPt = LL & { color: string }
 export type Marker = LL & {
   id: string; name: string; color: string; label: string; dim?: boolean
+  /** extra words for screen readers, after the visible name and wind */
+  hint?: string
   /** sustained wind in knots: the marker grows with it */
   kt?: number
   past: TrackPt[]; ghost?: LL[]; forecast: TrackPt[]
@@ -387,7 +389,7 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
               m.dim && "opacity-50",
             )}
             style={{ left: x - S / 2 - 2, top: y }}
-            aria-label={`${m.name} ${m.label}`}
+            aria-label={`${m.name} ${m.label}${m.hint ? `, ${m.hint}` : ""}`}
             aria-pressed={sel}
           >
             <StormGlyph color={m.color} south={m.lat < 0} selected={sel} reducedMotion={reducedMotion} variant={look.storms} size={S} glow />
