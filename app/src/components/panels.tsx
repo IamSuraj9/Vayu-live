@@ -116,13 +116,13 @@ export function StormTabs({ storms, live, now, unknown, past, units, selectedId,
   const current = storms.filter(s => live(s) !== "ended").length
   return (
     <Tabs value={tab} onValueChange={setTab} className="min-h-0 gap-0">
-      <TabsList className="relative mx-3 mt-1 grid h-9 w-auto grid-cols-2 rounded-full p-[3px]">
+      <TabsList className="relative mx-3 mt-1 grid group-data-[orientation=horizontal]/tabs:h-11 w-auto grid-cols-2 rounded-full p-[3px]">
         <span aria-hidden="true" className="tab-thumb liquid-thumb pointer-events-none absolute inset-y-[3px] left-[3px] w-[calc(50%-3px)] rounded-full"
           style={{ transform: tab === "past" ? "translateX(100%)" : "translateX(0)" }} />
-        <TabsTrigger value="active" className="relative z-10 min-h-10 rounded-full text-[13px]">
+        <TabsTrigger value="active" className="relative z-10 rounded-full text-[13px] h-full">
           Active <span className="ml-1 rounded-full bg-white/10 px-1.5 font-mono text-[10.5px] tabular-nums">{current}</span>
         </TabsTrigger>
-        <TabsTrigger value="past" className="relative z-10 min-h-10 rounded-full text-[13px]">Past storms</TabsTrigger>
+        <TabsTrigger value="past" className="relative z-10 rounded-full text-[13px] h-full">Past storms</TabsTrigger>
       </TabsList>
       <TabsContent value="active" tabIndex={-1} className="mt-2 px-1.5 pb-1.5">
         {storms.length === 0 ? (
