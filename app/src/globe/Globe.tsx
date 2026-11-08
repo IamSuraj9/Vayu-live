@@ -379,16 +379,19 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
         const [x, y] = projection([m.lon, m.lat])!
         const sel = m.id === selectedId
         const r = 9 + Math.min(m.kt ?? 40, 160) / 11, S = Math.round(2 * r + 8) // a stronger storm draws a larger spiral
+        const labelW = Math.round((m.name.length + m.label.length) * 7 + 40) // close enough to decide which side has room
+        const flip = x + S / 2 + labelW > size.w - 8 && x - S / 2 - labelW > 8 // label goes left when it would run off the right edge
         return (
           <button
             key={m.id} type="button" data-storm={m.id}
             onClick={e => { if (e.detail === 0) onSelect(m.id) }}
             className={cn(
-              "group absolute flex -translate-y-1/2 items-center gap-1.5 rounded-full py-0.5 pr-2.5 pl-0.5 text-left outline-none",
+              "group absolute flex -translate-y-1/2 items-center gap-1.5 rounded-full py-0.5 text-left outline-none",
+              flip ? "flex-row-reverse pr-0.5 pl-2.5" : "pr-2.5 pl-0.5",
               "focus-visible:ring-2 focus-visible:ring-ring",
               m.dim && "opacity-50",
             )}
-            style={{ left: x - S / 2 - 2, top: y }}
+            style={flip ? { right: size.w - (x + S / 2 + 2), top: y } : { left: x - S / 2 - 2, top: y }}
             aria-label={`${m.name} ${m.label}${m.hint ? `, ${m.hint}` : ""}`}
             aria-pressed={sel}
           >

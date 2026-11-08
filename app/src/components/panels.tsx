@@ -244,8 +244,22 @@ function ForecastChart({ storm, nowKt, units }: { storm: Storm; nowKt: number; u
       <path d={area} fill={`url(#${gid})`} />
       <path d={line} fill="none" stroke="oklch(0.7 0.15 255)" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
       {pts.map((p, i) => <circle key={i} cx={x(p.h)} cy={y(p.kt)} r={i === 0 ? 4 : 3} fill={levelFor(p.kt).color} stroke="oklch(0.17 0.005 270)" strokeWidth="1.5" />)}
-      <text x={x(pts[0].h) + 6} y={y(pts[0].kt) - 7} fill="oklch(0.97 0 0)" fontSize="10.5" fontFamily="var(--font-data)">{fmtWindKt(pts[0].kt, units.wind)}</text>
-      <text x={x(maxH) - 2} y={y(pts[pts.length - 1].kt) - 7} fill="oklch(0.85 0 0)" fontSize="10.5" textAnchor="end" fontFamily="var(--font-data)">{fmtWindKt(pts[pts.length - 1].kt, units.wind)}</text>
+      {/* value labels go above the point unless the line climbs that way, then below; a dark halo keeps them readable over the line */}
+      {(() => {
+        const first = pts[0], lastP = pts[pts.length - 1]
+        // the line may stay flat for a step before it climbs, so look a few points ahead
+        const nxt = { kt: Math.max(first.kt, ...pts.slice(1, 4).map(q => q.kt)) }, prv = { kt: Math.max(lastP.kt, ...pts.slice(-4, -1).map(q => q.kt)) }
+        const halo = { paintOrder: "stroke" as const, stroke: "oklch(0.17 0.005 270)", strokeWidth: 3, strokeLinejoin: "round" as const }
+        const roomBelow = (yy: number) => yy + 17 < H - pad.b
+        const lowFirst = nxt.kt > first.kt && roomBelow(y(first.kt))
+        const lowLast = prv.kt > lastP.kt && roomBelow(y(lastP.kt))
+        return (
+          <>
+            <text x={x(first.h) + 6} y={Math.max(11, y(first.kt) + (lowFirst ? 16 : nxt.kt > first.kt ? -15 : -7))} fill="oklch(0.97 0 0)" fontSize="10.5" fontFamily="var(--font-data)" style={halo}>{fmtWindKt(first.kt, units.wind)}</text>
+            <text x={x(maxH) - 2} y={Math.max(11, y(lastP.kt) + (lowLast ? 16 : prv.kt > lastP.kt ? -15 : -7))} fill="oklch(0.85 0 0)" fontSize="10.5" textAnchor="end" fontFamily="var(--font-data)" style={halo}>{fmtWindKt(lastP.kt, units.wind)}</text>
+          </>
+        )
+      })()}
     </svg>
   )
 }

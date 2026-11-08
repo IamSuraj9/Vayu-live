@@ -227,7 +227,7 @@ export default function App() {
         <Globe markers={markers} selectedId={selectedId} camera={camera} home={home} onSelect={id => select(id)}
           pick={pick} onPick={p => setPick(p ? { lon: p.lon, lat: p.lat } : null)} reducedMotion={reduced}
           showParticles={!pastReplay} fieldVersion={fieldVersion} dimField={pastReplay} look={look} layers={pastReplay ? { ...layers, colors: false } : layers}
-          offsetY={isMobile && selected ? Math.round(window.innerHeight * 0.24) : 0}
+          offsetY={isMobile ? Math.round(window.innerHeight * (selected ? 0.24 : window.innerHeight > 600 && !banner ? 0.06 : 0)) : 0}
           renderPick={isMobile ? undefined : (x, y, w, h) => {
             const { left, top } = placeReadout(x, y, w, h)
             return pick && <PointReadout key={`${pick.lon},${pick.lat}`} {...pick} units={units} storms={stormStates} onClose={() => setPick(null)}
