@@ -389,13 +389,12 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
               "group absolute flex -translate-y-1/2 items-center gap-1.5 rounded-full py-0.5 text-left outline-none",
               flip ? "flex-row-reverse pr-0.5 pl-2.5" : "pr-2.5 pl-0.5",
               "focus-visible:ring-2 focus-visible:ring-ring",
-              m.dim && "opacity-50",
             )}
             style={flip ? { right: size.w - (x + S / 2 + 2), top: y } : { left: x - S / 2 - 2, top: y }}
             aria-label={`${m.name} ${m.label}${m.hint ? `, ${m.hint}` : ""}`}
             aria-pressed={sel}
           >
-            <StormGlyph color={m.color} south={m.lat < 0} selected={sel} reducedMotion={reducedMotion} variant={look.storms} size={S} glow />
+            <span className={cn("flex", m.dim && "opacity-50")}><StormGlyph color={m.color} south={m.lat < 0} selected={sel} reducedMotion={reducedMotion} variant={look.storms} size={S} glow /></span>
             <span className={cn(
               "rounded-full border px-2.5 py-1 text-[12px] leading-none whitespace-nowrap transition-colors",
               sel ? "liquid-chip-on border-transparent text-neutral-950" : "liquid-chip border-transparent text-white",
