@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-08T00:00:00Z",
- "fetchedAt": "2026-11-08T03:20:12Z",
+ "fetchedAt": "2026-11-08T06:20:10Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -140,7 +140,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Sun, 08 Nov 2026 02:20:14 GMT"
+    "modified": "Sun, 08 Nov 2026 05:50:07 GMT"
    },
    "codes": {
     "atcf": "wp312026",
@@ -508,7 +508,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Sun, 08 Nov 2026 01:20:13 GMT"
+    "modified": "Sun, 08 Nov 2026 04:50:14 GMT"
    },
    "codes": {
     "atcf": null,
