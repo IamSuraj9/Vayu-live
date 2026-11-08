@@ -228,8 +228,7 @@ export default function App() {
           showParticles={!pastReplay} fieldVersion={fieldVersion} dimField={pastReplay} look={look} layers={pastReplay ? { ...layers, colors: false } : layers}
           offsetY={isMobile && selected ? Math.round(window.innerHeight * 0.24) : 0}
           renderPick={isMobile ? undefined : (x, y, w, h) => {
-            const W = 284, left = x + 20 + W > w - 16 ? x - 20 - W : x + 20
-            const top = Math.min(Math.max(72, y - 40), h - 250)
+            const { left, top } = placeReadout(x, y, w, h)
             return pick && <PointReadout key={`${pick.lon},${pick.lat}`} {...pick} units={units} storms={stormStates} onClose={() => setPick(null)}
               className="q-pop" style={{ position: "absolute", left, top, transformOrigin: `${left > x ? "0" : "100%"} ${y - top}px` }} />
           }} />
@@ -248,8 +247,8 @@ export default function App() {
                 <CreditLine onAbout={() => setAboutOpen(true)} />
               </div>
             </aside>
-            <div className="absolute top-4 right-[max(16px,env(safe-area-inset-right,0px))] flex items-center gap-3">{zoomPill}{toolbar}</div>
-            {banner && <div key={bannerKey} className="absolute top-4 left-1/2 w-[min(520px,calc(100%-1000px))] min-w-[320px] -translate-x-1/2"><div className="q-pop origin-top">{banner}</div></div>}
+            <div data-avoid className="absolute top-4 right-[max(16px,env(safe-area-inset-right,0px))] flex items-center gap-3">{zoomPill}{toolbar}</div>
+            {banner && <div data-avoid key={bannerKey} className="absolute top-4 left-1/2 w-[min(520px,calc(100%-1000px))] min-w-[320px] -translate-x-1/2"><div className="q-pop origin-top">{banner}</div></div>}
             {/* Right column: storm details (when a storm is open) above Customize */}
             <div className="pointer-events-none absolute top-[68px] right-[max(16px,env(safe-area-inset-right,0px))] bottom-4 flex w-[360px] flex-col justify-end gap-3 [&>*]:pointer-events-auto">
               {panelEl && (
@@ -259,7 +258,7 @@ export default function App() {
               )}
               {customize("max-h-[70%] shrink-0")}
             </div>
-            <div className="absolute bottom-4 left-[max(16px,env(safe-area-inset-left,0px))]"><LookLegend cfg={shownLook} units={units} onScale={() => setScaleOpen(true)} /></div>
+            <div data-avoid className="absolute bottom-4 left-[max(16px,env(safe-area-inset-left,0px))]"><LookLegend cfg={shownLook} units={units} onScale={() => setScaleOpen(true)} /></div>
             {replayBar && <div className="q-rise absolute bottom-[324px] left-4 right-4 mx-auto max-w-[620px] xl:bottom-4 xl:left-[368px] xl:right-[392px]">{replayBar}</div>}
             {hintEl && <div className="q-rise absolute bottom-[324px] left-4 right-4 flex justify-center xl:bottom-4 xl:left-[368px] xl:right-[392px]">{hintEl}</div>}
           </>
@@ -321,6 +320,31 @@ export default function App() {
       </main>
     </TooltipProvider>
   )
+}
+
+/** Where the point readout goes on desktop: beside the click, but never under a card.
+ *  Tries right, left, below and above the point, takes the first spot that overlaps no panel,
+ *  and otherwise the spot with the least overlap. */
+function placeReadout(x: number, y: number, w: number, h: number) {
+  const W = 284, H = 300, gap = 20, m = 12
+  const root = document.querySelector("main")?.getBoundingClientRect()
+  const ox = root?.left ?? 0, oy = root?.top ?? 0
+  const rects = [...document.querySelectorAll('aside[aria-label="Storms"], section[aria-label="Storm details"], section[aria-label="Customize the globe"], [data-avoid]')]
+    .map(e => e.getBoundingClientRect()).filter(r => r.width > 0 && r.height > 0)
+    .map(r => ({ l: r.left - ox - 8, t: r.top - oy - 8, r: r.right - ox + 8, b: r.bottom - oy + 8 }))
+  const clampX = (v: number) => Math.min(Math.max(m, v), w - W - m), clampY = (v: number) => Math.min(Math.max(m, v), h - H - m)
+  const spots = [
+    { left: x + gap, top: clampY(y - 40) }, { left: x - gap - W, top: clampY(y - 40) },
+    { left: clampX(x - W / 2), top: y + gap }, { left: clampX(x - W / 2), top: y - gap - H },
+  ].map(sp => ({ ...sp, left: Math.round(sp.left), top: Math.round(sp.top) }))
+  const overlap = (sp: { left: number; top: number }) => rects.reduce((sum, r) => {
+    const ix = Math.min(sp.left + W, r.r) - Math.max(sp.left, r.l), iy = Math.min(sp.top + H, r.b) - Math.max(sp.top, r.t)
+    return sum + (ix > 0 && iy > 0 ? ix * iy : 0)
+  }, 0)
+  const fits = (sp: { left: number; top: number }) => sp.left >= m && sp.left + W <= w - m && sp.top >= m && sp.top + H <= h - m
+  const ok = spots.filter(fits)
+  const pool = ok.length ? ok : spots
+  return pool.reduce((best, sp) => (overlap(sp) < overlap(best) ? sp : best), pool[0])
 }
 
 function CreditLine({ onAbout }: { onAbout: () => void }) {
