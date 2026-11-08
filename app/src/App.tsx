@@ -297,11 +297,11 @@ export default function App() {
             </div>
             <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
               <SheetContent side="bottom" className="max-h-[78vh] gap-0 overflow-hidden rounded-t-[30px] px-0 pt-3 pb-0">
-                <div className="min-h-0 flex-1 overflow-y-auto pb-3">
-                <SheetHeader className="px-4 pt-2 pb-2">
+                <SheetHeader className="min-h-12 shrink-0 px-4 pt-3 pr-16 pb-2 text-left">
                   <SheetTitle className="text-lg tracking-tight">Storms</SheetTitle>
                   <SheetDescription>Tap a storm to see it on the globe.</SheetDescription>
                 </SheetHeader>
+                <div className="min-h-0 flex-1 overflow-y-auto pb-3">
                 {tabs}
                 <div className="px-4 pt-2"><CreditLine onAbout={() => { setSheetOpen(false); setAboutOpen(true) }} /></div>
                 </div>
