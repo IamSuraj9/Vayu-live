@@ -58,7 +58,9 @@ export function ToolButton({ label, shortcut, children, className, ...rest }: Re
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label={label} data-tool className={cn("size-8 rounded-full text-foreground/80 hover:bg-white/10 hover:text-foreground", className)} {...rest}>
+        <Button variant="ghost" size="icon" aria-label={label} data-tool className={cn("size-8 rounded-full text-foreground/80 hover:bg-white/10 hover:text-foreground", className)}
+          // a dialog handing focus back after a tap must not pop the tooltip open; keyboard focus still does
+          onFocus={e => { if (!e.currentTarget.matches(":focus-visible")) e.preventDefault() }} {...rest}>
           {children}
         </Button>
       </TooltipTrigger>
@@ -413,7 +415,7 @@ export function PointReadout({ lon, lat, units, storms, onClose, className, styl
       <div className="flex items-start gap-2">
         <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg bg-white/[0.07]"><MapPin className="size-3.5" aria-hidden="true" /></span>
         <div className="min-w-0 flex-1">
-          <p className="truncate font-medium">{where.km < 25 ? where.city : `${fmtDist(where.km, units.dist)} ${where.dir} of ${where.city}`}</p>
+          <p className="line-clamp-2 font-medium leading-snug">{where.km < 25 ? where.city : `${fmtDist(where.km, units.dist)} ${where.dir} of ${where.city}`}</p>
           <p className="text-[12px] text-muted-foreground">{where.country}{where.onLand ? "" : " · over the sea"}</p>
         </div>
         <Button variant="ghost" size="icon" className="-mt-0.5 -mr-1 size-7 rounded-full" onClick={onClose} aria-label="Close point readout"><X /></Button>

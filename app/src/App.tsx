@@ -248,7 +248,7 @@ export default function App() {
               </div>
             </aside>
             <div data-avoid className="absolute top-4 right-[max(16px,env(safe-area-inset-right,0px))] flex items-center gap-3">{zoomPill}{toolbar}</div>
-            {banner && <div data-avoid key={bannerKey} className="absolute top-4 left-1/2 w-[min(520px,calc(100%-1000px))] min-w-[320px] -translate-x-1/2"><div className="q-pop origin-top">{banner}</div></div>}
+            {banner && <div data-avoid key={bannerKey} className="absolute top-[68px] right-[392px] left-[368px] xl:top-4 xl:right-auto xl:left-1/2 xl:w-[min(520px,calc(100%-1000px))] xl:min-w-[320px] xl:-translate-x-1/2"><div className="q-pop origin-top">{banner}</div></div>}
             {/* Right column: storm details (when a storm is open) above Customize */}
             <div className="pointer-events-none absolute top-[68px] right-[max(16px,env(safe-area-inset-right,0px))] bottom-4 flex w-[360px] flex-col justify-end gap-3 [&>*]:pointer-events-auto">
               {panelEl && (
@@ -260,7 +260,7 @@ export default function App() {
             </div>
             <div data-avoid className="absolute bottom-4 left-[max(16px,env(safe-area-inset-left,0px))]"><LookLegend cfg={shownLook} units={units} onScale={() => setScaleOpen(true)} /></div>
             {replayBar && <div className="q-rise absolute bottom-[324px] left-4 right-4 mx-auto max-w-[620px] xl:bottom-4 xl:left-[368px] xl:right-[392px]">{replayBar}</div>}
-            {hintEl && <div className="q-rise absolute bottom-[324px] left-4 right-4 flex justify-center xl:bottom-4 xl:left-[368px] xl:right-[392px]">{hintEl}</div>}
+            {hintEl && <div className="q-rise absolute bottom-4 left-[368px] right-[392px] flex justify-center">{hintEl}</div>}
           </>
         )}
 
