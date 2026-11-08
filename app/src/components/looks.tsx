@@ -179,7 +179,7 @@ export function CustomizeCard({ cfg, onChange, open, onOpenChange, compact, clas
       </button>
       {/* announced when the look changes, for screen readers */}
       <p className="sr-only" role="status">{preset ? `${preset.name} look selected` : "Custom mix"}</p>
-      <div id={bodyId} hidden={compact && !open} className="min-h-0 overflow-y-auto overscroll-contain px-3.5 pt-2 pb-3.5">
+      <div id={bodyId} hidden={compact && !open} className="scroll-stable min-h-0 overflow-y-auto overscroll-contain px-3.5 pt-2 pb-4">
         <div role="group" aria-label="Looks" className="grid grid-cols-3 gap-2">{first.map(look)}</div>
         {!open && (
           <button type="button" onClick={() => onOpenChange(true)}
@@ -188,7 +188,7 @@ export function CustomizeCard({ cfg, onChange, open, onOpenChange, compact, clas
           </button>
         )}
         <div className={cn("grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none", open ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}>
-          <div className="-m-4 min-h-0 overflow-hidden p-4">
+          <div className="-mx-3 -mt-3 -mb-4 min-h-0 overflow-hidden px-3 pt-3 pb-4">
             <div inert={!open} className={cn("transition-opacity duration-300 motion-reduce:transition-none", open ? "opacity-100 delay-100" : "opacity-0")}>
               <div role="group" aria-label="More looks" className="mt-2 grid grid-cols-3 gap-2">{rest.map(look)}</div>
               {preset && (
