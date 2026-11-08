@@ -1,6 +1,6 @@
 import { useId, useState } from "react"
 import {
-  ArrowUpRight, BookOpen, ChevronDown, Ellipsis, Gauge, History, Layers as LayersIcon, MapPin, Navigation,
+  ArrowUpRight, BookOpen, ChevronDown, Ellipsis, Gauge, History, Layers as LayersIcon, MapPin, MessageSquare, Navigation,
   Info, Pause, Play, Search, Settings2, Thermometer, Wind, X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -683,7 +683,7 @@ export function AboutDialog({ file, live, reachable, now, units, open, onOpenCha
               <h3 className="text-[13px] font-medium">Feedback</h3>
               <p className="mt-1 text-[12.5px] text-muted-foreground">This is a hobby project. Tell me what is confusing, or if a storm looks wrong.</p>
               <div className="mt-2 flex flex-wrap gap-2">
-                <a href={FEEDBACK_URL} target="_blank" rel="noreferrer" className="glass-well inline-flex min-h-11 items-center gap-1 rounded-full px-4 text-[13px] hover:text-foreground">Send feedback<ArrowUpRight className="size-3.5" aria-hidden="true" /></a>
+                <a href={FEEDBACK_URL} target="_blank" rel="noreferrer" className="glass-well inline-flex min-h-11 items-center gap-1 rounded-full px-4 text-[13px] hover:text-foreground">Send feedback or an idea<ArrowUpRight className="size-3.5" aria-hidden="true" /></a>
                 <a href={FEEDBACK_URL} target="_blank" rel="noreferrer" className="glass-well inline-flex min-h-11 items-center gap-1 rounded-full px-4 text-[13px] hover:text-foreground">Report a data problem<ArrowUpRight className="size-3.5" aria-hidden="true" /></a>
               </div>
             </section>
@@ -741,6 +741,12 @@ export function SettingsDialog({ open, onOpenChange, units, setUnits, layers, se
                 {icon}{label}
               </button>
             ))}
+            {FEEDBACK_URL && (
+              <a href={FEEDBACK_URL} target="_blank" rel="noreferrer"
+                className="flex min-h-11 w-full items-center gap-3 rounded-xl px-2 py-2 text-left text-[14px] outline-none hover:bg-white/[0.05] focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-4 [&_svg]:text-muted-foreground">
+                <MessageSquare />Send feedback or an idea<ArrowUpRight className="ml-auto" aria-hidden="true" />
+              </a>
+            )}
           </section>
         </div>
       </DialogContent>

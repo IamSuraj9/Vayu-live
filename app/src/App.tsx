@@ -17,6 +17,7 @@ import {
 import { CustomizeCard, LookLegend, ZoomPill } from "@/components/looks"
 import { type Cfg, effectiveCfg, loadCfg, saveCfg } from "@/looks/presets"
 import { cn } from "@/lib/utils"
+import { FEEDBACK_URL } from "@/lib/contact"
 
 function useMedia(q: string) {
   const [m, setM] = useState(() => typeof window !== "undefined" && window.matchMedia(q).matches)
@@ -356,6 +357,7 @@ function CreditLine({ onAbout }: { onAbout: () => void }) {
     <p className="text-[11.5px] text-muted-foreground">
       {CREDIT_SHORT} ·{" "}
       <button type="button" onClick={onAbout} className="-my-2 rounded py-2 underline decoration-white/25 underline-offset-2 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">Sources and official alerts</button>
+      {FEEDBACK_URL && <> · <a href={FEEDBACK_URL} target="_blank" rel="noreferrer" className="-my-2 inline-block rounded py-2 underline decoration-white/25 underline-offset-2 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">Send feedback</a></>}
     </p>
   )
 }
