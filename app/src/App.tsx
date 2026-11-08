@@ -202,7 +202,7 @@ export default function App() {
     <div className={cn(glass, "flex items-center gap-2 rounded-[22px] py-1.5 pr-1.5 pl-3.5 text-[13px] leading-snug text-foreground/90")}>
       <MousePointerClick className="size-4 shrink-0 text-brand" aria-hidden="true" />
       <p>{isMobile ? "Tap" : "Click"} a storm to see its path, or anywhere on the globe for local weather</p>
-      <Button variant="ghost" size="icon" className="size-11 shrink-0 rounded-full" aria-label="Dismiss tip" onClick={dismissHint}><X /></Button>
+      <Button variant="ghost" size="icon" className="size-12 shrink-0 rounded-full" aria-label="Dismiss tip" onClick={dismissHint}><X /></Button>
     </div>
   ) : null
   const toolbar = (
@@ -296,8 +296,8 @@ export default function App() {
               )}
             </div>
             <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-              <SheetContent side="bottom" className="max-h-[78vh] gap-0 overflow-hidden rounded-t-[30px] p-0">
-                <div className="scroll-inset min-h-0 flex-1 overflow-y-auto pb-3">
+              <SheetContent side="bottom" className="max-h-[78vh] gap-0 overflow-hidden rounded-t-[30px] px-0 pt-3 pb-0">
+                <div className="min-h-0 flex-1 overflow-y-auto pb-3">
                 <SheetHeader className="px-4 pt-2 pb-2">
                   <SheetTitle className="text-lg tracking-tight">Storms</SheetTitle>
                   <SheetDescription>Tap a storm to see it on the globe.</SheetDescription>

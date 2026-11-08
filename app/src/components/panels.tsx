@@ -280,7 +280,7 @@ export function StormPanel({ storm, state, live, units, now, replaying, onClose,
             <span className="text-[12.5px] text-muted-foreground">{storm.basin}</span>
           </div>
         </div>
-        <Button variant="ghost" size="icon" className="-mt-1 -mr-1.5 size-8 rounded-full" onClick={onClose} aria-label="Close storm details"><X /></Button>
+        <Button variant="ghost" size="icon" className="relative -mt-1 -mr-1.5 size-8 rounded-full before:absolute before:-inset-2 before:content-['']" onClick={onClose} aria-label="Close storm details"><X /></Button>
       </div>
 
       <p className="px-4 pt-3 text-[14px] leading-relaxed text-foreground/85">
@@ -418,7 +418,7 @@ export function PointReadout({ lon, lat, units, storms, onClose, className, styl
           <p className="line-clamp-2 font-medium leading-snug">{where.km < 25 ? where.city : `${fmtDist(where.km, units.dist)} ${where.dir} of ${where.city}`}</p>
           <p className="text-[12px] text-muted-foreground">{where.country}{where.onLand ? "" : " · over the sea"}</p>
         </div>
-        <Button variant="ghost" size="icon" className="-mt-0.5 -mr-1 size-7 rounded-full" onClick={onClose} aria-label="Close point readout"><X /></Button>
+        <Button variant="ghost" size="icon" className="relative -mt-0.5 -mr-1 size-7 rounded-full before:absolute before:-inset-2.5 before:content-['']" onClick={onClose} aria-label="Close point readout"><X /></Button>
       </div>
       {w ? <div className="mt-2.5 grid grid-cols-2 gap-1.5 text-[12px]">
         <div className={cn(tile, "col-span-2")}>
@@ -535,8 +535,8 @@ export function ScaleDialog({ units, open, onOpenChange }: { units: Units; open:
   const range = (a: number, b: number) => b >= 999 ? `${Math.round(windFromKt(a, units.wind))}+ ${WIND_LABEL[units.wind]}` : `${Math.round(windFromKt(a, units.wind))}–${Math.round(windFromKt(b + 0.99, units.wind))} ${WIND_LABEL[units.wind]}`
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-lg">
-        <div className="scroll-inset grid min-h-0 gap-4 overflow-y-auto px-6 py-3">
+      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] px-0 py-3 sm:max-w-lg">
+        <div className="grid min-h-0 gap-4 overflow-y-auto px-6 py-3">
         <DialogHeader>
           <DialogTitle className="text-xl tracking-tight">How strong is it?</DialogTitle>
           <DialogDescription>One scale for every ocean, based on the steady wind at the centre.</DialogDescription>
@@ -577,8 +577,8 @@ const TERMS: [string, string][] = [
 export function GlossaryDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-lg">
-        <div className="scroll-inset grid min-h-0 gap-4 overflow-y-auto px-6 py-3">
+      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] px-0 py-3 sm:max-w-lg">
+        <div className="grid min-h-0 gap-4 overflow-y-auto px-6 py-3">
         <DialogHeader>
           <DialogTitle className="text-xl tracking-tight">What the words mean</DialogTitle>
           <DialogDescription>Plain explanations of the terms on the map.</DialogDescription>
@@ -629,8 +629,8 @@ export function AboutDialog({ file, live, reachable, now, units, open, onOpenCha
   const note = (k: string, good: string) => (src[k] ? (src[k].ok ? good : "Did not answer at the last check. Its storms show the last saved data.") : "Not checked yet.")
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-lg">
-        <div className="scroll-inset grid min-h-0 gap-5 overflow-y-auto px-6 py-3">
+      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] px-0 py-3 sm:max-w-lg">
+        <div className="grid min-h-0 gap-5 overflow-y-auto px-6 py-3">
           <DialogHeader>
             <DialogTitle className="text-xl tracking-tight">About this globe</DialogTitle>
             <DialogDescription>An educational map of the world's tropical storms, built from free public data.</DialogDescription>
@@ -720,8 +720,8 @@ export function SettingsDialog({ open, onOpenChange, units, setUnits, layers, se
   ]
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[88vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-md">
-        <div className="scroll-inset grid min-h-0 gap-5 overflow-y-auto px-5 py-3">
+      <DialogContent className="flex max-h-[88vh] flex-col overflow-hidden rounded-[28px] px-0 py-3 sm:max-w-md">
+        <div className="grid min-h-0 gap-5 overflow-y-auto px-5 py-3">
           <DialogHeader>
             <DialogTitle className="text-lg tracking-tight">Settings</DialogTitle>
             <DialogDescription>Units, map layers and help.</DialogDescription>
