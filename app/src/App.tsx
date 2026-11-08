@@ -4,7 +4,7 @@ import { Globe, type LL, type Layers, type Marker, type View } from "@/globe/Glo
 import { createCamera } from "@/globe/camera"
 import { PAST, type Storm, endMs, liveness, startMs, stateAt } from "@/lib/storms"
 import { STALE_HOURS, useNow, useStormFeed, useWindField } from "@/lib/live"
-import { levelFor } from "@/lib/strength"
+import { headline, levelFor } from "@/lib/strength"
 import { type Units, fmtAgo, fmtChecked, fmtTime, fmtWindKt, loadUnits, saveUnits } from "@/lib/units"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -17,6 +17,7 @@ import {
 import { CustomizeCard, LookLegend, ZoomPill } from "@/components/looks"
 import { type Cfg, effectiveCfg, loadCfg, saveCfg } from "@/looks/presets"
 import { cn } from "@/lib/utils"
+import { FEEDBACK_URL } from "@/lib/contact"
 
 function useMedia(q: string) {
   const [m, setM] = useState(() => typeof window !== "undefined" && window.matchMedia(q).matches)
@@ -153,7 +154,7 @@ export default function App() {
       const replayingThis = replay?.id === s.id
       const upto = s.track.filter(p => new Date(p.t).getTime() <= st.t)
       return {
-        id: s.id, name: s.name, lon: st.lon, lat: st.lat, color: levelFor(st.kt).color, kt: st.kt,
+        id: s.id, name: s.name, hint: `${s.kind === "disturbance" ? "being watched" : headline(st.kt, s.basin).toLowerCase()}, ${s.basin}`, lon: st.lon, lat: st.lat, color: levelFor(st.kt).color, kt: st.kt,
         label: s.kind === "disturbance" ? `${fmtWindKt(st.kt, units.wind)} · watch` : fmtWindKt(st.kt, units.wind),
         past: [...upto.map(p => ({ lon: p.lon, lat: p.lat, color: levelFor(p.kt).color })), { lon: st.lon, lat: st.lat, color: levelFor(st.kt).color }],
         ghost: replayingThis ? [{ lon: st.lon, lat: st.lat }, ...s.track.filter(p => new Date(p.t).getTime() > st.t).map(p => ({ lon: p.lon, lat: p.lat }))] : undefined,
@@ -201,7 +202,7 @@ export default function App() {
     <div className={cn(glass, "flex items-center gap-2 rounded-[22px] py-1.5 pr-1.5 pl-3.5 text-[13px] leading-snug text-foreground/90")}>
       <MousePointerClick className="size-4 shrink-0 text-brand" aria-hidden="true" />
       <p>{isMobile ? "Tap" : "Click"} a storm to see its path, or anywhere on the globe for local weather</p>
-      <Button variant="ghost" size="icon" className="size-8 shrink-0 rounded-full" aria-label="Dismiss tip" onClick={dismissHint}><X /></Button>
+      <Button variant="ghost" size="icon" className="size-12 shrink-0 rounded-full" aria-label="Dismiss tip" onClick={dismissHint}><X /></Button>
     </div>
   ) : null
   const toolbar = (
@@ -226,10 +227,9 @@ export default function App() {
         <Globe markers={markers} selectedId={selectedId} camera={camera} home={home} onSelect={id => select(id)}
           pick={pick} onPick={p => setPick(p ? { lon: p.lon, lat: p.lat } : null)} reducedMotion={reduced}
           showParticles={!pastReplay} fieldVersion={fieldVersion} dimField={pastReplay} look={look} layers={pastReplay ? { ...layers, colors: false } : layers}
-          offsetY={isMobile && selected ? Math.round(window.innerHeight * 0.24) : 0}
+          offsetY={isMobile ? Math.round(window.innerHeight * (selected ? 0.24 : window.innerHeight > 600 && !banner ? 0.06 : 0)) : 0}
           renderPick={isMobile ? undefined : (x, y, w, h) => {
-            const W = 284, left = x + 20 + W > w - 16 ? x - 20 - W : x + 20
-            const top = Math.min(Math.max(72, y - 40), h - 250)
+            const { left, top } = placeReadout(x, y, w, h)
             return pick && <PointReadout key={`${pick.lon},${pick.lat}`} {...pick} units={units} storms={stormStates} onClose={() => setPick(null)}
               className="q-pop" style={{ position: "absolute", left, top, transformOrigin: `${left > x ? "0" : "100%"} ${y - top}px` }} />
           }} />
@@ -248,8 +248,8 @@ export default function App() {
                 <CreditLine onAbout={() => setAboutOpen(true)} />
               </div>
             </aside>
-            <div className="absolute top-4 right-[max(16px,env(safe-area-inset-right,0px))] flex items-center gap-3">{zoomPill}{toolbar}</div>
-            {banner && <div key={bannerKey} className="absolute top-4 left-1/2 w-[min(520px,calc(100%-1000px))] min-w-[320px] -translate-x-1/2"><div className="q-pop origin-top">{banner}</div></div>}
+            <div data-avoid className="absolute top-4 right-[max(16px,env(safe-area-inset-right,0px))] flex items-center gap-3">{zoomPill}{toolbar}</div>
+            {banner && <div data-avoid key={bannerKey} className="absolute top-[68px] right-[392px] left-[368px] xl:top-4 xl:right-auto xl:left-1/2 xl:w-[min(520px,calc(100%-1000px))] xl:min-w-[320px] xl:-translate-x-1/2"><div className="q-pop origin-top">{banner}</div></div>}
             {/* Right column: storm details (when a storm is open) above Customize */}
             <div className="pointer-events-none absolute top-[68px] right-[max(16px,env(safe-area-inset-right,0px))] bottom-4 flex w-[360px] flex-col justify-end gap-3 [&>*]:pointer-events-auto">
               {panelEl && (
@@ -259,9 +259,9 @@ export default function App() {
               )}
               {customize("max-h-[70%] shrink-0")}
             </div>
-            <div className="absolute bottom-4 left-[max(16px,env(safe-area-inset-left,0px))]"><LookLegend cfg={shownLook} units={units} onScale={() => setScaleOpen(true)} /></div>
+            <div data-avoid className="absolute bottom-4 left-[max(16px,env(safe-area-inset-left,0px))]"><LookLegend cfg={shownLook} units={units} onScale={() => setScaleOpen(true)} /></div>
             {replayBar && <div className="q-rise absolute bottom-[324px] left-4 right-4 mx-auto max-w-[620px] xl:bottom-4 xl:left-[368px] xl:right-[392px]">{replayBar}</div>}
-            {hintEl && <div className="q-rise absolute bottom-[324px] left-4 right-4 flex justify-center xl:bottom-4 xl:left-[368px] xl:right-[392px]">{hintEl}</div>}
+            {hintEl && <div className="q-rise absolute bottom-4 left-[368px] right-[392px] flex justify-center">{hintEl}</div>}
           </>
         )}
 
@@ -296,9 +296,9 @@ export default function App() {
               )}
             </div>
             <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-              <SheetContent side="bottom" className="max-h-[78vh] gap-0 overflow-hidden rounded-t-[30px] p-0">
+              <SheetContent side="bottom" className="max-h-[78vh] gap-0 overflow-hidden rounded-t-[30px] px-0 pt-3 pb-0">
                 <div className="min-h-0 flex-1 overflow-y-auto pb-3">
-                <SheetHeader className="px-4 pt-5 pb-2">
+                <SheetHeader className="px-4 pt-2 pb-2">
                   <SheetTitle className="text-lg tracking-tight">Storms</SheetTitle>
                   <SheetDescription>Tap a storm to see it on the globe.</SheetDescription>
                 </SheetHeader>
@@ -323,11 +323,41 @@ export default function App() {
   )
 }
 
+/** Where the point readout goes on desktop: beside the click, but never under a card.
+ *  Tries right, left, below and above the point, takes the first spot that overlaps no panel,
+ *  and otherwise the spot with the least overlap. */
+function placeReadout(x: number, y: number, w: number, h: number) {
+  const W = 284, H = 300, gap = 20, m = 12
+  const root = document.querySelector("main")?.getBoundingClientRect()
+  const ox = root?.left ?? 0, oy = root?.top ?? 0
+  const rects = [...document.querySelectorAll('aside[aria-label="Storms"], section[aria-label="Storm details"], section[aria-label="Customize the globe"], [data-avoid]')]
+    .map(e => e.getBoundingClientRect()).filter(r => r.width > 0 && r.height > 0)
+    .map(r => ({ l: r.left - ox - 8, t: r.top - oy - 8, r: r.right - ox + 8, b: r.bottom - oy + 8 }))
+  // Every position on a coarse grid that fits on screen, scored by how much it covers a panel
+  // (heavily) and how far it is from the click (lightly). Tidy spots beside the click win.
+  const overlap = (left: number, top: number) => rects.reduce((sum, r) => {
+    const ix = Math.min(left + W, r.r) - Math.max(left, r.l), iy = Math.min(top + H, r.b) - Math.max(top, r.t)
+    return sum + (ix > 0 && iy > 0 ? ix * iy : 0)
+  }, 0)
+  const near = (left: number, top: number) => {
+    const dx = x < left ? left - x : x > left + W ? x - left - W : 0, dy = y < top ? top - y : y > top + H ? y - top - H : 0
+    const onClick = dx === 0 && dy === 0 // never cover the point that was clicked
+    return Math.hypot(dx - gap, dy) + (onClick ? 5000 : 0)
+  }
+  let best = { left: m, top: m }, bestScore = Infinity
+  for (let left = m; left <= w - W - m; left += 16) for (let top = m; top <= h - H - m; top += 16) {
+    const score = overlap(left, top) * 10 + near(left, top)
+    if (score < bestScore) { bestScore = score; best = { left, top } }
+  }
+  return best
+}
+
 function CreditLine({ onAbout }: { onAbout: () => void }) {
   return (
     <p className="text-[11.5px] text-muted-foreground">
       {CREDIT_SHORT} ·{" "}
-      <button type="button" onClick={onAbout} className="rounded underline decoration-white/25 underline-offset-2 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">Sources and official alerts</button>
+      <button type="button" onClick={onAbout} className="-my-3 rounded py-3 underline decoration-white/25 underline-offset-2 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">Sources and official alerts</button>
+      {FEEDBACK_URL && <> · <a href={FEEDBACK_URL} target="_blank" rel="noreferrer" className="-my-3 inline-block rounded py-3 underline decoration-white/25 underline-offset-2 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">Send feedback</a></>}
     </p>
   )
 }

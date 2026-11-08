@@ -1,6 +1,6 @@
 import { useId, useState } from "react"
 import {
-  ArrowUpRight, BookOpen, ChevronDown, Ellipsis, Gauge, History, Layers as LayersIcon, MapPin, Navigation,
+  ArrowUpRight, BookOpen, ChevronDown, Ellipsis, Gauge, History, Layers as LayersIcon, MapPin, MessageSquare, Navigation,
   Info, Pause, Play, Search, Settings2, Thermometer, Wind, X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -17,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command"
+import { FEEDBACK_URL } from "@/lib/contact"
 import { cn } from "@/lib/utils"
 import { LEVELS, headline, levelFor } from "@/lib/strength"
 import {
@@ -47,7 +48,7 @@ function StrengthBars({ kt }: { kt: number }) {
   return (
     <span className="flex items-end gap-[2px]" aria-hidden="true">
       {LEVELS.map((l, i) => (
-        <span key={l.key} className="w-[3px] rounded-full" style={{ height: 4 + i * 2, background: i <= idx ? levelFor(kt).color : "oklch(1 0 0 / 14%)" }} />
+        <span key={l.key} className="w-[3px] rounded-full" style={{ height: 4 + i * 2, background: i <= idx ? levelFor(kt).color : "color-mix(in oklab, currentColor 18%, transparent)" }} />
       ))}
     </span>
   )
@@ -57,7 +58,9 @@ export function ToolButton({ label, shortcut, children, className, ...rest }: Re
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label={label} data-tool className={cn("size-8 rounded-full text-foreground/80 hover:bg-white/10 hover:text-foreground", className)} {...rest}>
+        <Button variant="ghost" size="icon" aria-label={label} data-tool className={cn("size-8 rounded-full text-foreground/80 hover:bg-white/10 hover:text-foreground", className)}
+          // a dialog handing focus back after a tap must not pop the tooltip open; keyboard focus still does
+          onFocus={e => { if (!e.currentTarget.matches(":focus-visible")) e.preventDefault() }} {...rest}>
           {children}
         </Button>
       </TooltipTrigger>
@@ -95,7 +98,7 @@ function StormRow({ s, live, now, units, selected, onClick }: { s: Storm; live: 
       </span>
       <span className="min-w-0 flex-1">
         <span className="block truncate font-medium">{s.name}</span>
-        <span className="block truncate text-[12.5px] text-muted-foreground">
+        <span className="block text-[12.5px] text-muted-foreground">
           {quiet ? <><span className="text-warn">{live === "ended" ? "Ended" : "Not updated"}</span> · last report {fmtAgo(last.t, now)}</>
             : <>{invest ? "Being watched" : headline(last.kt, s.basin)} · {s.basin}</>}
         </span>
@@ -115,13 +118,13 @@ export function StormTabs({ storms, live, now, unknown, past, units, selectedId,
   const current = storms.filter(s => live(s) !== "ended").length
   return (
     <Tabs value={tab} onValueChange={setTab} className="min-h-0 gap-0">
-      <TabsList className="relative mx-3 mt-1 grid h-9 w-auto grid-cols-2 rounded-full p-[3px]">
+      <TabsList className="relative mx-3 mt-1 grid group-data-[orientation=horizontal]/tabs:h-12 w-auto grid-cols-2 rounded-full p-[3px]">
         <span aria-hidden="true" className="tab-thumb liquid-thumb pointer-events-none absolute inset-y-[3px] left-[3px] w-[calc(50%-3px)] rounded-full"
           style={{ transform: tab === "past" ? "translateX(100%)" : "translateX(0)" }} />
-        <TabsTrigger value="active" className="relative z-10 rounded-full text-[13px]">
+        <TabsTrigger value="active" className="relative z-10 rounded-full text-[13px] h-full">
           Active <span className="ml-1 rounded-full bg-white/10 px-1.5 font-mono text-[10.5px] tabular-nums">{current}</span>
         </TabsTrigger>
-        <TabsTrigger value="past" className="relative z-10 rounded-full text-[13px]">Past storms</TabsTrigger>
+        <TabsTrigger value="past" className="relative z-10 rounded-full text-[13px] h-full">Past storms</TabsTrigger>
       </TabsList>
       <TabsContent value="active" tabIndex={-1} className="mt-2 px-1.5 pb-1.5">
         {storms.length === 0 ? (
@@ -160,7 +163,7 @@ export function StormTabs({ storms, live, now, unknown, past, units, selectedId,
             )
           })}
         </ul>
-        <p className="px-2.5 pt-2 pb-1 text-[12px] text-muted-foreground">Tracks from the IBTrACS archive. More storms can be added later.</p>
+        <p className="px-2.5 pt-2 pb-1 text-[12px] text-muted-foreground">Tracks of past storms, from the IBTrACS archive.</p>
       </TabsContent>
     </Tabs>
   )
@@ -233,7 +236,7 @@ function ForecastChart({ storm, nowKt, units }: { storm: Storm; nowKt: number; u
       {days.map(d => (
         <g key={d}>
           <line x1={x(d)} x2={x(d)} y1={pad.t - 6} y2={H - pad.b} stroke="oklch(1 0 0 / 7%)" />
-          <text x={x(d)} y={H - 5} fill="oklch(0.69 0.012 270)" fontSize="10" textAnchor={d === 0 ? "start" : d === maxH ? "end" : "middle"} fontFamily="var(--font-data)">
+          <text x={x(d)} y={H - 5} fill="oklch(0.9 0.008 270)" fontSize="11" textAnchor={d === 0 ? "start" : d === maxH ? "end" : "middle"} fontFamily="var(--font-data)">
             {d === 0 ? "Now" : `${d / 24}d`}
           </text>
         </g>
@@ -241,8 +244,22 @@ function ForecastChart({ storm, nowKt, units }: { storm: Storm; nowKt: number; u
       <path d={area} fill={`url(#${gid})`} />
       <path d={line} fill="none" stroke="oklch(0.7 0.15 255)" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
       {pts.map((p, i) => <circle key={i} cx={x(p.h)} cy={y(p.kt)} r={i === 0 ? 4 : 3} fill={levelFor(p.kt).color} stroke="oklch(0.17 0.005 270)" strokeWidth="1.5" />)}
-      <text x={x(pts[0].h) + 6} y={y(pts[0].kt) - 7} fill="oklch(0.97 0 0)" fontSize="10.5" fontFamily="var(--font-data)">{fmtWindKt(pts[0].kt, units.wind)}</text>
-      <text x={x(maxH) - 2} y={y(pts[pts.length - 1].kt) - 7} fill="oklch(0.85 0 0)" fontSize="10.5" textAnchor="end" fontFamily="var(--font-data)">{fmtWindKt(pts[pts.length - 1].kt, units.wind)}</text>
+      {/* value labels go above the point unless the line climbs that way, then below; a dark halo keeps them readable over the line */}
+      {(() => {
+        const first = pts[0], lastP = pts[pts.length - 1]
+        // the line may stay flat for a step before it climbs, so look a few points ahead
+        const nxt = { kt: Math.max(first.kt, ...pts.slice(1, 4).map(q => q.kt)) }, prv = { kt: Math.max(lastP.kt, ...pts.slice(-4, -1).map(q => q.kt)) }
+        const halo = { paintOrder: "stroke" as const, stroke: "oklch(0.17 0.005 270)", strokeWidth: 3, strokeLinejoin: "round" as const }
+        const roomBelow = (yy: number) => yy + 17 < H - pad.b
+        const lowFirst = nxt.kt > first.kt && roomBelow(y(first.kt))
+        const lowLast = prv.kt > lastP.kt && roomBelow(y(lastP.kt))
+        return (
+          <>
+            <text x={x(first.h) + 6} y={Math.max(11, y(first.kt) + (lowFirst ? 16 : nxt.kt > first.kt ? -15 : -7))} fill="oklch(0.97 0 0)" fontSize="10.5" fontFamily="var(--font-data)" style={halo}>{fmtWindKt(first.kt, units.wind)}</text>
+            <text x={x(maxH) - 2} y={Math.max(11, y(lastP.kt) + (lowLast ? 16 : prv.kt > lastP.kt ? -15 : -7))} fill="oklch(0.85 0 0)" fontSize="10.5" textAnchor="end" fontFamily="var(--font-data)" style={halo}>{fmtWindKt(lastP.kt, units.wind)}</text>
+          </>
+        )
+      })()}
     </svg>
   )
 }
@@ -277,7 +294,7 @@ export function StormPanel({ storm, state, live, units, now, replaying, onClose,
             <span className="text-[12.5px] text-muted-foreground">{storm.basin}</span>
           </div>
         </div>
-        <Button variant="ghost" size="icon" className="-mt-1 -mr-1.5 size-8 rounded-full" onClick={onClose} aria-label="Close storm details"><X /></Button>
+        <Button variant="ghost" size="icon" className="relative -mt-1 -mr-1.5 size-8 rounded-full before:absolute before:-inset-2 before:content-['']" onClick={onClose} aria-label="Close storm details"><X /></Button>
       </div>
 
       <p className="px-4 pt-3 text-[14px] leading-relaxed text-foreground/85">
@@ -412,10 +429,10 @@ export function PointReadout({ lon, lat, units, storms, onClose, className, styl
       <div className="flex items-start gap-2">
         <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg bg-white/[0.07]"><MapPin className="size-3.5" aria-hidden="true" /></span>
         <div className="min-w-0 flex-1">
-          <p className="truncate font-medium">{where.km < 25 ? where.city : `${fmtDist(where.km, units.dist)} ${where.dir} of ${where.city}`}</p>
+          <p className="line-clamp-2 font-medium leading-snug">{where.km < 25 ? where.city : `${fmtDist(where.km, units.dist)} ${where.dir} of ${where.city}`}</p>
           <p className="text-[12px] text-muted-foreground">{where.country}{where.onLand ? "" : " · over the sea"}</p>
         </div>
-        <Button variant="ghost" size="icon" className="-mt-0.5 -mr-1 size-7 rounded-full" onClick={onClose} aria-label="Close point readout"><X /></Button>
+        <Button variant="ghost" size="icon" className="relative -mt-0.5 -mr-1 size-7 rounded-full before:absolute before:-inset-2.5 before:content-['']" onClick={onClose} aria-label="Close point readout"><X /></Button>
       </div>
       {w ? <div className="mt-2.5 grid grid-cols-2 gap-1.5 text-[12px]">
         <div className={cn(tile, "col-span-2")}>
@@ -447,7 +464,7 @@ function UnitRow<T extends string>({ id, label, value, options, onChange }: { id
       <ToggleGroup type="single" value={value} aria-labelledby={id} onValueChange={v => v && onChange(v as T)}
         className="glass-well rounded-full p-[3px]">
         {options.map(([v, l]) => (
-          <ToggleGroupItem key={v} value={v} className="h-7 min-w-10 rounded-full px-2.5 text-[12px]">{l}</ToggleGroupItem>
+          <ToggleGroupItem key={v} value={v} className="h-10 min-w-11 rounded-full px-3 text-[12px] sm:h-7 sm:min-w-10 sm:px-2.5">{l}</ToggleGroupItem>
         ))}
       </ToggleGroup>
     </div>
@@ -502,7 +519,7 @@ export function UnitsPopover({ units, setUnits }: { units: Units; setUnits: (u: 
         </TooltipTrigger>
         <TooltipContent side="bottom">Units</TooltipContent>
       </Tooltip>
-      <PopoverContent align="end" sideOffset={10} className="w-[340px] rounded-[24px] p-4">
+      <PopoverContent aria-label="Units" align="end" sideOffset={10} className="w-[340px] rounded-[24px] p-4">
         <UnitsForm units={units} setUnits={setUnits} />
       </PopoverContent>
     </Popover>
@@ -520,7 +537,7 @@ export function LayersPopover({ layers, setLayers }: { layers: Layers; setLayers
         </TooltipTrigger>
         <TooltipContent side="bottom">Map layers</TooltipContent>
       </Tooltip>
-      <PopoverContent align="end" sideOffset={10} className="w-[300px] rounded-[24px] p-2">
+      <PopoverContent aria-label="Map layers" align="end" sideOffset={10} className="w-[300px] rounded-[24px] p-2">
         <p className="px-2 pt-1.5 pb-2 font-medium">Map layers</p>
         <LayersForm layers={layers} setLayers={setLayers} />
       </PopoverContent>
@@ -532,11 +549,11 @@ export function ScaleDialog({ units, open, onOpenChange }: { units: Units; open:
   const range = (a: number, b: number) => b >= 999 ? `${Math.round(windFromKt(a, units.wind))}+ ${WIND_LABEL[units.wind]}` : `${Math.round(windFromKt(a, units.wind))}–${Math.round(windFromKt(b + 0.99, units.wind))} ${WIND_LABEL[units.wind]}`
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-lg">
-        <div className="grid min-h-0 gap-4 overflow-y-auto p-6">
+      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] px-0 py-3 sm:max-w-lg">
+        <div tabIndex={0} className="grid min-h-0 gap-4 overflow-y-auto px-6 py-3 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
         <DialogHeader>
           <DialogTitle className="text-xl tracking-tight">How strong is it?</DialogTitle>
-          <DialogDescription>One scale for every ocean, based on the steady wind at the centre. Draft wording for review.</DialogDescription>
+          <DialogDescription>One scale for every ocean, based on the steady wind at the centre.</DialogDescription>
         </DialogHeader>
         <ol className="flex flex-col gap-1.5">
           {LEVELS.map(l => (
@@ -574,8 +591,8 @@ const TERMS: [string, string][] = [
 export function GlossaryDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-lg">
-        <div className="grid min-h-0 gap-4 overflow-y-auto p-6">
+      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] px-0 py-3 sm:max-w-lg">
+        <div tabIndex={0} className="grid min-h-0 gap-4 overflow-y-auto px-6 py-3 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
         <DialogHeader>
           <DialogTitle className="text-xl tracking-tight">What the words mean</DialogTitle>
           <DialogDescription>Plain explanations of the terms on the map.</DialogDescription>
@@ -626,8 +643,8 @@ export function AboutDialog({ file, live, reachable, now, units, open, onOpenCha
   const note = (k: string, good: string) => (src[k] ? (src[k].ok ? good : "Did not answer at the last check. Its storms show the last saved data.") : "Not checked yet.")
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-lg">
-        <div className="grid min-h-0 gap-5 overflow-y-auto p-6">
+      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] px-0 py-3 sm:max-w-lg">
+        <div className="grid min-h-0 gap-5 overflow-y-auto px-6 py-3">
           <DialogHeader>
             <DialogTitle className="text-xl tracking-tight">About this globe</DialogTitle>
             <DialogDescription>An educational map of the world's tropical storms, built from free public data.</DialogDescription>
@@ -675,6 +692,16 @@ export function AboutDialog({ file, live, reachable, now, units, open, onOpenCha
             {file.credits} Wind: GFS model, NOAA/NCEP. Past storms: IBTrACS, NOAA NCEI. Map: Natural Earth.
             Winds are 1-minute averages, so they can read higher than figures from agencies that use 3- or 10-minute averages.
           </p>
+          {FEEDBACK_URL && (
+            <section>
+              <h3 className="text-[13px] font-medium">Feedback</h3>
+              <p className="mt-1 text-[12.5px] text-muted-foreground">This is a hobby project. Tell me what is confusing, or if a storm looks wrong.</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <a href={FEEDBACK_URL} target="_blank" rel="noreferrer" className="glass-well inline-flex min-h-11 items-center gap-1 rounded-full px-4 text-[13px] hover:text-foreground">Send feedback or an idea<ArrowUpRight className="size-3.5" aria-hidden="true" /></a>
+                <a href={FEEDBACK_URL} target="_blank" rel="noreferrer" className="glass-well inline-flex min-h-11 items-center gap-1 rounded-full px-4 text-[13px] hover:text-foreground">Report a data problem<ArrowUpRight className="size-3.5" aria-hidden="true" /></a>
+              </div>
+            </section>
+          )}
           <p className="border-t border-white/8 pt-3 text-[12px] text-muted-foreground">MIT licence · © 2026 Suraj Kumar</p>
         </div>
       </DialogContent>
@@ -707,8 +734,8 @@ export function SettingsDialog({ open, onOpenChange, units, setUnits, layers, se
   ]
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[88vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-md">
-        <div className="grid min-h-0 gap-5 overflow-y-auto p-5">
+      <DialogContent className="flex max-h-[88vh] flex-col overflow-hidden rounded-[28px] px-0 py-3 sm:max-w-md">
+        <div className="grid min-h-0 gap-5 overflow-y-auto px-5 py-3">
           <DialogHeader>
             <DialogTitle className="text-lg tracking-tight">Settings</DialogTitle>
             <DialogDescription>Units, map layers and help.</DialogDescription>
@@ -728,6 +755,12 @@ export function SettingsDialog({ open, onOpenChange, units, setUnits, layers, se
                 {icon}{label}
               </button>
             ))}
+            {FEEDBACK_URL && (
+              <a href={FEEDBACK_URL} target="_blank" rel="noreferrer"
+                className="flex min-h-11 w-full items-center gap-3 rounded-xl px-2 py-2 text-left text-[14px] outline-none hover:bg-white/[0.05] focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-4 [&_svg]:text-muted-foreground">
+                <MessageSquare />Send feedback or an idea<ArrowUpRight className="ml-auto" aria-hidden="true" />
+              </a>
+            )}
           </section>
         </div>
       </DialogContent>
@@ -770,7 +803,7 @@ export function CommandPalette({ open, onOpenChange, storms, past, units, onStor
             </CommandItem>
           ))}
         </CommandGroup>
-        <CommandSeparator />
+        <CommandSeparator aria-hidden="true" />
         <CommandGroup heading="Places">
           {CITIES.map(([name, country, lat, lon]) => (
             <CommandItem key={`${name}-${country}`} value={`${name} ${country}`} onSelect={() => onPlace(lon, lat)}>

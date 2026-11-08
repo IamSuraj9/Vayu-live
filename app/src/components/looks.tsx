@@ -141,14 +141,14 @@ export function LookLegend({ cfg, units, onScale, compact }: { cfg: Cfg; units: 
 
 function LookButton({ id, name, tag, selected, onPick, compact }: { id: string; name: string; tag: string; selected: boolean; onPick: () => void; compact?: boolean }) {
   return (
-    <button type="button" aria-pressed={selected} onClick={onPick} aria-label={`${name} look: ${tag}`}
+    <button type="button" aria-pressed={selected} onClick={onPick} 
       className="group min-w-0 rounded-[18px] text-left outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-black">
       <span className={cn("relative block overflow-hidden rounded-[18px] border border-white/12 bg-[radial-gradient(circle_at_50%_40%,#11151f,#05060a)] transition-[border-color,transform,box-shadow] duration-300 ease-out motion-reduce:transition-none group-hover:-translate-y-0.5 group-hover:border-white/35 group-active:scale-[0.97]",
         compact ? "aspect-[1.25]" : "aspect-[1.12]", selected && "border-white shadow-[0_0_0_1px_#fff]")}>
         <img src={THUMB[id]} alt="" width={224} height={224} loading="lazy" decoding="async" className="absolute inset-0 size-full scale-[1.04] object-cover" />
       </span>
       <span className="mt-1.5 block text-[13px] font-semibold tracking-tight">{name}</span>
-      <span className="block truncate text-[11.5px] text-muted-foreground">{tag}</span>
+      <span className="line-clamp-2 block text-[11.5px] leading-snug text-muted-foreground">{tag}</span>
     </button>
   )
 }
@@ -163,12 +163,13 @@ export function CustomizeCard({ cfg, onChange, open, onOpenChange, compact, clas
   const pick = (p: (typeof PRESETS)[number]) => onChange({ ...p.cfg })
   const look = (p: (typeof PRESETS)[number]) => <LookButton key={p.id} id={p.id} name={p.name} tag={p.tagline} selected={preset?.id === p.id} onPick={() => pick(p)} compact={compact} />
   return (
-    <section aria-label="Customize the globe" className={cn(glass, "flex max-h-full flex-col overflow-hidden rounded-[26px]", className)}
+    <section aria-label="Customize the globe" className={cn(glass, "flex max-h-full flex-col overflow-hidden rounded-[26px] has-[>button[aria-expanded]:focus-visible]:outline-2 has-[>button[aria-expanded]:focus-visible]:outline-offset-2 has-[>button[aria-expanded]:focus-visible]:outline-ring", className)}
       onKeyDown={e => { if (e.key === "Escape" && open) { e.stopPropagation(); onOpenChange(false); toggle.current?.focus() } }}>
-      <button ref={toggle} type="button" aria-expanded={open} aria-controls={bodyId} aria-label={`Customize the globe. Current look: ${preset ? preset.name : "custom mix"}`} onClick={() => onOpenChange(!open)}
-        className="flex w-full shrink-0 items-center gap-3 rounded-[26px] px-5 pt-4 pb-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset">
+      <button ref={toggle} type="button" aria-expanded={open} aria-controls={bodyId}  onClick={() => onOpenChange(!open)}
+        className="flex w-full shrink-0 items-center gap-3 rounded-[26px] px-5 pt-4 pb-1 text-left outline-none">
         <span className="min-w-0 flex-1">
-          <span className="block font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase">Customize · {preset ? "Look" : "Your mix"}</span>
+          <span className="sr-only">Customize the globe. Current look: </span>
+          <span className="block font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase" aria-hidden="true">Customize · {preset ? "Look" : "Your mix"}</span>
           <span className="mt-0.5 block text-[22px] leading-tight font-semibold tracking-tight">{preset ? preset.name : "Custom mix"}</span>
           <span className="block text-[13px] text-muted-foreground">{preset ? preset.tagline : "Built from your choices"}</span>
         </span>
@@ -178,7 +179,7 @@ export function CustomizeCard({ cfg, onChange, open, onOpenChange, compact, clas
       </button>
       {/* announced when the look changes, for screen readers */}
       <p className="sr-only" role="status">{preset ? `${preset.name} look selected` : "Custom mix"}</p>
-      <div id={bodyId} hidden={compact && !open} className="min-h-0 overflow-y-auto overscroll-contain px-3.5 pb-3.5">
+      <div id={bodyId} hidden={compact && !open} className="min-h-0 overflow-y-auto overscroll-contain px-3.5 pt-2 pb-3.5">
         <div role="group" aria-label="Looks" className="grid grid-cols-3 gap-2">{first.map(look)}</div>
         {!open && (
           <button type="button" onClick={() => onOpenChange(true)}
@@ -187,7 +188,7 @@ export function CustomizeCard({ cfg, onChange, open, onOpenChange, compact, clas
           </button>
         )}
         <div className={cn("grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none", open ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}>
-          <div className="min-h-0 overflow-hidden">
+          <div className="-m-4 min-h-0 overflow-hidden p-4">
             <div inert={!open} className={cn("transition-opacity duration-300 motion-reduce:transition-none", open ? "opacity-100 delay-100" : "opacity-0")}>
               <div role="group" aria-label="More looks" className="mt-2 grid grid-cols-3 gap-2">{rest.map(look)}</div>
               {preset && (
@@ -197,7 +198,7 @@ export function CustomizeCard({ cfg, onChange, open, onOpenChange, compact, clas
                 </p>
               )}
               <div className="mt-4 border-t border-white/12 pt-3.5">
-                <h3 className="mb-3 text-[13px] font-semibold">Fine-tune every layer</h3>
+                <h2 className="mb-3 text-[13px] font-semibold">Fine-tune every layer</h2>
                 {OPTIONS.map(o => (
                   <div key={o.key} className="mb-3 flex flex-col gap-1.5">
                     <span id={`${bodyId}-${o.key}`} className="font-mono text-[11px] tracking-[0.06em] text-muted-foreground uppercase">{o.label}</span>
