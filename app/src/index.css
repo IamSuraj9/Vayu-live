@@ -125,7 +125,7 @@ html, body { background: #000; }
 }
 .liquid-thumb .text-muted-foreground, .liquid-thumb .text-foreground\/70 { color: oklch(0.38 0 0) !important; }
 .liquid-thumb .text-warn { color: oklch(0.45 0.1 70) !important; }
-.liquid-thumb .glass-well { background: oklch(0.14 0.004 270); }
+.liquid-thumb .glass-well { background: oklch(0.14 0.004 270); color: oklch(0.82 0 0) !important; }
 [data-slot="tabs-list"] { background: oklch(1 0 0 / 0.06) !important; box-shadow: none; }
 
 /* main action: solid near-white, dark icon/text */
