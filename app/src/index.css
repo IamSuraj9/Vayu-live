@@ -145,7 +145,7 @@ html, body { background: #000; }
 [data-slot="slider-track"] { background: oklch(1 0 0 / 0.14) !important; }
 [data-slot="slider-range"] { background: oklch(0.96 0 0) !important; }
 [data-slot="slider-thumb"] {
-  width: 22px !important; height: 22px !important; border: 0 !important;
+  width: 24px !important; height: 24px !important; border: 0 !important;
   background: oklch(0.96 0 0) !important;
   box-shadow: 0 0 0 1px oklch(0 0 0 / 0.35) !important;
 }

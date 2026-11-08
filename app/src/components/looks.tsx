@@ -198,7 +198,7 @@ export function CustomizeCard({ cfg, onChange, open, onOpenChange, compact, clas
                 </p>
               )}
               <div className="mt-4 border-t border-white/12 pt-3.5">
-                <h3 className="mb-3 text-[13px] font-semibold">Fine-tune every layer</h3>
+                <h2 className="mb-3 text-[13px] font-semibold">Fine-tune every layer</h2>
                 {OPTIONS.map(o => (
                   <div key={o.key} className="mb-3 flex flex-col gap-1.5">
                     <span id={`${bodyId}-${o.key}`} className="font-mono text-[11px] tracking-[0.06em] text-muted-foreground uppercase">{o.label}</span>

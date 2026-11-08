@@ -98,7 +98,7 @@ function StormRow({ s, live, now, units, selected, onClick }: { s: Storm; live: 
       </span>
       <span className="min-w-0 flex-1">
         <span className="block truncate font-medium">{s.name}</span>
-        <span className="block truncate text-[12.5px] text-muted-foreground">
+        <span className="block text-[12.5px] text-muted-foreground">
           {quiet ? <><span className="text-warn">{live === "ended" ? "Ended" : "Not updated"}</span> · last report {fmtAgo(last.t, now)}</>
             : <>{invest ? "Being watched" : headline(last.kt, s.basin)} · {s.basin}</>}
         </span>
@@ -118,7 +118,7 @@ export function StormTabs({ storms, live, now, unknown, past, units, selectedId,
   const current = storms.filter(s => live(s) !== "ended").length
   return (
     <Tabs value={tab} onValueChange={setTab} className="min-h-0 gap-0">
-      <TabsList className="relative mx-3 mt-1 grid group-data-[orientation=horizontal]/tabs:h-11 w-auto grid-cols-2 rounded-full p-[3px]">
+      <TabsList className="relative mx-3 mt-1 grid group-data-[orientation=horizontal]/tabs:h-12 w-auto grid-cols-2 rounded-full p-[3px]">
         <span aria-hidden="true" className="tab-thumb liquid-thumb pointer-events-none absolute inset-y-[3px] left-[3px] w-[calc(50%-3px)] rounded-full"
           style={{ transform: tab === "past" ? "translateX(100%)" : "translateX(0)" }} />
         <TabsTrigger value="active" className="relative z-10 rounded-full text-[13px] h-full">
@@ -236,7 +236,7 @@ function ForecastChart({ storm, nowKt, units }: { storm: Storm; nowKt: number; u
       {days.map(d => (
         <g key={d}>
           <line x1={x(d)} x2={x(d)} y1={pad.t - 6} y2={H - pad.b} stroke="oklch(1 0 0 / 7%)" />
-          <text x={x(d)} y={H - 5} fill="oklch(0.69 0.012 270)" fontSize="10" textAnchor={d === 0 ? "start" : d === maxH ? "end" : "middle"} fontFamily="var(--font-data)">
+          <text x={x(d)} y={H - 5} fill="oklch(0.82 0.01 270)" fontSize="11" textAnchor={d === 0 ? "start" : d === maxH ? "end" : "middle"} fontFamily="var(--font-data)">
             {d === 0 ? "Now" : `${d / 24}d`}
           </text>
         </g>
@@ -464,7 +464,7 @@ function UnitRow<T extends string>({ id, label, value, options, onChange }: { id
       <ToggleGroup type="single" value={value} aria-labelledby={id} onValueChange={v => v && onChange(v as T)}
         className="glass-well rounded-full p-[3px]">
         {options.map(([v, l]) => (
-          <ToggleGroupItem key={v} value={v} className="h-9 min-w-11 rounded-full px-3 text-[12px] sm:h-7 sm:min-w-10 sm:px-2.5">{l}</ToggleGroupItem>
+          <ToggleGroupItem key={v} value={v} className="h-10 min-w-11 rounded-full px-3 text-[12px] sm:h-7 sm:min-w-10 sm:px-2.5">{l}</ToggleGroupItem>
         ))}
       </ToggleGroup>
     </div>
@@ -519,7 +519,7 @@ export function UnitsPopover({ units, setUnits }: { units: Units; setUnits: (u: 
         </TooltipTrigger>
         <TooltipContent side="bottom">Units</TooltipContent>
       </Tooltip>
-      <PopoverContent align="end" sideOffset={10} className="w-[340px] rounded-[24px] p-4">
+      <PopoverContent aria-label="Units" align="end" sideOffset={10} className="w-[340px] rounded-[24px] p-4">
         <UnitsForm units={units} setUnits={setUnits} />
       </PopoverContent>
     </Popover>
@@ -537,7 +537,7 @@ export function LayersPopover({ layers, setLayers }: { layers: Layers; setLayers
         </TooltipTrigger>
         <TooltipContent side="bottom">Map layers</TooltipContent>
       </Tooltip>
-      <PopoverContent align="end" sideOffset={10} className="w-[300px] rounded-[24px] p-2">
+      <PopoverContent aria-label="Map layers" align="end" sideOffset={10} className="w-[300px] rounded-[24px] p-2">
         <p className="px-2 pt-1.5 pb-2 font-medium">Map layers</p>
         <LayersForm layers={layers} setLayers={setLayers} />
       </PopoverContent>
@@ -550,7 +550,7 @@ export function ScaleDialog({ units, open, onOpenChange }: { units: Units; open:
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] px-0 py-3 sm:max-w-lg">
-        <div className="grid min-h-0 gap-4 overflow-y-auto px-6 py-3">
+        <div tabIndex={0} className="grid min-h-0 gap-4 overflow-y-auto px-6 py-3 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
         <DialogHeader>
           <DialogTitle className="text-xl tracking-tight">How strong is it?</DialogTitle>
           <DialogDescription>One scale for every ocean, based on the steady wind at the centre.</DialogDescription>
@@ -592,7 +592,7 @@ export function GlossaryDialog({ open, onOpenChange }: { open: boolean; onOpenCh
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] px-0 py-3 sm:max-w-lg">
-        <div className="grid min-h-0 gap-4 overflow-y-auto px-6 py-3">
+        <div tabIndex={0} className="grid min-h-0 gap-4 overflow-y-auto px-6 py-3 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
         <DialogHeader>
           <DialogTitle className="text-xl tracking-tight">What the words mean</DialogTitle>
           <DialogDescription>Plain explanations of the terms on the map.</DialogDescription>
@@ -803,7 +803,7 @@ export function CommandPalette({ open, onOpenChange, storms, past, units, onStor
             </CommandItem>
           ))}
         </CommandGroup>
-        <CommandSeparator />
+        <CommandSeparator aria-hidden="true" />
         <CommandGroup heading="Places">
           {CITIES.map(([name, country, lat, lon]) => (
             <CommandItem key={`${name}-${country}`} value={`${name} ${country}`} onSelect={() => onPlace(lon, lat)}>
