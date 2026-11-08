@@ -236,7 +236,7 @@ function ForecastChart({ storm, nowKt, units }: { storm: Storm; nowKt: number; u
       {days.map(d => (
         <g key={d}>
           <line x1={x(d)} x2={x(d)} y1={pad.t - 6} y2={H - pad.b} stroke="oklch(1 0 0 / 7%)" />
-          <text x={x(d)} y={H - 5} fill="oklch(0.82 0.01 270)" fontSize="11" textAnchor={d === 0 ? "start" : d === maxH ? "end" : "middle"} fontFamily="var(--font-data)">
+          <text x={x(d)} y={H - 5} fill="oklch(0.9 0.008 270)" fontSize="11" textAnchor={d === 0 ? "start" : d === maxH ? "end" : "middle"} fontFamily="var(--font-data)">
             {d === 0 ? "Now" : `${d / 24}d`}
           </text>
         </g>
