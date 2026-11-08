@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-08T12:00:00Z",
- "fetchedAt": "2026-11-08T17:56:37Z",
+ "snapshot": "2026-11-08T18:00:00Z",
+ "fetchedAt": "2026-11-08T21:20:11Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-08T12:00:00Z",
+   "cycle": "2026-11-08T18:00:00Z",
    "storms": 3,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261108/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261108/18/atmos/gfs.t18z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -31,7 +31,7 @@
    "basin": "Western Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-08T12:00:00Z",
+   "updated": "2026-11-08T18:00:00Z",
    "track": [
     {
      "t": "2026-11-06T06:00:00Z",
@@ -91,6 +91,12 @@
      "t": "2026-11-08T12:00:00Z",
      "lat": 22.4,
      "lon": 136.5,
+     "kt": 65
+    },
+    {
+     "t": "2026-11-08T18:00:00Z",
+     "lat": 22.9,
+     "lon": 135.7,
      "kt": 65,
      "hpa": 989
     }
@@ -98,49 +104,49 @@
    "forecast": [
     {
      "h": 12,
-     "lat": 23.3,
-     "lon": 135.1,
-     "kt": 80
+     "lat": 23.6,
+     "lon": 135.2,
+     "kt": 75
     },
     {
      "h": 24,
-     "lat": 24.0,
-     "lon": 135.5,
-     "kt": 90
+     "lat": 24.2,
+     "lon": 136.3,
+     "kt": 80
     },
     {
      "h": 36,
-     "lat": 24.4,
-     "lon": 137.6,
-     "kt": 85
+     "lat": 24.7,
+     "lon": 138.8,
+     "kt": 75
     },
     {
      "h": 48,
-     "lat": 24.9,
-     "lon": 140.4,
-     "kt": 70
+     "lat": 25.4,
+     "lon": 142.0,
+     "kt": 65
     },
     {
      "h": 60,
-     "lat": 25.3,
-     "lon": 143.2,
-     "kt": 55
+     "lat": 26.0,
+     "lon": 145.3,
+     "kt": 50
     },
     {
      "h": 72,
-     "lat": 25.6,
-     "lon": 145.9,
-     "kt": 45
+     "lat": 26.3,
+     "lon": 147.7,
+     "kt": 40
     },
     {
      "h": 96,
-     "lat": 25.6,
-     "lon": 149.4,
-     "kt": 30
+     "lat": 26.0,
+     "lon": 151.0,
+     "kt": 35
     }
    ],
-   "forecastIssued": "2026-11-08T12:00:00Z",
-   "forecastBase": "2026-11-08T12:00:00Z",
+   "forecastIssued": "2026-11-08T18:00:00Z",
+   "forecastBase": "2026-11-08T18:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001347",
    "authority": "JTWC",
@@ -150,9 +156,9 @@
    ],
    "windAvg": "1-minute",
    "people": {
-    "count": 2127,
+    "count": 0,
     "alert": "Green",
-    "modified": "Sun, 08 Nov 2026 17:50:07 GMT"
+    "modified": "Sun, 08 Nov 2026 20:20:10 GMT"
    },
    "codes": {
     "atcf": "wp312026",
@@ -168,7 +174,7 @@
    "basin": "Central Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-08T12:00:00Z",
+   "updated": "2026-11-08T18:00:00Z",
    "track": [
     {
      "t": "2026-11-02T12:00:00Z",
@@ -341,66 +347,73 @@
      "lon": -155.6,
      "kt": 40,
      "hpa": 1002
+    },
+    {
+     "t": "2026-11-08T18:00:00Z",
+     "lat": 11.6,
+     "lon": -156.7,
+     "kt": 40,
+     "hpa": 1002
     }
    ],
    "forecast": [
     {
      "h": 3,
      "lat": 11.6,
-     "lon": -156.1,
+     "lon": -157.2,
      "kt": 40
     },
     {
      "h": 12,
      "lat": 11.6,
-     "lon": -157.4,
+     "lon": -158.6,
      "kt": 40
     },
     {
      "h": 24,
-     "lat": 11.6,
-     "lon": -159.4,
+     "lat": 11.5,
+     "lon": -160.6,
      "kt": 40
     },
     {
      "h": 36,
-     "lat": 11.5,
-     "lon": -161.5,
+     "lat": 11.4,
+     "lon": -162.6,
      "kt": 40
     },
     {
      "h": 48,
      "lat": 11.4,
-     "lon": -163.4,
+     "lon": -164.6,
      "kt": 45
     },
     {
      "h": 60,
      "lat": 11.3,
-     "lon": -165.4,
+     "lon": -166.8,
      "kt": 45
     },
     {
      "h": 72,
-     "lat": 11.2,
-     "lon": -167.7,
+     "lat": 11.3,
+     "lon": -169.5,
      "kt": 50
     },
     {
      "h": 96,
-     "lat": 11.6,
-     "lon": -174.0,
+     "lat": 12.1,
+     "lon": -175.8,
      "kt": 45
     },
     {
      "h": 120,
-     "lat": 13.6,
-     "lon": 179.7,
+     "lat": 14.2,
+     "lon": 178.4,
      "kt": 45
     }
    ],
-   "forecastIssued": "2026-11-08T15:00:00Z",
-   "forecastBase": "2026-11-08T12:00:00Z",
+   "forecastIssued": "2026-11-08T21:00:00Z",
+   "forecastBase": "2026-11-08T18:00:00Z",
    "source": "NHC",
    "sourceUrl": "https://www.nhc.noaa.gov/",
    "authority": "NHC",
@@ -500,7 +513,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Sun, 08 Nov 2026 14:51:13 GMT"
+    "modified": "Sun, 08 Nov 2026 19:50:23 GMT"
    },
    "codes": {
     "atcf": null,
@@ -516,7 +529,7 @@
    "basin": "South-West Indian Ocean",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-08T12:00:00Z",
+   "updated": "2026-11-08T18:00:00Z",
    "track": [
     {
      "t": "2026-11-08T00:00:00Z",
@@ -538,13 +551,20 @@
      "lon": 50.7,
      "kt": 30,
      "hpa": 1009
+    },
+    {
+     "t": "2026-11-08T18:00:00Z",
+     "lat": -11.3,
+     "lon": 50.5,
+     "kt": 25,
+     "hpa": 1012
     }
    ],
    "forecast": [],
    "forecastIssued": null,
    "forecastBase": null,
    "source": "NOAA tcvitals",
-   "sourceUrl": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261108/12/atmos/gfs.t12z.syndata.tcvitals.tm00",
+   "sourceUrl": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261108/18/atmos/gfs.t18z.syndata.tcvitals.tm00",
    "authority": "JTWC",
    "official": [
     "Météo-France La Réunion",
