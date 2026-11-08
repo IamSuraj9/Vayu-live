@@ -401,7 +401,7 @@ export function Globe({ markers, selectedId, camera, onSelect, pick, onPick, red
               sel ? "liquid-chip-on border-transparent text-neutral-950" : "liquid-chip border-transparent text-white",
             )}>
               <span className="font-medium">{m.name}</span>
-              <span className={cn("ml-1.5 font-mono text-[11px] tabular-nums", sel ? "text-neutral-600" : "text-white/60")}>{m.label}</span>
+              <span className={cn("ml-1.5 font-mono text-[11px] tabular-nums", sel ? "text-neutral-700" : "text-white/70")}>{m.label}</span>
             </span>
           </button>
         )

@@ -48,7 +48,7 @@ function StrengthBars({ kt }: { kt: number }) {
   return (
     <span className="flex items-end gap-[2px]" aria-hidden="true">
       {LEVELS.map((l, i) => (
-        <span key={l.key} className="w-[3px] rounded-full" style={{ height: 4 + i * 2, background: i <= idx ? levelFor(kt).color : "oklch(1 0 0 / 14%)" }} />
+        <span key={l.key} className="w-[3px] rounded-full" style={{ height: 4 + i * 2, background: i <= idx ? levelFor(kt).color : "color-mix(in oklab, currentColor 18%, transparent)" }} />
       ))}
     </span>
   )
