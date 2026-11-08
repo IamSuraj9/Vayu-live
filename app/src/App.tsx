@@ -332,19 +332,23 @@ function placeReadout(x: number, y: number, w: number, h: number) {
   const rects = [...document.querySelectorAll('aside[aria-label="Storms"], section[aria-label="Storm details"], section[aria-label="Customize the globe"], [data-avoid]')]
     .map(e => e.getBoundingClientRect()).filter(r => r.width > 0 && r.height > 0)
     .map(r => ({ l: r.left - ox - 8, t: r.top - oy - 8, r: r.right - ox + 8, b: r.bottom - oy + 8 }))
-  const clampX = (v: number) => Math.min(Math.max(m, v), w - W - m), clampY = (v: number) => Math.min(Math.max(m, v), h - H - m)
-  const spots = [
-    { left: x + gap, top: clampY(y - 40) }, { left: x - gap - W, top: clampY(y - 40) },
-    { left: clampX(x - W / 2), top: y + gap }, { left: clampX(x - W / 2), top: y - gap - H },
-  ].map(sp => ({ ...sp, left: Math.round(sp.left), top: Math.round(sp.top) }))
-  const overlap = (sp: { left: number; top: number }) => rects.reduce((sum, r) => {
-    const ix = Math.min(sp.left + W, r.r) - Math.max(sp.left, r.l), iy = Math.min(sp.top + H, r.b) - Math.max(sp.top, r.t)
+  // Every position on a coarse grid that fits on screen, scored by how much it covers a panel
+  // (heavily) and how far it is from the click (lightly). Tidy spots beside the click win.
+  const overlap = (left: number, top: number) => rects.reduce((sum, r) => {
+    const ix = Math.min(left + W, r.r) - Math.max(left, r.l), iy = Math.min(top + H, r.b) - Math.max(top, r.t)
     return sum + (ix > 0 && iy > 0 ? ix * iy : 0)
   }, 0)
-  const fits = (sp: { left: number; top: number }) => sp.left >= m && sp.left + W <= w - m && sp.top >= m && sp.top + H <= h - m
-  const ok = spots.filter(fits)
-  const pool = ok.length ? ok : spots
-  return pool.reduce((best, sp) => (overlap(sp) < overlap(best) ? sp : best), pool[0])
+  const near = (left: number, top: number) => {
+    const dx = x < left ? left - x : x > left + W ? x - left - W : 0, dy = y < top ? top - y : y > top + H ? y - top - H : 0
+    const onClick = dx === 0 && dy === 0 // never cover the point that was clicked
+    return Math.hypot(dx - gap, dy) + (onClick ? 5000 : 0)
+  }
+  let best = { left: m, top: m }, bestScore = Infinity
+  for (let left = m; left <= w - W - m; left += 16) for (let top = m; top <= h - H - m; top += 16) {
+    const score = overlap(left, top) * 10 + near(left, top)
+    if (score < bestScore) { bestScore = score; best = { left, top } }
+  }
+  return best
 }
 
 function CreditLine({ onAbout }: { onAbout: () => void }) {
