@@ -297,8 +297,8 @@ export default function App() {
             </div>
             <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
               <SheetContent side="bottom" className="max-h-[78vh] gap-0 overflow-hidden rounded-t-[30px] p-0">
-                <div className="min-h-0 flex-1 overflow-y-auto pb-3">
-                <SheetHeader className="px-4 pt-5 pb-2">
+                <div className="scroll-inset min-h-0 flex-1 overflow-y-auto pb-3">
+                <SheetHeader className="px-4 pt-2 pb-2">
                   <SheetTitle className="text-lg tracking-tight">Storms</SheetTitle>
                   <SheetDescription>Tap a storm to see it on the globe.</SheetDescription>
                 </SheetHeader>

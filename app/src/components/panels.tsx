@@ -536,7 +536,7 @@ export function ScaleDialog({ units, open, onOpenChange }: { units: Units; open:
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-lg">
-        <div className="grid min-h-0 gap-4 overflow-y-auto p-6">
+        <div className="scroll-inset grid min-h-0 gap-4 overflow-y-auto px-6 py-3">
         <DialogHeader>
           <DialogTitle className="text-xl tracking-tight">How strong is it?</DialogTitle>
           <DialogDescription>One scale for every ocean, based on the steady wind at the centre.</DialogDescription>
@@ -578,7 +578,7 @@ export function GlossaryDialog({ open, onOpenChange }: { open: boolean; onOpenCh
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-lg">
-        <div className="grid min-h-0 gap-4 overflow-y-auto p-6">
+        <div className="scroll-inset grid min-h-0 gap-4 overflow-y-auto px-6 py-3">
         <DialogHeader>
           <DialogTitle className="text-xl tracking-tight">What the words mean</DialogTitle>
           <DialogDescription>Plain explanations of the terms on the map.</DialogDescription>
@@ -630,7 +630,7 @@ export function AboutDialog({ file, live, reachable, now, units, open, onOpenCha
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-lg">
-        <div className="grid min-h-0 gap-5 overflow-y-auto p-6">
+        <div className="scroll-inset grid min-h-0 gap-5 overflow-y-auto px-6 py-3">
           <DialogHeader>
             <DialogTitle className="text-xl tracking-tight">About this globe</DialogTitle>
             <DialogDescription>An educational map of the world's tropical storms, built from free public data.</DialogDescription>
@@ -721,7 +721,7 @@ export function SettingsDialog({ open, onOpenChange, units, setUnits, layers, se
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[88vh] flex-col overflow-hidden rounded-[28px] p-0 sm:max-w-md">
-        <div className="grid min-h-0 gap-5 overflow-y-auto p-5">
+        <div className="scroll-inset grid min-h-0 gap-5 overflow-y-auto px-5 py-3">
           <DialogHeader>
             <DialogTitle className="text-lg tracking-tight">Settings</DialogTitle>
             <DialogDescription>Units, map layers and help.</DialogDescription>
