@@ -554,7 +554,7 @@ export function ScaleDialog({ units, open, onOpenChange }: { units: Units; open:
           <DialogTitle className="text-xl tracking-tight">How strong is it?</DialogTitle>
           <DialogDescription>One scale for every ocean, based on the steady wind at the centre.</DialogDescription>
         </DialogHeader>
-        <div tabIndex={0} className="grid min-h-0 gap-4 overflow-y-auto px-6 pt-1 pb-3 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
+        <div tabIndex={0} className="scroll-stable grid min-h-0 gap-4 overflow-y-auto px-6 pt-1 pb-3 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
         <ol className="flex flex-col gap-1.5">
           {LEVELS.map(l => (
             <li key={l.key} className="glass-well flex gap-3 rounded-xl px-3 py-2.5">
@@ -596,7 +596,7 @@ export function GlossaryDialog({ open, onOpenChange }: { open: boolean; onOpenCh
           <DialogTitle className="text-xl tracking-tight">What the words mean</DialogTitle>
           <DialogDescription>Plain explanations of the terms on the map.</DialogDescription>
         </DialogHeader>
-        <div tabIndex={0} className="grid min-h-0 gap-4 overflow-y-auto px-6 pt-1 pb-3 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
+        <div tabIndex={0} className="scroll-stable grid min-h-0 gap-4 overflow-y-auto px-6 pt-1 pb-3 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
         <dl className="flex flex-col divide-y divide-white/6">
           {TERMS.map(([t, d]) => (
             <div key={t} className="py-2.5 first:pt-0"><dt className="font-medium">{t}</dt><dd className="mt-0.5 text-[13.5px] leading-relaxed text-muted-foreground">{d}</dd></div>
@@ -648,7 +648,7 @@ export function AboutDialog({ file, live, reachable, now, units, open, onOpenCha
             <DialogTitle className="text-xl tracking-tight">About this globe</DialogTitle>
             <DialogDescription>An educational map of the world's tropical storms, built from free public data.</DialogDescription>
           </DialogHeader>
-        <div className="grid min-h-0 gap-5 overflow-y-auto px-6 pt-1 pb-3">
+        <div className="scroll-stable grid min-h-0 gap-5 overflow-y-auto px-6 pt-1 pb-3">
 
           <div className="glass-well flex gap-3 rounded-xl px-3.5 py-3 text-[13.5px] leading-relaxed">
             <Info className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden="true" />
@@ -739,7 +739,7 @@ export function SettingsDialog({ open, onOpenChange, units, setUnits, layers, se
             <DialogTitle className="text-lg tracking-tight">Settings</DialogTitle>
             <DialogDescription>Units, map layers and help.</DialogDescription>
           </DialogHeader>
-        <div className="grid min-h-0 gap-5 overflow-y-auto px-5 pt-1 pb-3">
+        <div className="scroll-stable grid min-h-0 gap-5 overflow-y-auto px-5 pt-1 pb-3">
           <UnitsForm units={units} setUnits={setUnits} />
           <Separator className="bg-white/8" />
           <section aria-labelledby="settings-layers">

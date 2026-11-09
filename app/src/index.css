@@ -208,6 +208,8 @@ html, body { background: #000; }
 ::-webkit-scrollbar-thumb:hover { background-color: oklch(1 0 0 / 0.32); }
 ::-webkit-scrollbar-thumb:active { background-color: oklch(1 0 0 / 0.42); }
 ::-webkit-scrollbar-corner, ::-webkit-scrollbar-button { display: none; background: transparent; }
+/* A scroller always keeps room for its scrollbar, so content never changes width (or reflows) when the bar appears */
+.scroll-stable { scrollbar-gutter: stable; overflow-x: hidden; }
 @supports not selector(::-webkit-scrollbar) {
   * { scrollbar-width: thin; scrollbar-color: oklch(1 0 0 / 0.22) transparent; }
 }
