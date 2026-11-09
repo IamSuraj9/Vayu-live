@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-09T12:00:00Z",
- "fetchedAt": "2026-11-09T15:20:11Z",
+ "snapshot": "2026-11-09T18:00:00Z",
+ "fetchedAt": "2026-11-09T18:20:10Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -170,7 +170,7 @@
    "people": {
     "count": 986,
     "alert": "Green",
-    "modified": "Mon, 09 Nov 2026 14:05:54 GMT"
+    "modified": "Mon, 09 Nov 2026 18:05:03 GMT"
    },
    "codes": {
     "atcf": "wp312026",
@@ -186,7 +186,7 @@
    "basin": "Central Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-09T12:00:00Z",
+   "updated": "2026-11-09T18:00:00Z",
    "track": [
     {
      "t": "2026-11-02T12:00:00Z",
@@ -387,66 +387,67 @@
      "lon": -159.1,
      "kt": 35,
      "hpa": 1004
+    },
+    {
+     "t": "2026-11-09T18:00:00Z",
+     "lat": 11.4,
+     "lon": -160.0,
+     "kt": 35,
+     "hpa": 1004
     }
    ],
    "forecast": [
     {
-     "h": 3,
-     "lat": 11.4,
-     "lon": -159.5,
-     "kt": 35
-    },
-    {
-     "h": 12,
+     "h": 6,
      "lat": 11.4,
      "lon": -161.6,
      "kt": 35
     },
     {
-     "h": 24,
+     "h": 18,
      "lat": 11.3,
      "lon": -163.6,
      "kt": 35
     },
     {
-     "h": 36,
+     "h": 30,
      "lat": 11.1,
      "lon": -165.6,
      "kt": 40
     },
     {
-     "h": 48,
+     "h": 42,
      "lat": 11.1,
      "lon": -168.0,
      "kt": 40
     },
     {
-     "h": 60,
+     "h": 54,
      "lat": 11.4,
      "lon": -170.7,
      "kt": 40
     },
     {
-     "h": 72,
+     "h": 66,
      "lat": 12.0,
      "lon": -173.8,
      "kt": 40
     },
     {
-     "h": 96,
+     "h": 90,
      "lat": 13.4,
      "lon": 180.0,
      "kt": 35
     },
     {
-     "h": 120,
+     "h": 114,
      "lat": 14.7,
      "lon": 175.3,
      "kt": 35
     }
    ],
    "forecastIssued": "2026-11-09T15:00:00Z",
-   "forecastBase": "2026-11-09T12:00:00Z",
+   "forecastBase": "2026-11-09T18:00:00Z",
    "source": "NHC",
    "sourceUrl": "https://www.nhc.noaa.gov/",
    "authority": "NHC",
