@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-10T06:00:00Z",
- "fetchedAt": "2026-11-10T09:20:11Z",
+ "fetchedAt": "2026-11-10T12:20:09Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -10,8 +10,8 @@
   },
   "gdacs": {
    "ok": true,
-   "events": 3,
-   "used": 3,
+   "events": 2,
+   "used": 2,
    "errors": []
   },
   "tcvitals": {
@@ -176,7 +176,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Tue, 10 Nov 2026 08:50:36 GMT"
+    "modified": "Tue, 10 Nov 2026 11:50:33 GMT"
    },
    "codes": {
     "atcf": "wp312026",
@@ -499,7 +499,7 @@
    "rawName": "THREE",
    "kind": "cyclone",
    "basin": "South-West Indian Ocean",
-   "status": "active",
+   "status": "ended",
    "stale": false,
    "updated": "2026-11-10T00:00:00Z",
    "track": [
