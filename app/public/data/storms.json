@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-10T00:00:00Z",
- "fetchedAt": "2026-11-10T03:20:11Z",
+ "fetchedAt": "2026-11-10T06:20:12Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -176,7 +176,7 @@
    "people": {
     "count": 934,
     "alert": "Green",
-    "modified": "Tue, 10 Nov 2026 01:35:53 GMT"
+    "modified": "Tue, 10 Nov 2026 05:50:02 GMT"
    },
    "codes": {
     "atcf": "wp312026",
