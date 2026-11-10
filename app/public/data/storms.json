@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-10T12:00:00Z",
- "fetchedAt": "2026-11-10T18:20:11Z",
+ "snapshot": "2026-11-10T18:00:00Z",
+ "fetchedAt": "2026-11-10T21:19:12Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-10T12:00:00Z",
+   "cycle": "2026-11-10T18:00:00Z",
    "storms": 2,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261110/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261110/18/atmos/gfs.t18z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -31,7 +31,7 @@
    "basin": "Western Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-10T12:00:00Z",
+   "updated": "2026-11-10T18:00:00Z",
    "track": [
     {
      "t": "2026-11-06T06:00:00Z",
@@ -139,38 +139,32 @@
      "t": "2026-11-10T12:00:00Z",
      "lat": 26.1,
      "lon": 142.1,
-     "kt": 85,
-     "hpa": 970
+     "kt": 85
+    },
+    {
+     "t": "2026-11-10T18:00:00Z",
+     "lat": 26.9,
+     "lon": 144.6,
+     "kt": 80,
+     "hpa": 973
     }
    ],
    "forecast": [
     {
      "h": 12,
-     "lat": 27.5,
-     "lon": 146.7,
-     "kt": 75
+     "lat": 28.7,
+     "lon": 150.2,
+     "kt": 70
     },
     {
      "h": 24,
-     "lat": 29.0,
-     "lon": 152.2,
-     "kt": 65
-    },
-    {
-     "h": 36,
-     "lat": 30.7,
-     "lon": 158.2,
-     "kt": 50
-    },
-    {
-     "h": 48,
-     "lat": 32.2,
-     "lon": 164.1,
-     "kt": 40
+     "lat": 30.9,
+     "lon": 156.9,
+     "kt": 60
     }
    ],
-   "forecastIssued": "2026-11-10T12:00:00Z",
-   "forecastBase": "2026-11-10T12:00:00Z",
+   "forecastIssued": "2026-11-10T18:00:00Z",
+   "forecastBase": "2026-11-10T18:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001347",
    "authority": "JTWC",
@@ -180,9 +174,9 @@
    ],
    "windAvg": "1-minute",
    "people": {
-    "count": 613,
+    "count": 953,
     "alert": "Green",
-    "modified": "Tue, 10 Nov 2026 14:50:54 GMT"
+    "modified": "Tue, 10 Nov 2026 20:05:50 GMT"
    },
    "codes": {
     "atcf": "wp312026",
@@ -198,7 +192,7 @@
    "basin": "Central Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-10T12:00:00Z",
+   "updated": "2026-11-10T18:00:00Z",
    "track": [
     {
      "t": "2026-11-02T12:00:00Z",
@@ -427,66 +421,67 @@
      "lon": -164.2,
      "kt": 35,
      "hpa": 1004
+    },
+    {
+     "t": "2026-11-10T18:00:00Z",
+     "lat": 10.9,
+     "lon": -165.0,
+     "kt": 35,
+     "hpa": 1004
     }
    ],
    "forecast": [
     {
      "h": 3,
-     "lat": 11.1,
-     "lon": -164.7,
+     "lat": 10.8,
+     "lon": -165.2,
      "kt": 35
     },
     {
      "h": 12,
-     "lat": 10.8,
-     "lon": -166.2,
+     "lat": 10.7,
+     "lon": -166.7,
      "kt": 35
     },
     {
      "h": 24,
      "lat": 10.6,
-     "lon": -168.5,
+     "lon": -169.1,
      "kt": 35
     },
     {
      "h": 36,
-     "lat": 10.6,
-     "lon": -171.3,
+     "lat": 10.8,
+     "lon": -172.4,
      "kt": 35
     },
     {
      "h": 48,
-     "lat": 11.0,
-     "lon": -174.3,
+     "lat": 11.3,
+     "lon": -175.7,
      "kt": 35
     },
     {
      "h": 60,
-     "lat": 11.5,
-     "lon": -177.3,
+     "lat": 11.9,
+     "lon": -179.0,
      "kt": 35
     },
     {
      "h": 72,
-     "lat": 11.8,
-     "lon": 179.9,
+     "lat": 12.4,
+     "lon": 178.2,
      "kt": 35
     },
     {
      "h": 96,
      "lat": 12.5,
-     "lon": 174.8,
-     "kt": 30
-    },
-    {
-     "h": 120,
-     "lat": 12.9,
-     "lon": 170.8,
+     "lon": 174.0,
      "kt": 30
     }
    ],
-   "forecastIssued": "2026-11-10T15:00:00Z",
-   "forecastBase": "2026-11-10T12:00:00Z",
+   "forecastIssued": "2026-11-10T21:00:00Z",
+   "forecastBase": "2026-11-10T18:00:00Z",
    "source": "NHC",
    "sourceUrl": "https://www.nhc.noaa.gov/",
    "authority": "NHC",
@@ -498,7 +493,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Tue, 10 Nov 2026 15:07:43 GMT"
+    "modified": "Tue, 10 Nov 2026 21:07:56 GMT"
    },
    "codes": {
     "atcf": "cp042026",
