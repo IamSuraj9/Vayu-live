@@ -22,7 +22,7 @@ wind speed, direction, past path and forecast path, on a moving wind map. Educat
   Falls back to the copy built into the app, with a banner when the data can't be reached or is more than 6 hours old.
   Storms with no new report show as "Ended" or "Not updated"
 - About and sources dialog with source status, credits and official agency links
-- Liquid-glass interface, Geist type, shadcn/ui, spring-based motion
+- Flat, matte dark interface, Geist type, shadcn/ui, spring-based motion. Contributors and AI agents: read `AGENTS.md` first
 
 ## Run it
 ```bash
