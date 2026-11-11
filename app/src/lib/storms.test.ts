@@ -1,6 +1,7 @@
 // Run: npx tsx --test src/lib/storms.test.ts   (from app/)
 import assert from "node:assert/strict"
 import { test } from "node:test"
+import { bearing, distanceKm } from "./geo"
 import { endMs, hasTrack, liveness, startMs, stateAt, withoutEmptyTracks, type Storm, type StormFile } from "./storms"
 
 const point = (t: string, kt: number, lat = 10, lon = 140) => ({ t, lat, lon, kt })
@@ -70,6 +71,42 @@ test("a valid track still reports the same times and position", () => {
   const now = Date.parse("2026-10-29T08:00:00Z")
   assert.equal(liveness({ ...later, updated: "2026-10-29T06:00:00Z" }, now, true), "active")
   assert.equal(liveness({ ...later, updated: "2026-10-27T00:00:00Z" }, now, true), "gone")
+})
+
+test("equal timestamps leave movement unknown, and a real gap keeps its speed", () => {
+  const same = storm("same", [point("2026-10-29T00:00:00Z", 40), point("2026-10-29T00:00:00Z", 55, 12, 142)])
+  const atSame = stateAt(same)
+  assert.equal(atSame.moveKmh, null)
+  assert.equal(atSame.moveDeg, null)
+  assert.equal(atSame.lat, 10)
+  assert.equal(atSame.kt, 40)
+
+  const sameInstant = storm("instant", [
+    point("2026-10-29T00:00:00Z", 40),
+    point("2026-10-29T00:00:00.000Z", 55, 12, 142),
+  ])
+  assert.equal(stateAt(sameInstant).moveKmh, null)
+  assert.equal(stateAt(sameInstant).moveDeg, null)
+
+  const tail = storm("tail", [
+    point("2026-10-29T00:00:00Z", 40),
+    point("2026-10-29T06:00:00Z", 60, 12, 142),
+    point("2026-10-29T06:00:00Z", 70, 13, 143),
+  ])
+  const after = stateAt(tail, Date.parse("2026-10-29T12:00:00Z"))
+  assert.equal(after.moveKmh, null)
+  assert.equal(after.moveDeg, null)
+
+  const end = stateAt(kept)
+  assert.equal(end.moveKmh, distanceKm(10, 140, 12, 142) / 6)
+  assert.equal(end.moveDeg, bearing(10, 140, 12, 142))
+  const mid = stateAt(kept, Date.parse("2026-10-29T03:00:00Z"))
+  assert.equal(mid.moveKmh, end.moveKmh)
+  assert.equal(mid.moveDeg, end.moveDeg)
+  const atGap = stateAt(tail)
+  assert.equal(atGap.moveKmh, end.moveKmh)
+  assert.equal(atGap.moveDeg, end.moveDeg)
+  assert.equal(stateAt(later).moveKmh, null)
 })
 
 test("the storm list can sort after a trackless record is removed", () => {
