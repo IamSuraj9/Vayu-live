@@ -69,6 +69,28 @@ class TcvitalsTest(unittest.TestCase):
         hours = [c.hour for c in tcvitals.cycles(NOW)]
         self.assertEqual(hours, [6, 0, 18, 12])
 
+    def test_first_occurrence_colon_is_a_real_record(self):
+        # Column 19 is ":" on the first record for a storm, where a later record has a space.
+        text = "NHC  01E ONE      :20250528 1800 115N 1044W 260 041 1006 1010 0259 15 148 -999 -999 -999 -999 S\n"
+        v = tcvitals.parse(text)
+        self.assertEqual(len(v), 1)
+        self.assertEqual((v[0]["name"], v[0]["code"], v[0]["lat"], v[0]["lon"], v[0]["hpa"]), ("ONE", "01E", 11.5, -104.4, 1006))
+
+        seen = []
+
+        class FirstOnly:
+            def get(self, url):
+                seen.append(url)
+                if "t06z" in url:
+                    return text.encode()
+                raise AssertionError(url)
+
+        cycle, storms, url = tcvitals.fetch(FirstOnly(), NOW)
+        self.assertEqual(len(seen), 1)
+        self.assertEqual(cycle, datetime(2026, 10, 29, 6, tzinfo=timezone.utc))
+        self.assertIn("t06z", url)
+        self.assertEqual(storms[0]["name"], "ONE")
+
 
 class GdacsTest(unittest.TestCase):
     def test_rss_lists_cyclones(self):
@@ -125,9 +147,18 @@ class DamagedSourcesTest(unittest.TestCase):
         self.assertEqual(len(r["storms"]), 3)
 
     def test_pages_and_garbage_instead_of_data(self):
+        # The newest tcvitals cycle is an HTML page, an empty body, or garbage, all with a 200.
+        # That is a miss, same as a transport error, so the previous cycle's real file is used.
         for body in (b"<html><h1>502 Bad Gateway</h1></html>", b"", b"\x00\xff\xfe" * 50):
-            r = self.build_with({"CurrentStorms.json": body, "rss.xml": body, "syndata.tcvitals": body})
-            self.assertIsInstance(r["storms"], list)  # may be empty, must not raise
+            r = self.build_with({"CurrentStorms.json": body, "rss.xml": body, "t06z.syndata.tcvitals": body})
+            self.assertIsInstance(r["storms"], list, body)
+            tv = r["sources"]["tcvitals"]
+            self.assertTrue(tv["ok"], (body, tv))
+            self.assertIn("t00z.syndata.tcvitals", tv["url"], body)
+            self.assertEqual(tv["cycle"], "2026-10-29T00:00:00Z", body)
+            self.assertEqual(tv["storms"], 2, body)  # 00Z has Vance and In-fa; Arnab starts at 06Z
+            self.assertEqual(by_id(r)["wp302026"]["track"][-1]["t"], "2026-10-29T00:00:00Z", body)
+            self.assertEqual((by_id(r)["wp302026"]["track"][-1]["lat"], by_id(r)["wp302026"]["track"][-1]["lon"]), (15.9, 154.6), body)
 
     def test_a_damaged_previous_file_is_ignored_not_fatal(self):
         base = storms.build(FixtureFetcher(fixture_routes(FIX)), NOW)
