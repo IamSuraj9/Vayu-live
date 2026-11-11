@@ -24,7 +24,8 @@ class HttpFetcher:
         """Everything fetched inside the block shares `seconds`. When they run out, requests fail at once instead of waiting.
 
         A slow server (GDACS is the usual one) can no longer hold up the whole refresh: the stage fails, the previous
-        run's data stands in for it, and the other sources are unaffected.
+        run's data stands in for it, and the other sources are unaffected. Pass `following` to `get` so one slow URL
+        only spends its share and the fetches still queued in this budget still run.
         """
         self._deadline = time.monotonic() + seconds
         try:
@@ -35,13 +36,32 @@ class HttpFetcher:
     def _left(self) -> float | None:
         return None if self._deadline is None else self._deadline - time.monotonic()
 
-    def get(self, url: str) -> bytes:
+    def _call_deadline(self, following: int) -> float | None:
+        """This call's deadline. With later fetches queued, it may use only its share of the budget."""
+        if self._deadline is None:
+            return None
+        if following <= 0:
+            return self._deadline
+        left = self._deadline - time.monotonic()
+        if left <= 0:
+            return self._deadline
+        return time.monotonic() + left / (following + 1)
+
+    def get(self, url: str, *, following: int = 0) -> bytes:
         last: Exception | None = None
+        deadline = self._call_deadline(following)
+        # A shared call must not stretch a short share up to the 1s floor and borrow the next storm's time.
+        share = following > 0 and deadline is not None
         for attempt in range(self.retries):
-            left = self._left()
+            left = None if deadline is None else deadline - time.monotonic()
             if left is not None and left <= 0:
                 raise FetchError(f"time budget used up before {url}" + (f" ({last})" if last else ""))
-            timeout = self.timeout if left is None else max(1.0, min(self.timeout, left))
+            if left is None:
+                timeout = self.timeout
+            elif share:
+                timeout = min(self.timeout, left)
+            else:
+                timeout = max(1.0, min(self.timeout, left))
             try:
                 req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "*/*"})
                 with urllib.request.urlopen(req, timeout=timeout) as resp:
@@ -53,8 +73,10 @@ class HttpFetcher:
             except (urllib.error.URLError, TimeoutError, ConnectionError, OSError) as e:
                 last = e
             if attempt < self.retries - 1:
-                left = self._left()
-                time.sleep(self.backoff * (attempt + 1) if left is None else max(0.0, min(self.backoff * (attempt + 1), left)))
+                left = None if deadline is None else deadline - time.monotonic()
+                pause = self.backoff * (attempt + 1) if left is None else max(0.0, min(self.backoff * (attempt + 1), left))
+                if pause:
+                    time.sleep(pause)
         raise FetchError(f"{url}: {last}")
 
 
@@ -69,7 +91,8 @@ class FixtureFetcher:
     def budget(self, seconds: float):
         yield  # saved responses are instant
 
-    def get(self, url: str) -> bytes:
+    def get(self, url: str, *, following: int = 0) -> bytes:
+        del following  # saved responses are instant; only the network fetcher spends the budget
         self.requested.append(url)
         if any(f in url for f in self.fail):
             raise FetchError(f"simulated failure for {url}")

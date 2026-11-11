@@ -35,8 +35,8 @@ class EditingFetcher(FixtureFetcher):
         super().__init__(routes, fail=fail)
         self.drop_names = tuple(drop_names)
 
-    def get(self, url):
-        body = super().get(url)
+    def get(self, url, **kwargs):
+        body = super().get(url, **kwargs)
         if self.drop_names and "syndata.tcvitals" in url:
             lines = [ln for ln in body.decode("ascii", "replace").splitlines() if not any(n in ln for n in self.drop_names)]
             return ("\n".join(lines) + "\n").encode("ascii")
@@ -129,11 +129,11 @@ class DamagedSourcesTest(unittest.TestCase):
 
     def build_with(self, replace: dict):
         class Damaged(FixtureFetcher):
-            def get(self, url):
+            def get(self, url, **kwargs):
                 for key, body in replace.items():
                     if key in url:
                         return body
-                return super().get(url)
+                return super().get(url, **kwargs)
         return storms.build(Damaged(fixture_routes(FIX)), NOW)
 
     def test_json_of_the_wrong_shape(self):
@@ -242,6 +242,102 @@ class BudgetTest(unittest.TestCase):
         self.assertTrue(r["sources"]["tcvitals"]["ok"] and r["sources"]["nhc"]["ok"])
         self.assertEqual(len(r["storms"]), 3)
 
+    def test_a_slow_storm_does_not_skip_the_ones_after_it(self):
+        # The first NHC track and the first GDACS event burn whatever wait they are given.
+        # Later storms in that source must still be fetched, and the source must not be marked ok.
+        from unittest import mock
+
+        from pipeline.fetch import HttpFetcher
+
+        class Clock:
+            def __init__(self):
+                self.t = 0.0
+
+            def monotonic(self):
+                return self.t
+
+            def sleep(self, seconds):
+                self.t += seconds
+
+        class Body:
+            def __init__(self, data: bytes):
+                self.data = data
+
+            def read(self):
+                return self.data
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+        clock = Clock()
+        calls: list[tuple[str, float]] = []
+        saved = FixtureFetcher(fixture_routes(FIX))
+        vance_btk, vance_fst = read("nhc", "vance.btk"), read("nhc", "vance.fst")
+        currents = json.dumps({"activeStorms": [
+            {"id": "ep222026", "name": "Vance"},
+            {"id": "al012026", "name": "Later"},
+        ]}).encode()
+
+        def urlopen(req, timeout=30):
+            url = req.full_url
+            calls.append((url, timeout))
+            # Vance's track fails slow. Arnab's episode is slow but answers, then his timeline fails slow.
+            # On the old timeouts that pair of waits spends the whole NHC and GDACS budgets.
+            slow_fail = "bep222026.dat" in url or "gettimeline?id=816527" in url
+            slow_ok = "eventid=1001345" in url
+            if slow_fail or slow_ok:
+                clock.t += timeout
+                if slow_fail:
+                    raise TimeoutError("slow")
+            else:
+                clock.t += 0.01
+            if "CurrentStorms.json" in url:
+                return Body(currents)
+            if "bal012026.dat" in url:
+                return Body(vance_btk)
+            if "al012026.fst" in url:
+                return Body(vance_fst)
+            try:
+                return Body(saved.get(url))
+            except Exception as e:
+                raise AssertionError(f"no saved response for {url}") from e
+
+        with mock.patch("pipeline.fetch.time.monotonic", clock.monotonic), \
+                mock.patch("pipeline.fetch.time.sleep", clock.sleep), \
+                mock.patch("urllib.request.urlopen", side_effect=urlopen):
+            r = storms.build(HttpFetcher(), NOW)
+
+        s = by_id(r)
+        nhc_status = r["sources"]["nhc"]
+        self.assertFalse(nhc_status["ok"])
+        self.assertTrue(any("ep222026" in e and "track" in e for e in nhc_status["errors"]))
+        self.assertIn("al012026", s)
+        self.assertFalse(s["al012026"]["stale"])
+        self.assertGreater(len(s["al012026"]["track"]), 0)
+        self.assertTrue(any("bal012026.dat" in url for url, _ in calls))
+        self.assertTrue(any("al012026.fst" in url for url, _ in calls))
+        slow_nhc = [timeout for url, timeout in calls if "bep222026" in url]
+        self.assertTrue(slow_nhc)
+        self.assertLess(max(slow_nhc), 30)  # not the full per-attempt wait
+        self.assertLess(sum(slow_nhc), storms.BUDGET_SECONDS["nhc"])
+
+        gdacs_status = r["sources"]["gdacs"]
+        self.assertFalse(gdacs_status["ok"])
+        self.assertGreater(gdacs_status["used"], 0)
+        self.assertTrue(any("ARNAB" in e for e in gdacs_status["errors"]))
+        self.assertTrue(any("eventid=1001343" in url for url, _ in calls))  # In-fa, the next event
+        self.assertTrue(any("gettimeline?id=816793" in url for url, _ in calls))
+        self.assertGreater(len(s["wp302026"]["track"]), 1)
+        self.assertEqual(len(s["io022026"]["track"]), 1)  # Arnab's timeline never arrived
+        slow_gdacs = [timeout for url, timeout in calls if "eventid=1001345" in url or "gettimeline?id=816527" in url]
+        self.assertGreaterEqual(len(slow_gdacs), 2)
+        self.assertLess(max(slow_gdacs), 30)
+        self.assertLess(sum(slow_gdacs), storms.BUDGET_SECONDS["gdacs"])
+        self.assertTrue(r["sources"]["tcvitals"]["ok"])
+
 
 class BuildTest(unittest.TestCase):
     def fetcher(self, fail=()):
@@ -341,12 +437,12 @@ class BuildTest(unittest.TestCase):
 
     def test_an_empty_track_is_a_failed_storm(self):
         class Empty(FixtureFetcher):
-            def get(self, url):
+            def get(self, url, **kwargs):
                 if "atcf/btk/" in url:
                     return b""
                 if "gettimeline?id=816527" in url:  # Arnab's timeline parses, but has no points
                     return b'{"channel":{"item":[]}}'
-                return super().get(url)
+                return super().get(url, **kwargs)
 
         r = storms.build(Empty(fixture_routes(FIX)), NOW)
         self.assertFalse(r["sources"]["nhc"]["ok"])
