@@ -32,6 +32,7 @@ MATCH_KM = 1500  # the same name within this distance is the same storm
 FORECAST_MAX_AGE_HOURS = 24  # a forecast older than this (versus the newest position) is not shown
 # Seconds each source may take in total. A slow source fails on its own and the previous run fills in for it,
 # so a whole refresh stays under about 3 minutes (it used to wait on GDACS for up to 5).
+# Each storm file only gets its share of what is left, so one slow URL cannot skip the storms after it.
 BUDGET_SECONDS = {"nhc": 40, "gdacs": 80, "tcvitals": 50}
 
 # What a damaged or surprising response can raise while it is being read. LookupError covers KeyError and IndexError
@@ -92,6 +93,14 @@ class Merge:
         return s
 
 
+def _fetch(fetcher, url: str, following: int) -> bytes:
+    """One file. `following` is how many more files this source still intends to read.
+
+    The request stops early enough that a slow URL cannot spend the whole source budget.
+    """
+    return fetcher.get(url, following=following)
+
+
 def _nhc(merge: Merge, fetcher, status: dict) -> None:
     try:
         current = nhc.parse_current(fetcher.get(nhc.CURRENT))
@@ -99,15 +108,19 @@ def _nhc(merge: Merge, fetcher, status: dict) -> None:
         status["nhc"] = {"ok": False, "error": str(e)[:300]}
         return
     errors = []
-    for s in current:
+    n = len(current)
+    for i, s in enumerate(current):
         sid = s["id"].lower()
+        # Two files per storm (track, then forecast). Count every file still unread after this one.
         try:
-            track = nhc.parse_track(fetcher.get(nhc.BTK.format(id=sid)).decode("ascii", "replace"))
+            raw = _fetch(fetcher, nhc.BTK.format(id=sid), 2 * (n - i) - 1)
+            track = nhc.parse_track(raw.decode("ascii", "replace"))
         except SOURCE_ERRORS as e:
             errors.append(f"{sid} track: {e}")
             continue
         try:
-            issued, fc = nhc.parse_forecast(fetcher.get(nhc.FST.format(id=sid)).decode("ascii", "replace"))
+            raw = _fetch(fetcher, nhc.FST.format(id=sid), 2 * (n - i - 1))
+            issued, fc = nhc.parse_forecast(raw.decode("ascii", "replace"))
         except SOURCE_ERRORS as e:
             errors.append(f"{sid} forecast: {e}")
             issued, fc = None, []
@@ -131,13 +144,16 @@ def _gdacs(merge: Merge, fetcher, now: datetime, status: dict) -> None:
         return
     recent = [e for e in events if e["todate"] and now - e["todate"] <= timedelta(hours=GDACS_LOOKBACK_HOURS)]
     errors, used = [], 0
-    for ev in recent:
+    n = len(recent)
+    for i, ev in enumerate(recent):
         try:
-            tl = gdacs.timeline_url(fetcher.get(gdacs.EPISODE.format(e=ev["eventid"], p=ev["episodeid"])))
+            # Episode, then the timeline it points at. Same share as NHC: one slow file leaves the next event time.
+            episode = _fetch(fetcher, gdacs.EPISODE.format(e=ev["eventid"], p=ev["episodeid"]), 2 * (n - i) - 1)
+            tl = gdacs.timeline_url(episode)
             if not tl:
                 raise FetchError("episode has no timeline")
             agency, url = tl
-            parsed = gdacs.parse_timeline(fetcher.get(url))
+            parsed = gdacs.parse_timeline(_fetch(fetcher, url, 2 * (n - i - 1)))
         except SOURCE_ERRORS as e:
             errors.append(f"{ev['eventname']}: {str(e)[:200]}")
             continue
