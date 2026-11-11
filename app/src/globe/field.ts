@@ -33,9 +33,11 @@ export function loadWind(doc: WindFile): boolean {
   return true
 }
 
-/** Last resort when no wind file can be reached: the 1° field saved with the app (fetched only when needed). */
-export async function loadBuiltIn() {
+/** Last resort when no wind file can be reached: the 1° field saved with the app (fetched only when needed).
+ *  `apply` is read after the file is in hand, so a live field that loaded during the fetch is left in place. */
+export async function loadBuiltIn(apply: () => boolean = () => true) {
   const { default: gfs } = await import("@/data/gfs.json")
+  if (!apply()) return false
   const m = gfs.meta as Grid & { date: number; time: number }
   const d = String(m.date), t = String(m.time).padStart(4, "0")
   return loadWind({
