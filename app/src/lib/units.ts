@@ -15,13 +15,33 @@ export function defaultUnits(): Units {
     : { wind: "kmh", temp: "c", press: "hpa", dist: "km", time: "local" }
 }
 
+const WIND: readonly WindUnit[] = ["kmh", "mph", "kt", "ms"]
+const TEMP: readonly TempUnit[] = ["c", "f"]
+const PRESS: readonly PressUnit[] = ["hpa", "inhg"]
+const DIST: readonly DistUnit[] = ["km", "mi", "nmi"]
+const TIME: readonly TimeMode[] = ["local", "utc"]
+
+function known<T extends string>(value: unknown, allowed: readonly T[]): value is T {
+  return typeof value === "string" && (allowed as readonly string[]).includes(value)
+}
+
 const KEY = "vayu.units.v1"
 export function loadUnits(): Units {
+  const base = defaultUnits()
   try {
     const raw = localStorage.getItem(KEY)
-    if (raw) return { ...defaultUnits(), ...JSON.parse(raw) }
+    if (!raw) return base
+    const saved = JSON.parse(raw) as Record<string, unknown> | null
+    if (!saved || typeof saved !== "object" || Array.isArray(saved)) return base
+    return {
+      wind: known(saved.wind, WIND) ? saved.wind : base.wind,
+      temp: known(saved.temp, TEMP) ? saved.temp : base.temp,
+      press: known(saved.press, PRESS) ? saved.press : base.press,
+      dist: known(saved.dist, DIST) ? saved.dist : base.dist,
+      time: known(saved.time, TIME) ? saved.time : base.time,
+    }
   } catch { /* storage unavailable */ }
-  return defaultUnits()
+  return base
 }
 export function saveUnits(u: Units) {
   try { localStorage.setItem(KEY, JSON.stringify(u)) } catch { /* storage unavailable */ }
