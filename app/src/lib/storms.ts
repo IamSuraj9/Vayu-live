@@ -63,8 +63,11 @@ export function stateAt(s: Storm, at?: number): State {
   let moveKmh: number | null = null, moveDeg: number | null = null
   if (p && q && p !== q) {
     const hrs = (ms(q.t) - ms(p.t)) / 3.6e6
-    moveKmh = distanceKm(p.lat, p.lon, q.lat, q.lon) / hrs
-    moveDeg = bearing(p.lat, p.lon, q.lat, q.lon)
+    // Same timestamp is not a segment. Dividing by zero hours reports Infinity km/h.
+    if (p.t !== q.t && hrs !== 0) {
+      moveKmh = distanceKm(p.lat, p.lon, q.lat, q.lon) / hrs
+      moveDeg = bearing(p.lat, p.lon, q.lat, q.lon)
+    }
   }
   return { t, lat, lon, kt, hpa: f < 0.5 ? a.hpa : b.hpa, moveKmh, moveDeg }
 }
