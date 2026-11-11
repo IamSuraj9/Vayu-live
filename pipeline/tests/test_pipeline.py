@@ -24,6 +24,36 @@ def by_id(result: dict) -> dict:
     return {s["id"]: s for s in result["storms"]}
 
 
+class EditingFetcher(FixtureFetcher):
+    """Saved responses, with named rows removed from tcvitals.
+
+    A storm that NHC or GDACS failed to read is then also absent from NOAA, which is when the
+    old code dropped it instead of keeping the previous file's copy.
+    """
+
+    def __init__(self, routes, fail=(), drop_names=()):
+        super().__init__(routes, fail=fail)
+        self.drop_names = tuple(drop_names)
+
+    def get(self, url):
+        body = super().get(url)
+        if self.drop_names and "syndata.tcvitals" in url:
+            lines = [ln for ln in body.decode("ascii", "replace").splitlines() if not any(n in ln for n in self.drop_names)]
+            return ("\n".join(lines) + "\n").encode("ascii")
+        return body
+
+
+def previous_storm(sid: str, name: str, when: str, *, lat: float, lon: float) -> dict:
+    return {
+        "id": sid, "name": name, "rawName": name.upper(), "kind": "typhoon", "basin": "Western Pacific",
+        "status": "active", "stale": False, "updated": when,
+        "track": [{"t": when, "lat": lat, "lon": lon, "kt": 40, "hpa": 990}],
+        "forecast": [], "forecastIssued": None, "forecastBase": None,
+        "source": "JTWC via GDACS", "sourceUrl": "https://www.gdacs.org/", "authority": "JTWC",
+        "people": None, "codes": {"atcf": None, "gdacs": None, "code": None},
+    }
+
+
 class TcvitalsTest(unittest.TestCase):
     def test_parse_all_basins(self):
         v = {s["name"]: s for s in tcvitals.parse(read("tcvitals", "gfs.t06z.syndata.tcvitals.tm00").decode())}
@@ -238,6 +268,114 @@ class BuildTest(unittest.TestCase):
         later = datetime(2026, 10, 31, 0, tzinfo=timezone.utc)
         r = storms.build(self.fetcher(fail=("nomads.ncep.noaa.gov",)), later)
         self.assertNotIn("io022026", by_id(r))
+
+    def test_nhc_is_not_ok_when_a_storm_track_fails(self):
+        first = storms.build(self.fetcher(), NOW)
+        # Vance's track 404s, GDACS has no timeline for it, and tcvitals does not list it either.
+        fetcher = EditingFetcher(fixture_routes(FIX), fail=("ftp.nhc.noaa.gov/atcf/btk/", "gettimeline?id=816801"), drop_names=("VANCE",))
+        r = storms.build(fetcher, NOW, previous=first)
+        self.assertFalse(r["sources"]["nhc"]["ok"])
+        self.assertTrue(any("ep222026" in e and "track" in e for e in r["sources"]["nhc"]["errors"]))
+        self.assertFalse(r["sources"]["gdacs"]["ok"])
+        self.assertTrue(r["sources"]["tcvitals"]["ok"])
+        s = by_id(r)
+        self.assertIn("ep222026", s)
+        self.assertTrue(s["ep222026"]["stale"])
+        self.assertEqual(len(s["ep222026"]["track"]), len(by_id(first)["ep222026"]["track"]))
+        self.assertIn("wp302026", s)
+        self.assertFalse(s["wp302026"]["stale"])
+
+    def test_an_nhc_forecast_miss_is_recorded(self):
+        r = storms.build(self.fetcher(fail=("atcf/fst/",)), NOW)
+        self.assertFalse(r["sources"]["nhc"]["ok"])
+        self.assertTrue(any("ep222026" in e and "forecast" in e for e in r["sources"]["nhc"]["errors"]))
+        self.assertIn("NHC", by_id(r)["ep222026"]["source"])
+
+    def test_gdacs_is_not_ok_when_one_event_fails(self):
+        first = storms.build(self.fetcher(), NOW)
+        # In-fa's timeline fails. The other events still work, and NOAA does not list In-fa, so nothing else can replace it.
+        fetcher = EditingFetcher(fixture_routes(FIX), fail=("gettimeline?id=816793",), drop_names=("IN-FA",))
+        r = storms.build(fetcher, NOW, previous=first)
+        gdacs = r["sources"]["gdacs"]
+        self.assertFalse(gdacs["ok"])
+        self.assertGreater(gdacs["used"], 0)
+        self.assertLess(len(gdacs["errors"]), gdacs["events"])  # the old code treated this as success
+        self.assertTrue(any("IN-FA" in e for e in gdacs["errors"]))
+        self.assertTrue(r["sources"]["nhc"]["ok"] and r["sources"]["tcvitals"]["ok"])
+        s = by_id(r)
+        self.assertTrue(s["wp302026"]["stale"])
+        self.assertEqual(s["wp302026"]["track"], by_id(first)["wp302026"]["track"])
+        self.assertFalse(s["ep222026"]["stale"])
+        self.assertIn("io022026", s)
+
+    def test_an_empty_track_is_a_failed_storm(self):
+        class Empty(FixtureFetcher):
+            def get(self, url):
+                if "atcf/btk/" in url:
+                    return b""
+                if "gettimeline?id=816527" in url:  # Arnab's timeline parses, but has no points
+                    return b'{"channel":{"item":[]}}'
+                return super().get(url)
+
+        r = storms.build(Empty(fixture_routes(FIX)), NOW)
+        self.assertFalse(r["sources"]["nhc"]["ok"])
+        self.assertTrue(any("ep222026" in e and "empty" in e for e in r["sources"]["nhc"]["errors"]))
+        gdacs = r["sources"]["gdacs"]
+        self.assertFalse(gdacs["ok"])
+        self.assertGreater(gdacs["used"], 0)  # other events worked; that used to be enough to mark the source ok
+        self.assertTrue(any("ARNAB" in e and "empty" in e for e in gdacs["errors"]))
+
+    def test_published_file_keeps_a_recent_storm_and_drops_an_old_one(self):
+        with tempfile.TemporaryDirectory() as d:
+            out = os.path.join(d, "storms.json")
+            self.assertEqual(storms.main(["--out", out, "--fixtures", FIX, "--now", "2026-10-29T08:30:00Z"]), 0)
+            with open(out) as fh:
+                prev = json.load(fh)
+            ids = {s["id"] for s in prev["storms"]}
+            prev["storms"].append(previous_storm("gdacs-424242", "Solo", "2026-10-28T18:00:00Z", lat=5.0, lon=160.0))
+            prev["storms"].append(previous_storm("gdacs-424243", "Retired", "2026-10-27T12:00:00Z", lat=-15.0, lon=50.0))
+            with open(out, "w") as fh:
+                json.dump(prev, fh)
+            self.assertEqual(storms.main(["--out", out, "--fixtures", FIX, "--now", "2026-10-29T08:30:00Z"]), 0)
+            with open(out) as fh:
+                published = json.load(fh)
+        got = by_id(published)
+        self.assertTrue(ids <= set(got))
+        self.assertIn("gdacs-424242", got)
+        self.assertTrue(got["gdacs-424242"]["stale"])
+        self.assertNotIn("gdacs-424243", got)
+        self.assertTrue(all(src["ok"] for src in published["sources"].values()))
+
+    def test_failed_tracks_do_not_replace_the_previous_file(self):
+        # CurrentStorms.json and the GDACS list both parse, but every storm download 404s and tcvitals is missing.
+        # That used to count NHC as ok and overwrite storms.json with a file that had dropped its storms.
+        with tempfile.TemporaryDirectory() as d:
+            os.makedirs(os.path.join(d, "nhc"))
+            os.makedirs(os.path.join(d, "gdacs"))
+            with open(os.path.join(d, "nhc", "CurrentStorms.json"), "w") as fh:
+                json.dump({"activeStorms": [{"id": "ep222026", "name": "Vance"}]}, fh)
+            with open(os.path.join(d, "gdacs", "rss.xml"), "w") as fh:
+                fh.write("""<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:gdacs="http://www.gdacs.org"><channel><item>
+<gdacs:eventtype>TC</gdacs:eventtype>
+<gdacs:eventname>SOLO-26</gdacs:eventname>
+<gdacs:eventid>999001</gdacs:eventid>
+<gdacs:episodeid>1</gdacs:episodeid>
+<gdacs:todate>Thu, 29 Oct 2026 06:00:00 GMT</gdacs:todate>
+<gdacs:datemodified>Thu, 29 Oct 2026 06:00:00 GMT</gdacs:datemodified>
+<gdacs:alertlevel>Green</gdacs:alertlevel>
+</item></channel></rss>
+""")
+            out = os.path.join(d, "storms.json")
+            seed = {"storms": [previous_storm("ep222026", "Vance", "2026-10-29T03:00:00Z", lat=20.7, lon=-108.4)]}
+            with open(out, "w") as fh:
+                json.dump(seed, fh)
+            with open(out) as fh:
+                before = fh.read()
+            code = storms.main(["--out", out, "--fixtures", d, "--now", "2026-10-29T08:30:00Z"])
+            self.assertEqual(code, 1)
+            with open(out) as fh:
+                self.assertEqual(fh.read(), before)
 
 
 if __name__ == "__main__":

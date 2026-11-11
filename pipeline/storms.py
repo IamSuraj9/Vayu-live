@@ -4,7 +4,8 @@ Sources, in order of authority:
   1. NHC (US National Hurricane Center): official track and forecast for the Atlantic, Eastern and Central Pacific.
   2. GDACS (EU JRC and UN OCHA): past track, forecast and people affected, worldwide (JTWC data for most oceans).
   3. NOAA/NCEP tcvitals: the newest position, pressure and wind for every storm JTWC and NHC are tracking.
-The previous run's file fills in history and stands in for any source that fails, marked as stale.
+The previous run's file fills in history and stands in, marked as stale, when a source fails or a storm
+this run could not be read. A storm stays until its newest report is older than 36 hours.
 
 Usage:
   python -m pipeline.storms --out app/public/data/storms.json
@@ -111,13 +112,15 @@ def _nhc(merge: Merge, fetcher, status: dict) -> None:
             errors.append(f"{sid} forecast: {e}")
             issued, fc = None, []
         if not track:
+            errors.append(f"{sid} track: empty")
             continue
         last = track[-1]
         merge.add(id=sid, atcf=sid, name=s["name"], invest=int(sid[2:4]) >= 90, track=track, forecast=fc, issued=issued,
                   fc_base=issued - timedelta(hours=3) if issued else None,
                   region=regions.region(last["lat"], last["lon"], sid[:2]), sources=["NHC"],
                   source_url="https://www.nhc.noaa.gov/", authority="NHC")
-    status["nhc"] = {"ok": True, "storms": len(current), "errors": errors}
+    # Parsing the storm list is not a success when a listed storm's track or forecast failed.
+    status["nhc"] = {"ok": not errors, "storms": len(current), "errors": errors}
 
 
 def _gdacs(merge: Merge, fetcher, now: datetime, status: dict) -> None:
@@ -139,6 +142,7 @@ def _gdacs(merge: Merge, fetcher, now: datetime, status: dict) -> None:
             errors.append(f"{ev['eventname']}: {str(e)[:200]}")
             continue
         if not parsed["track"]:
+            errors.append(f"{ev['eventname']}: empty track")
             continue
         used += 1
         last = parsed["track"][-1]
@@ -152,7 +156,9 @@ def _gdacs(merge: Merge, fetcher, now: datetime, status: dict) -> None:
                   forecast=parsed["forecast"], issued=parsed["analysis"], fc_base=parsed["analysis"], people=people,
                   region=regions.region(last["lat"], last["lon"]), sources=[f"{agency_name} via GDACS"],
                   source_url=gdacs.REPORT.format(e=ev["eventid"]), authority=agency_name)
-    status["gdacs"] = {"ok": used > 0 or not recent or len(errors) < len(recent), "events": len(recent), "used": used, "errors": errors}
+    # One working event, or fewer errors than events, still left the failed storms out.
+    # The source is ok only when every recent event was read.
+    status["gdacs"] = {"ok": not errors and used == len(recent), "events": len(recent), "used": used, "errors": errors}
 
 
 def _tcvitals(merge: Merge, fetcher, now: datetime, status: dict) -> None:
@@ -186,19 +192,22 @@ def _tcvitals(merge: Merge, fetcher, now: datetime, status: dict) -> None:
     status["tcvitals"] = {"ok": True, "cycle": iso(cycle), "storms": len(vitals), "url": url}
 
 
-def _carry_previous(merge: Merge, previous: dict | None, status: dict, now: datetime) -> None:
-    """Adds history from the last run. The file is our own, but it may be damaged, so anything unusable is skipped."""
+def _carry_previous(merge: Merge, previous: dict | None, now: datetime) -> None:
+    """Adds history from the last run, and keeps a storm this run failed to read or no longer returned.
+
+    The file is our own, but it may be damaged, so anything unusable is skipped. A storm is copied
+    forward until its newest report is older than KEEP_HOURS, whether or not a whole source failed.
+    """
     if not isinstance(previous, dict) or not isinstance(previous.get("storms"), list):
         return
-    any_failed = any(not s.get("ok") for s in status.values())
     for p in previous["storms"]:
         try:
-            _carry_one(merge, p, any_failed, now)
+            _carry_one(merge, p, now)
         except SOURCE_ERRORS:
             continue
 
 
-def _carry_one(merge: Merge, p: dict, any_failed: bool, now: datetime) -> None:
+def _carry_one(merge: Merge, p: dict, now: datetime) -> None:
     track = [{**pt, "t": from_iso(pt["t"])} for pt in p.get("track") or []]
     if not track:
         return
@@ -213,7 +222,7 @@ def _carry_one(merge: Merge, p: dict, any_failed: bool, now: datetime) -> None:
             s["id"] = s["atcf"] = codes["atcf"]
         if s["people"] is None and _people(p.get("people")):
             s["people"] = p["people"]
-    elif any_failed and now - last["t"] <= timedelta(hours=KEEP_HOURS):
+    elif now - last["t"] <= timedelta(hours=KEEP_HOURS):
         fc_issued = from_iso(p["forecastIssued"]) if p.get("forecastIssued") else None
         fc_base = from_iso(p["forecastBase"]) if p.get("forecastBase") else None
         merge.add(id=p["id"], atcf=codes.get("atcf"), gdacs=codes.get("gdacs"), name=p.get("rawName") or p["name"],
@@ -314,7 +323,7 @@ def build(fetcher, now: datetime, previous: dict | None = None) -> dict:
     _stage("nhc", status, fetcher, _nhc, merge, fetcher, status)
     _stage("gdacs", status, fetcher, _gdacs, merge, fetcher, now, status)
     _stage("tcvitals", status, fetcher, _tcvitals, merge, fetcher, now, status)
-    _carry_previous(merge, previous, status, now)
+    _carry_previous(merge, previous, now)
     out = []
     for s in merge.storms:
         _sanitize(s)
