@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { AlertTriangle, BookOpen, CloudOff, Gauge, Info, List, MousePointerClick, X } from "lucide-react"
 import { Globe, type LL, type Layers, type Marker, type View } from "@/globe/Globe"
 import { createCamera } from "@/globe/camera"
-import { PAST, type Storm, endMs, liveness, startMs, stateAt } from "@/lib/storms"
+import { PAST, type Storm, endMs, hasTrack, liveness, startMs, stateAt } from "@/lib/storms"
 import { STALE_HOURS, useNow, useStormFeed, useWindField } from "@/lib/live"
 import { headline, levelFor } from "@/lib/strength"
 import { type Units, fmtAgo, fmtChecked, fmtTime, fmtWindKt, loadUnits, saveUnits } from "@/lib/units"
@@ -74,12 +74,13 @@ export default function App() {
   const fileAgeH = (now - new Date(feed.file.fetchedAt).getTime()) / HOUR
   const feedFresh = fileAgeH <= STALE_HOURS
   const offline = !feed.loading && (!feed.reachable || feed.origin === "saved")
+  const tracked = useMemo(() => feed.file.storms.filter(hasTrack), [feed.file])
   const live = useMemo(() => {
-    const m = new Map(feed.file.storms.map(s => [s.id, liveness(s, now, feedFresh)]))
+    const m = new Map(tracked.map(s => [s.id, liveness(s, now, feedFresh)]))
     return (s: Storm) => m.get(s.id) ?? "active"
-  }, [feed.file, now, feedFresh])
-  const active = useMemo(() => feed.file.storms.filter(s => live(s) !== "gone").sort((a, b) =>
-    Number(live(a) === "ended") - Number(live(b) === "ended") || b.track[b.track.length - 1].kt - a.track[a.track.length - 1].kt), [feed.file, live])
+  }, [tracked, now, feedFresh])
+  const active = useMemo(() => tracked.filter(s => live(s) !== "gone").sort((a, b) =>
+    Number(live(a) === "ended") - Number(live(b) === "ended") || b.track[b.track.length - 1].kt - a.track[a.track.length - 1].kt), [tracked, live])
   const ALL = useMemo(() => [...active, ...PAST], [active])
   // The freshness label says when we last checked, not how old the newest report is (agencies publish every 6 h)
   const fresh = !active.length ? { lead: "", ago: null }

@@ -15,6 +15,18 @@ export type SourceStatus = { ok: boolean; errors?: string[]; cycle?: string; sto
 /** data/storms.json, written by pipeline/storms.py */
 export type StormFile = { schema: number; snapshot: string; fetchedAt: string; sources: Record<string, SourceStatus>; credits: string; storms: Storm[] }
 
+/** A storm the globe can place. A missing or empty track is skipped so one bad record cannot blank the page. */
+export function hasTrack(s: unknown): s is Storm {
+  return !!s && typeof s === "object" && Array.isArray((s as Storm).track) && (s as Storm).track.length > 0
+}
+
+/** Leave out storms with a missing or empty track. Valid storms stay the same objects, in the same order. */
+export function withoutEmptyTracks(file: StormFile): StormFile {
+  if (!Array.isArray(file?.storms)) return file
+  const storms = file.storms.filter(hasTrack)
+  return storms.length === file.storms.length ? file : { ...file, storms }
+}
+
 /** The copy saved into the app at build time, used until (or unless) the live file loads */
 export const SAVED = saved as StormFile
 export const PAST: Storm[] = (past.storms as (Omit<Storm, "kind" | "forecast" | "source" | "windAvg"> & { year: number })[]).map(s => ({
@@ -24,12 +36,20 @@ export const PAST: Storm[] = (past.storms as (Omit<Storm, "kind" | "forecast" | 
 
 export type State = { t: number; lat: number; lon: number; kt: number; hpa?: number | null; moveKmh: number | null; moveDeg: number | null }
 
-const ms = (iso: string) => new Date(iso).getTime()
-export const startMs = (s: Storm) => ms(s.track[0].t)
-export const endMs = (s: Storm) => ms(s.track[s.track.length - 1].t)
+const ms = (iso?: string) => new Date(iso ?? NaN).getTime()
+export const startMs = (s: Storm) => {
+  const p = Array.isArray(s?.track) ? s.track[0] : undefined
+  return p ? ms(p.t) : NaN
+}
+export const endMs = (s: Storm) => {
+  const tr = Array.isArray(s?.track) ? s.track : undefined
+  const p = tr?.length ? tr[tr.length - 1] : undefined
+  return p ? ms(p.t) : NaN
+}
 
 export function stateAt(s: Storm, at?: number): State {
-  const tr = s.track
+  const tr = s?.track
+  if (!Array.isArray(tr) || tr.length === 0) return { t: at ?? NaN, lat: NaN, lon: NaN, kt: 0, moveKmh: null, moveDeg: null }
   const t = at ?? endMs(s)
   let i = tr.length - 1
   for (let k = 0; k < tr.length - 1; k++) if (ms(tr[k + 1].t) >= t) { i = k; break }
@@ -68,7 +88,7 @@ const KEEP_HOURS = 36, ACTIVE_HOURS = 12
 /** How a storm should be shown at `now`. Storms with no report for 36 h are left out, as the pipeline does. */
 export type Liveness = "active" | "ended" | "stale" | "gone"
 export function liveness(s: Storm, now: number, feedFresh: boolean): Liveness {
-  const age = (now - ms(s.updated ?? s.track[s.track.length - 1].t)) / 3.6e6
+  const age = (now - ms(s.updated ?? s.track?.[s.track.length - 1]?.t)) / 3.6e6
   if (age > KEEP_HOURS) return "gone"
   if (s.status === "ended" || (feedFresh && age > ACTIVE_HOURS)) return "ended"
   if (s.stale || age > ACTIVE_HOURS) return "stale"
