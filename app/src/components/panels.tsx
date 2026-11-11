@@ -189,6 +189,18 @@ export function Freshness({ lead, ago, bad }: { lead: string; ago: string | null
 
 /* ---------- storm detail panel ---------- */
 
+/** GDACS Pop74 is a raw person count. Word it by size so 613 is not "0.0 million". */
+function fmtPeople(count: number): string {
+  if (count >= 1e6) return `${(count / 1e6).toFixed(1)} million`
+  if (count >= 1e3) {
+    const thousands = Math.round(count / 1e3)
+    if (thousands >= 1000) return `${(count / 1e6).toFixed(1)} million`
+    return `${thousands} thousand`
+  }
+  const n = Math.round(count)
+  return `${n} ${n === 1 ? "person" : "people"}`
+}
+
 function StrengthMeter({ kt, units }: { kt: number; units: Units }) {
   const lv = levelFor(kt)
   const idx = LEVELS.indexOf(lv)
@@ -375,7 +387,7 @@ export function StormPanel({ storm, state, live, units, now, replaying, onClose,
             <dt className="text-muted-foreground">Pressure</dt><dd>{state.hpa ? fmtPress(state.hpa, units.press) : "Not in this source"}</dd>
             {storm.people && storm.people.count > 0 && (<>
               <dt className="text-muted-foreground">People affected</dt>
-              <dd>{(storm.people.count / 1e6).toFixed(1)} million in winds of {fmtWindKt(64, units.wind)} or more <span className="text-muted-foreground">(GDACS estimate)</span></dd>
+              <dd>{fmtPeople(storm.people.count)} in winds of {fmtWindKt(64, units.wind)} or more <span className="text-muted-foreground">(GDACS estimate)</span></dd>
             </>)}
             <dt className="text-muted-foreground">Wind measure</dt><dd>1-minute average. India's IMD uses 3 minutes, so its figures read lower.</dd>
             <dt className="text-muted-foreground">Tracked since</dt><dd>{fmtTime(startMs(storm), units.time)}</dd>
