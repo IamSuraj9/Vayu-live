@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { SAVED, type StormFile } from "@/lib/storms"
+import { SAVED, withoutEmptyTracks, type StormFile } from "@/lib/storms"
 import { type WindFile, loadBuiltIn, loadWind } from "@/globe/field"
 
 const STORMS_URL = "data/storms.json"
@@ -51,8 +51,9 @@ export function useStormFeed(): Feed {
   const [feed, setFeed] = useState<Feed>({ file: SAVED, origin: "saved", reachable: true, loading: true, checkedAt: null })
   const [check] = useState(() => async () => {
     try {
-      const file = await getJson<StormFile>(STORMS_URL)
-      if (file.schema !== 1 || !Array.isArray(file.storms)) throw new Error("unexpected storms.json")
+      const raw = await getJson<StormFile>(STORMS_URL)
+      if (raw?.schema !== 1 || !Array.isArray(raw.storms)) throw new Error("unexpected storms.json")
+      const file = withoutEmptyTracks(raw)
       setFeed(f => ({ file: f.origin === "live" && f.file.fetchedAt > file.fetchedAt ? f.file : file, origin: "live", reachable: true, loading: false, checkedAt: Date.now() }))
     } catch {
       setFeed(f => ({ ...f, reachable: false, loading: false }))
