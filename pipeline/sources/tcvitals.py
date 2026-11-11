@@ -8,8 +8,11 @@ from datetime import datetime, timedelta, timezone
 URL = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{d}/{h}/atmos/gfs.t{h}z.syndata.tcvitals.tm00"
 MS_TO_KT = 1.943844
 
+# Fixed columns from NCEP's tcvitals description. Column 19, just before the date, is a space,
+# or ":" when this is the first record for that storm. A cycle with no storms is an empty file,
+# the same body an unpublished cycle returns, so emptiness is not its own document shape.
 LINE = re.compile(
-    r"^(?P<center>\S+)\s+(?P<code>\d\d[A-Z])\s+(?P<name>.{1,9}?)\s+(?P<date>\d{8})\s+(?P<time>\d{4})\s+"
+    r"^(?P<center>\S+)\s+(?P<code>\d\d[A-Z])\s+(?P<name>.{1,9}?)[: ](?P<date>\d{8})\s+(?P<time>\d{4})\s+"
     r"(?P<lat>\d{1,4}[NS])\s+(?P<lon>\d{1,5}[EW])\s+(?P<dir>-?\d+)\s+(?P<spd>-?\d+)\s+(?P<pc>-?\d+)\s+"
     r"(?P<penv>-?\d+)\s+(?P<renv>-?\d+)\s+(?P<vmax>-?\d+)\s+(?P<rmw>-?\d+)"
 )
@@ -67,14 +70,21 @@ def parse(text: str) -> list[dict]:
 
 
 def fetch(fetcher, now: datetime) -> tuple[datetime, list[dict], str]:
-    """Return (cycle, storms, url) for the newest cycle that is available."""
+    """Return (cycle, storms, url) for the newest cycle whose body is a tcvitals file."""
     from ..fetch import FetchError
 
     errors = []
     for cycle in cycles(now):
         url = url_for(cycle)
         try:
-            return cycle, parse(fetcher.get(url).decode("ascii", "replace")), url
+            text = fetcher.get(url).decode("ascii", "replace")
         except FetchError as e:
             errors.append(str(e))
+            continue
+        storms = parse(text)
+        # A 200 is not enough: NOMADS also returns an HTML page or an empty body before the file
+        # exists, and parse skips every non-record, which used to look like a quiet ocean.
+        if storms:
+            return cycle, storms, url
+        errors.append(f"{url}: not a tcvitals file (cycle not published yet?)")
     raise FetchError("no tcvitals cycle available: " + "; ".join(errors))
