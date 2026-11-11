@@ -19,12 +19,21 @@ export function useNow(every = 60e3) {
   return now
 }
 
-/** Re-run `check` every `every` ms and whenever the tab comes back into view. */
-function usePoll(check: () => void, every: number) {
+/** Each call starts a check and makes every earlier one stale, whether the new one is still running or already done. */
+export function pollEpoch() {
+  let epoch = 0
+  return () => { const mine = ++epoch; return () => mine !== epoch }
+}
+
+/** Re-run `check` every `every` ms and whenever the tab comes back into view.
+ *  Overlapping runs are allowed; `stale` is true once a newer one has started, so a slow response is dropped. */
+function usePoll(check: (stale: () => boolean) => void, every: number) {
   useEffect(() => {
-    check()
-    const id = window.setInterval(check, every)
-    const onShow = () => { if (document.visibilityState === "visible") check() }
+    const open = pollEpoch()
+    const run = () => { check(open()) }
+    run()
+    const id = window.setInterval(run, every)
+    const onShow = () => { if (document.visibilityState === "visible") run() }
     document.addEventListener("visibilitychange", onShow)
     return () => { window.clearInterval(id); document.removeEventListener("visibilitychange", onShow) }
   }, [check, every])
@@ -47,18 +56,23 @@ export type Feed = {
   checkedAt: number | null
 }
 
+/** One read of storms.json. A stale run — a newer check has already started — leaves the feed alone on both success and failure. */
+export async function pullStorms(stale: () => boolean, setFeed: (update: (f: Feed) => Feed) => void, read: () => Promise<StormFile> = () => getJson<StormFile>(STORMS_URL)) {
+  try {
+    const raw = await read()
+    if (stale()) return
+    if (raw?.schema !== 1 || !Array.isArray(raw.storms)) throw new Error("unexpected storms.json")
+    const file = withoutEmptyTracks(raw)
+    setFeed(f => ({ file: f.origin === "live" && f.file.fetchedAt > file.fetchedAt ? f.file : file, origin: "live", reachable: true, loading: false, checkedAt: Date.now() }))
+  } catch {
+    if (stale()) return
+    setFeed(f => ({ ...f, reachable: false, loading: false }))
+  }
+}
+
 export function useStormFeed(): Feed {
   const [feed, setFeed] = useState<Feed>({ file: SAVED, origin: "saved", reachable: true, loading: true, checkedAt: null })
-  const [check] = useState(() => async () => {
-    try {
-      const raw = await getJson<StormFile>(STORMS_URL)
-      if (raw?.schema !== 1 || !Array.isArray(raw.storms)) throw new Error("unexpected storms.json")
-      const file = withoutEmptyTracks(raw)
-      setFeed(f => ({ file: f.origin === "live" && f.file.fetchedAt > file.fetchedAt ? f.file : file, origin: "live", reachable: true, loading: false, checkedAt: Date.now() }))
-    } catch {
-      setFeed(f => ({ ...f, reachable: false, loading: false }))
-    }
-  })
+  const [check] = useState(() => (stale: () => boolean) => { void pullStorms(stale, setFeed) })
   usePoll(check, STORMS_EVERY)
   return feed
 }
@@ -69,6 +83,36 @@ function wantsSharpWind() {
   return !(c?.saveData || /2g|3g/.test(c?.effectiveType ?? ""))
 }
 
+export type WindSlot = { time: string; level: number; builtIn: boolean } // level 1: 1°, 2: 0.5°
+
+type WindIo = {
+  sharp: boolean
+  read: (url: string) => Promise<WindFile>
+  load: (doc: WindFile) => boolean
+  builtIn: (apply: () => boolean) => Promise<boolean>
+}
+
+/** One wind poll. A stale run applies nothing. The bundled grid is only swapped in if no live field has arrived by the time it is ready. */
+export async function pullWind(stale: () => boolean, slot: WindSlot, setVersion: (update: (v: number) => number) => void, io?: WindIo) {
+  const read = io?.read ?? ((url: string) => getJson<WindFile>(url))
+  const load = io?.load ?? loadWind
+  const builtIn = io?.builtIn ?? loadBuiltIn
+  const sharp = io?.sharp ?? wantsSharpWind()
+  const files: [string, number][] = sharp ? [[WIND_URL, 2]] : [[WIND_COARSE_URL, 1]]
+  if (slot.level === 0 && files[0][1] === 2) files.unshift([WIND_COARSE_URL, 1])
+  for (const [url, lv] of files) {
+    if (stale()) return
+    try {
+      const doc = await read(url)
+      if (stale()) return
+      if ((doc.time > slot.time || (doc.time === slot.time && lv > slot.level)) && load(doc)) { slot.time = doc.time; slot.level = lv; setVersion(v => v + 1) }
+    } catch { if (stale()) return } // otherwise try the next file
+  }
+  if (stale() || slot.time || slot.builtIn) return
+  const applied = await builtIn(() => !stale() && !slot.time && !slot.builtIn).catch(() => false)
+  if (applied && !slot.time && !slot.builtIn) { slot.builtIn = true; setVersion(v => v + 1) }
+}
+
 /**
  * Loads the wind field published next to the page: the small 1° file first so colours appear quickly, then the sharp
  * 0.5° file (skipped on slow connections). If neither can be reached, falls back to the copy saved with the app.
@@ -77,18 +121,8 @@ function wantsSharpWind() {
 export function useWindField() {
   const [version, setVersion] = useState(0)
   const [check] = useState(() => {
-    let time = "", level = 0, builtIn = false // level 1: 1°, 2: 0.5°
-    return async () => {
-      const files: [string, number][] = wantsSharpWind() ? [[WIND_URL, 2]] : [[WIND_COARSE_URL, 1]]
-      if (level === 0 && files[0][1] === 2) files.unshift([WIND_COARSE_URL, 1])
-      for (const [url, lv] of files) {
-        try {
-          const doc = await getJson<WindFile>(url)
-          if ((doc.time > time || (doc.time === time && lv > level)) && loadWind(doc)) { time = doc.time; level = lv; setVersion(v => v + 1) }
-        } catch { /* try the next file */ }
-      }
-      if (!time && !builtIn && (await loadBuiltIn().catch(() => false))) { builtIn = true; setVersion(v => v + 1) }
-    }
+    const slot: WindSlot = { time: "", level: 0, builtIn: false }
+    return (stale: () => boolean) => { void pullWind(stale, slot, setVersion) }
   })
   usePoll(check, WIND_EVERY)
   return version
