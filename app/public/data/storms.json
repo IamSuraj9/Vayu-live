@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-11T12:00:00Z",
- "fetchedAt": "2026-11-11T17:10:19Z",
+ "snapshot": "2026-11-11T18:00:00Z",
+ "fetchedAt": "2026-11-11T21:20:14Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-11T12:00:00Z",
+   "cycle": "2026-11-11T18:00:00Z",
    "storms": 2,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261111/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261111/18/atmos/gfs.t18z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -210,7 +210,7 @@
    "basin": "Central Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-11T12:00:00Z",
+   "updated": "2026-11-11T18:00:00Z",
    "track": [
     {
      "t": "2026-11-02T12:00:00Z",
@@ -464,7 +464,14 @@
     {
      "t": "2026-11-11T12:00:00Z",
      "lat": 9.9,
-     "lon": -167.1,
+     "lon": -167.4,
+     "kt": 40,
+     "hpa": 1002
+    },
+    {
+     "t": "2026-11-11T18:00:00Z",
+     "lat": 9.9,
+     "lon": -168.7,
      "kt": 40,
      "hpa": 1002
     }
@@ -473,42 +480,36 @@
     {
      "h": 3,
      "lat": 9.9,
-     "lon": -167.7,
+     "lon": -169.4,
      "kt": 40
     },
     {
      "h": 12,
      "lat": 10.0,
-     "lon": -169.6,
+     "lon": -171.5,
      "kt": 40
     },
     {
      "h": 24,
      "lat": 10.2,
-     "lon": -172.6,
-     "kt": 40
+     "lon": -174.5,
+     "kt": 35
     },
     {
      "h": 36,
      "lat": 10.5,
-     "lon": -175.7,
-     "kt": 35
+     "lon": -177.5,
+     "kt": 30
     },
     {
      "h": 48,
-     "lat": 10.8,
-     "lon": -178.7,
-     "kt": 30
-    },
-    {
-     "h": 60,
-     "lat": 10.9,
-     "lon": 178.4,
+     "lat": 10.6,
+     "lon": 179.6,
      "kt": 30
     }
    ],
-   "forecastIssued": "2026-11-11T15:00:00Z",
-   "forecastBase": "2026-11-11T12:00:00Z",
+   "forecastIssued": "2026-11-11T21:00:00Z",
+   "forecastBase": "2026-11-11T18:00:00Z",
    "source": "NHC",
    "sourceUrl": "https://www.nhc.noaa.gov/",
    "authority": "NHC",
@@ -520,7 +521,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Wed, 11 Nov 2026 14:51:55 GMT"
+    "modified": "Wed, 11 Nov 2026 20:51:23 GMT"
    },
    "codes": {
     "atcf": "cp042026",
