@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-12T06:00:00Z",
- "fetchedAt": "2026-11-12T11:16:39Z",
+ "snapshot": "2026-11-12T12:00:00Z",
+ "fetchedAt": "2026-11-12T15:20:13Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-12T06:00:00Z",
+   "cycle": "2026-11-12T12:00:00Z",
    "storms": 1,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261112/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261112/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -31,7 +31,7 @@
    "basin": "Central Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-12T06:00:00Z",
+   "updated": "2026-11-12T12:00:00Z",
    "track": [
     {
      "t": "2026-11-02T12:00:00Z",
@@ -305,9 +305,16 @@
     },
     {
      "t": "2026-11-12T06:00:00Z",
+     "lat": 9.7,
+     "lon": -171.2,
+     "kt": 30,
+     "hpa": 1006
+    },
+    {
+     "t": "2026-11-12T12:00:00Z",
      "lat": 9.8,
-     "lon": -171.3,
-     "kt": 35,
+     "lon": -173.2,
+     "kt": 30,
      "hpa": 1006
     }
    ],
@@ -315,30 +322,18 @@
     {
      "h": 3,
      "lat": 9.8,
-     "lon": -172.0,
+     "lon": -173.4,
      "kt": 30
     },
     {
      "h": 12,
      "lat": 9.9,
-     "lon": -174.3,
-     "kt": 30
-    },
-    {
-     "h": 24,
-     "lat": 10.0,
-     "lon": -177.4,
-     "kt": 30
-    },
-    {
-     "h": 36,
-     "lat": 10.2,
-     "lon": 180.0,
+     "lon": -174.1,
      "kt": 30
     }
    ],
-   "forecastIssued": "2026-11-12T09:00:00Z",
-   "forecastBase": "2026-11-12T06:00:00Z",
+   "forecastIssued": "2026-11-12T15:00:00Z",
+   "forecastBase": "2026-11-12T12:00:00Z",
    "source": "NHC",
    "sourceUrl": "https://www.nhc.noaa.gov/",
    "authority": "NHC",
@@ -350,7 +345,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Thu, 12 Nov 2026 08:51:55 GMT"
+    "modified": "Thu, 12 Nov 2026 14:52:09 GMT"
    },
    "codes": {
     "atcf": "cp042026",
