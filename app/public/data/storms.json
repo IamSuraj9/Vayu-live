@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-12T15:00:00Z",
- "fetchedAt": "2026-11-13T00:20:12Z",
+ "fetchedAt": "2026-11-13T03:20:09Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -29,7 +29,7 @@
    "rawName": "PENA",
    "kind": "hurricane",
    "basin": "Central Pacific",
-   "status": "active",
+   "status": "ended",
    "stale": false,
    "updated": "2026-11-12T15:00:00Z",
    "track": [
