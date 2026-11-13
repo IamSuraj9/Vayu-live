@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-12T15:00:00Z",
- "fetchedAt": "2026-11-13T15:20:12Z",
+ "fetchedAt": "2026-11-13T18:20:20Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -15,10 +15,8 @@
    "errors": []
   },
   "tcvitals": {
-   "ok": true,
-   "cycle": "2026-11-12T18:00:00Z",
-   "storms": 1,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261112/18/atmos/gfs.t18z.syndata.tcvitals.tm00"
+   "ok": false,
+   "error": "no tcvitals cycle available: HTTP 403 for https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261113/18/atmos/gfs.t18z.syndata.tcvitals.tm00; https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261113/12/atmos/gfs.t12z.syndata.tcvitals.tm00: not a tcvitals file (cycle not publish"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -489,7 +487,7 @@
    "forecast": [],
    "forecastIssued": null,
    "forecastBase": null,
-   "source": "NHC via GDACS + NOAA tcvitals",
+   "source": "NHC via GDACS",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001348",
    "authority": "NHC",
    "official": [
@@ -505,7 +503,7 @@
    "codes": {
     "atcf": "cp042026",
     "gdacs": 1001348,
-    "code": "04C"
+    "code": null
    }
   }
  ]
