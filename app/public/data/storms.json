@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-12T15:00:00Z",
- "fetchedAt": "2026-11-13T11:02:18Z",
+ "fetchedAt": "2026-11-13T15:20:12Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -10,8 +10,8 @@
   },
   "gdacs": {
    "ok": true,
-   "events": 2,
-   "used": 2,
+   "events": 1,
+   "used": 1,
    "errors": []
   },
   "tcvitals": {
