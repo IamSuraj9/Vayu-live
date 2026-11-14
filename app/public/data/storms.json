@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-14T06:20:10Z",
- "fetchedAt": "2026-11-14T06:20:10Z",
+ "snapshot": "2026-11-14T09:20:09Z",
+ "fetchedAt": "2026-11-14T09:20:09Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,7 +16,7 @@
   },
   "tcvitals": {
    "ok": false,
-   "error": "no tcvitals cycle available: HTTP 403 for https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261114/06/atmos/gfs.t06z.syndata.tcvitals.tm00; https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261114/00/atmos/gfs.t00z.syndata.tcvitals.tm00: not a tcvitals file (cycle not publish"
+   "error": "no tcvitals cycle available: https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261114/06/atmos/gfs.t06z.syndata.tcvitals.tm00: not a tcvitals file (cycle not published yet?); https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261114/00/atmos/gfs.t00z.syndata.tcvitals.tm00: not"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
