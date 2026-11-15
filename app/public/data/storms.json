@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-15T06:20:11Z",
- "fetchedAt": "2026-11-15T06:20:11Z",
+ "snapshot": "2026-11-15T06:00:00Z",
+ "fetchedAt": "2026-11-15T09:20:11Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -10,15 +10,107 @@
   },
   "gdacs": {
    "ok": true,
-   "events": 0,
-   "used": 0,
+   "events": 1,
+   "used": 1,
    "errors": []
   },
   "tcvitals": {
-   "ok": false,
-   "error": "no tcvitals cycle available: HTTP 403 for https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261115/06/atmos/gfs.t06z.syndata.tcvitals.tm00; https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261115/00/atmos/gfs.t00z.syndata.tcvitals.tm00: not a tcvitals file (cycle not publish"
+   "ok": true,
+   "cycle": "2026-11-15T06:00:00Z",
+   "storms": 1,
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261115/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
- "storms": []
+ "storms": [
+  {
+   "id": "sh042026",
+   "name": "Four",
+   "rawName": "FOUR",
+   "kind": "cyclone",
+   "basin": "South Pacific",
+   "status": "active",
+   "stale": false,
+   "updated": "2026-11-15T06:00:00Z",
+   "track": [
+    {
+     "t": "2026-11-15T06:00:00Z",
+     "lat": -8.4,
+     "lon": -158.9,
+     "kt": 35,
+     "hpa": 1001
+    }
+   ],
+   "forecast": [
+    {
+     "h": 12,
+     "lat": -8.5,
+     "lon": -160.1,
+     "kt": 50
+    },
+    {
+     "h": 24,
+     "lat": -8.8,
+     "lon": -161.3,
+     "kt": 60
+    },
+    {
+     "h": 36,
+     "lat": -9.1,
+     "lon": -162.5,
+     "kt": 75
+    },
+    {
+     "h": 48,
+     "lat": -9.4,
+     "lon": -163.5,
+     "kt": 80
+    },
+    {
+     "h": 60,
+     "lat": -9.7,
+     "lon": -164.3,
+     "kt": 80
+    },
+    {
+     "h": 72,
+     "lat": -10.0,
+     "lon": -164.6,
+     "kt": 75
+    },
+    {
+     "h": 96,
+     "lat": -10.3,
+     "lon": -164.7,
+     "kt": 65
+    },
+    {
+     "h": 120,
+     "lat": -10.6,
+     "lon": -165.0,
+     "kt": 50
+    }
+   ],
+   "forecastIssued": "2026-11-15T06:00:00Z",
+   "forecastBase": "2026-11-15T06:00:00Z",
+   "source": "JTWC via GDACS + NOAA tcvitals",
+   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001350",
+   "authority": "JTWC",
+   "official": [
+    "Fiji Meteorological Service",
+    "https://www.met.gov.fj/"
+   ],
+   "windAvg": "1-minute",
+   "people": {
+    "count": 0,
+    "alert": "Green",
+    "modified": "Sun, 15 Nov 2026 09:07:02 GMT"
+   },
+   "codes": {
+    "atcf": "sh042026",
+    "gdacs": 1001350,
+    "code": "04P"
+   }
+  }
+ ]
 }
