@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-15T06:00:00Z",
- "fetchedAt": "2026-11-15T12:20:20Z",
+ "snapshot": "2026-11-15T12:00:00Z",
+ "fetchedAt": "2026-11-15T15:20:10Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-15T06:00:00Z",
+   "cycle": "2026-11-15T12:00:00Z",
    "storms": 1,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261115/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261115/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -31,68 +31,74 @@
    "basin": "South Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-15T06:00:00Z",
+   "updated": "2026-11-15T12:00:00Z",
    "track": [
     {
      "t": "2026-11-15T06:00:00Z",
      "lat": -8.4,
      "lon": -158.9,
+     "kt": 35
+    },
+    {
+     "t": "2026-11-15T12:00:00Z",
+     "lat": -8.3,
+     "lon": -159.5,
      "kt": 35,
      "hpa": 1001
     }
    ],
    "forecast": [
     {
-     "h": 12,
+     "h": 6,
      "lat": -8.5,
      "lon": -160.1,
      "kt": 50
     },
     {
-     "h": 24,
+     "h": 18,
      "lat": -8.8,
      "lon": -161.3,
      "kt": 60
     },
     {
-     "h": 36,
+     "h": 30,
      "lat": -9.1,
      "lon": -162.5,
      "kt": 75
     },
     {
-     "h": 48,
+     "h": 42,
      "lat": -9.4,
      "lon": -163.5,
      "kt": 80
     },
     {
-     "h": 60,
+     "h": 54,
      "lat": -9.7,
      "lon": -164.3,
      "kt": 80
     },
     {
-     "h": 72,
+     "h": 66,
      "lat": -10.0,
      "lon": -164.6,
      "kt": 75
     },
     {
-     "h": 96,
+     "h": 90,
      "lat": -10.3,
      "lon": -164.7,
      "kt": 65
     },
     {
-     "h": 120,
+     "h": 114,
      "lat": -10.6,
      "lon": -165.0,
      "kt": 50
     }
    ],
    "forecastIssued": "2026-11-15T06:00:00Z",
-   "forecastBase": "2026-11-15T06:00:00Z",
+   "forecastBase": "2026-11-15T12:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001350",
    "authority": "JTWC",
@@ -104,7 +110,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Sun, 15 Nov 2026 09:07:02 GMT"
+    "modified": "Sun, 15 Nov 2026 13:21:19 GMT"
    },
    "codes": {
     "atcf": "sh042026",
