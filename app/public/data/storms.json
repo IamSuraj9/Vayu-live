@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-15T12:00:00Z",
- "fetchedAt": "2026-11-15T18:20:17Z",
+ "snapshot": "2026-11-15T18:00:00Z",
+ "fetchedAt": "2026-11-15T21:20:10Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,22 +16,22 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-15T12:00:00Z",
+   "cycle": "2026-11-15T18:00:00Z",
    "storms": 1,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261115/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261115/18/atmos/gfs.t18z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
  "storms": [
   {
    "id": "sh042026",
-   "name": "Four",
-   "rawName": "FOUR",
+   "name": "Xavier",
+   "rawName": "XAVIER",
    "kind": "cyclone",
    "basin": "South Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-15T12:00:00Z",
+   "updated": "2026-11-15T18:00:00Z",
    "track": [
     {
      "t": "2026-11-15T06:00:00Z",
@@ -45,60 +45,67 @@
      "lon": -159.5,
      "kt": 35,
      "hpa": 1001
+    },
+    {
+     "t": "2026-11-15T18:00:00Z",
+     "lat": -8.1,
+     "lon": -160.1,
+     "kt": 40,
+     "hpa": 1000
     }
    ],
    "forecast": [
     {
-     "h": 6,
-     "lat": -8.5,
-     "lon": -160.1,
+     "h": 12,
+     "lat": -8.4,
+     "lon": -161.2,
      "kt": 50
     },
     {
-     "h": 18,
-     "lat": -8.8,
-     "lon": -161.3,
-     "kt": 60
-    },
-    {
-     "h": 30,
-     "lat": -9.1,
+     "h": 24,
+     "lat": -8.7,
      "lon": -162.5,
-     "kt": 75
+     "kt": 70
     },
     {
-     "h": 42,
-     "lat": -9.4,
-     "lon": -163.5,
-     "kt": 80
+     "h": 36,
+     "lat": -9.0,
+     "lon": -163.4,
+     "kt": 85
     },
     {
-     "h": 54,
-     "lat": -9.7,
-     "lon": -164.3,
-     "kt": 80
+     "h": 48,
+     "lat": -9.5,
+     "lon": -163.9,
+     "kt": 90
     },
     {
-     "h": 66,
-     "lat": -10.0,
-     "lon": -164.6,
-     "kt": 75
+     "h": 60,
+     "lat": -9.9,
+     "lon": -164.1,
+     "kt": 90
     },
     {
-     "h": 90,
+     "h": 72,
      "lat": -10.3,
-     "lon": -164.7,
+     "lon": -164.1,
+     "kt": 80
+    },
+    {
+     "h": 96,
+     "lat": -10.5,
+     "lon": -163.9,
      "kt": 65
     },
     {
-     "h": 114,
-     "lat": -10.6,
-     "lon": -165.0,
+     "h": 120,
+     "lat": -10.7,
+     "lon": -164.1,
      "kt": 50
     }
    ],
-   "forecastIssued": "2026-11-15T06:00:00Z",
-   "forecastBase": "2026-11-15T12:00:00Z",
+   "forecastIssued": "2026-11-15T18:00:00Z",
+   "forecastBase": "2026-11-15T18:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001350",
    "authority": "JTWC",
@@ -110,7 +117,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Sun, 15 Nov 2026 13:21:19 GMT"
+    "modified": "Sun, 15 Nov 2026 19:51:55 GMT"
    },
    "codes": {
     "atcf": "sh042026",
