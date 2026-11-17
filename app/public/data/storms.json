@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-17T06:00:00Z",
- "fetchedAt": "2026-11-17T12:20:11Z",
+ "snapshot": "2026-11-17T12:00:00Z",
+ "fetchedAt": "2026-11-17T15:20:12Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-17T06:00:00Z",
+   "cycle": "2026-11-17T12:00:00Z",
    "storms": 2,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261117/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261117/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -31,7 +31,7 @@
    "basin": "South Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-17T06:00:00Z",
+   "updated": "2026-11-17T12:00:00Z",
    "track": [
     {
      "t": "2026-11-15T06:00:00Z",
@@ -89,62 +89,68 @@
      "t": "2026-11-17T06:00:00Z",
      "lat": -9.1,
      "lon": -163.5,
+     "kt": 125
+    },
+    {
+     "t": "2026-11-17T12:00:00Z",
+     "lat": -9.3,
+     "lon": -163.8,
      "kt": 125,
      "hpa": 936
     }
    ],
    "forecast": [
     {
-     "h": 12,
+     "h": 6,
      "lat": -9.5,
      "lon": -163.9,
      "kt": 125
     },
     {
-     "h": 24,
+     "h": 18,
      "lat": -10.1,
      "lon": -164.1,
      "kt": 120
     },
     {
-     "h": 36,
+     "h": 30,
      "lat": -10.5,
      "lon": -164.0,
      "kt": 110
     },
     {
-     "h": 48,
+     "h": 42,
      "lat": -10.8,
      "lon": -163.6,
      "kt": 105
     },
     {
-     "h": 60,
+     "h": 54,
      "lat": -10.9,
      "lon": -163.5,
      "kt": 95
     },
     {
-     "h": 72,
+     "h": 66,
      "lat": -11.0,
      "lon": -163.6,
      "kt": 85
     },
     {
-     "h": 96,
+     "h": 90,
      "lat": -11.1,
      "lon": -164.4,
      "kt": 60
     },
     {
-     "h": 120,
+     "h": 114,
      "lat": -11.5,
      "lon": -166.1,
      "kt": 45
     }
    ],
    "forecastIssued": "2026-11-17T06:00:00Z",
-   "forecastBase": "2026-11-17T06:00:00Z",
+   "forecastBase": "2026-11-17T12:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001350",
    "authority": "JTWC",
@@ -172,7 +178,7 @@
    "basin": "Bay of Bengal",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-17T06:00:00Z",
+   "updated": "2026-11-17T12:00:00Z",
    "track": [
     {
      "t": "2026-11-16T18:00:00Z",
@@ -190,6 +196,12 @@
      "t": "2026-11-17T06:00:00Z",
      "lat": 12.0,
      "lon": 87.3,
+     "kt": 40
+    },
+    {
+     "t": "2026-11-17T12:00:00Z",
+     "lat": 12.2,
+     "lon": 87.3,
      "kt": 40,
      "hpa": 999
     }
@@ -197,49 +209,43 @@
    "forecast": [
     {
      "h": 12,
-     "lat": 12.5,
-     "lon": 86.8,
+     "lat": 12.8,
+     "lon": 86.7,
      "kt": 40
     },
     {
      "h": 24,
-     "lat": 13.2,
+     "lat": 13.7,
      "lon": 86.0,
      "kt": 45
     },
     {
      "h": 36,
-     "lat": 14.1,
-     "lon": 85.0,
+     "lat": 14.9,
+     "lon": 85.1,
      "kt": 45
     },
     {
      "h": 48,
-     "lat": 15.1,
-     "lon": 84.0,
+     "lat": 16.2,
+     "lon": 84.5,
      "kt": 45
     },
     {
      "h": 60,
-     "lat": 16.2,
-     "lon": 83.2,
-     "kt": 50
-    },
-    {
-     "h": 72,
-     "lat": 17.4,
-     "lon": 82.7,
+     "lat": 17.6,
+     "lon": 84.0,
      "kt": 40
     },
     {
-     "h": 96,
-     "lat": 19.9,
-     "lon": 82.0,
-     "kt": 20
+     "h": 72,
+     "lat": 19.2,
+     "lon": 83.4,
+     "kt": 30
     }
    ],
-   "forecastIssued": "2026-11-17T06:00:00Z",
-   "forecastBase": "2026-11-17T06:00:00Z",
+   "forecastIssued": "2026-11-17T12:00:00Z",
+   "forecastBase": "2026-11-17T12:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001351",
    "authority": "JTWC",
@@ -251,7 +257,7 @@
    "people": {
     "count": 0,
     "alert": "Orange",
-    "modified": "Tue, 17 Nov 2026 11:05:12 GMT"
+    "modified": "Tue, 17 Nov 2026 14:36:32 GMT"
    },
    "codes": {
     "atcf": "io052026",
