@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-18T06:00:00Z",
- "fetchedAt": "2026-11-18T09:20:10Z",
+ "fetchedAt": "2026-11-18T11:46:42Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -289,7 +289,7 @@
    "people": {
     "count": 0,
     "alert": "Orange",
-    "modified": "Wed, 18 Nov 2026 08:21:15 GMT"
+    "modified": "Wed, 18 Nov 2026 11:05:21 GMT"
    },
    "codes": {
     "atcf": "io052026",
