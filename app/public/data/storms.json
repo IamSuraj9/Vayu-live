@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-20T06:00:00Z",
- "fetchedAt": "2026-11-20T11:43:56Z",
+ "snapshot": "2026-11-20T12:00:00Z",
+ "fetchedAt": "2026-11-20T15:20:11Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-20T06:00:00Z",
-   "storms": 2,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261120/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
+   "cycle": "2026-11-20T12:00:00Z",
+   "storms": 1,
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261120/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -31,7 +31,7 @@
    "basin": "South Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-20T06:00:00Z",
+   "updated": "2026-11-20T12:00:00Z",
    "track": [
     {
      "t": "2026-11-15T06:00:00Z",
@@ -166,62 +166,62 @@
      "t": "2026-11-20T06:00:00Z",
      "lat": -11.0,
      "lon": -162.8,
-     "kt": 90,
-     "hpa": 965
+     "kt": 90
+    },
+    {
+     "t": "2026-11-20T12:00:00Z",
+     "lat": -11.4,
+     "lon": -163.5,
+     "kt": 75,
+     "hpa": 976
     }
    ],
    "forecast": [
     {
      "h": 12,
-     "lat": -11.5,
-     "lon": -163.5,
-     "kt": 75
-    },
-    {
-     "h": 24,
-     "lat": -11.9,
-     "lon": -164.5,
+     "lat": -11.8,
+     "lon": -164.4,
      "kt": 65
     },
     {
-     "h": 36,
-     "lat": -12.3,
-     "lon": -165.8,
+     "h": 24,
+     "lat": -12.2,
+     "lon": -165.6,
      "kt": 60
     },
     {
-     "h": 48,
+     "h": 36,
      "lat": -12.6,
-     "lon": -167.1,
+     "lon": -166.9,
      "kt": 55
     },
     {
-     "h": 60,
+     "h": 48,
      "lat": -13.0,
      "lon": -168.1,
      "kt": 50
     },
     {
-     "h": 72,
-     "lat": -13.3,
-     "lon": -169.4,
+     "h": 60,
+     "lat": -13.4,
+     "lon": -169.2,
      "kt": 45
     },
     {
-     "h": 96,
-     "lat": -13.2,
-     "lon": -171.2,
-     "kt": 35
+     "h": 72,
+     "lat": -13.5,
+     "lon": -170.3,
+     "kt": 40
     },
     {
-     "h": 120,
-     "lat": -12.0,
-     "lon": -174.5,
+     "h": 96,
+     "lat": -12.8,
+     "lon": -173.0,
      "kt": 30
     }
    ],
-   "forecastIssued": "2026-11-20T06:00:00Z",
-   "forecastBase": "2026-11-20T06:00:00Z",
+   "forecastIssued": "2026-11-20T12:00:00Z",
+   "forecastBase": "2026-11-20T12:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001350",
    "authority": "JTWC",
@@ -233,7 +233,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Fri, 20 Nov 2026 10:05:13 GMT"
+    "modified": "Fri, 20 Nov 2026 14:20:57 GMT"
    },
    "codes": {
     "atcf": "sh042026",
@@ -247,7 +247,7 @@
    "rawName": "AKVAN",
    "kind": "cyclone",
    "basin": "Bay of Bengal",
-   "status": "active",
+   "status": "ended",
    "stale": false,
    "updated": "2026-11-20T00:00:00Z",
    "track": [
@@ -353,7 +353,7 @@
    ],
    "forecastIssued": "2026-11-19T18:00:00Z",
    "forecastBase": "2026-11-20T00:00:00Z",
-   "source": "JTWC via GDACS + NOAA tcvitals",
+   "source": "JTWC via GDACS",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001351",
    "authority": "JTWC",
    "official": [
@@ -364,12 +364,12 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Fri, 20 Nov 2026 11:06:20 GMT"
+    "modified": "Fri, 20 Nov 2026 13:50:05 GMT"
    },
    "codes": {
     "atcf": "io052026",
     "gdacs": 1001351,
-    "code": "05B"
+    "code": null
    }
   }
  ]
