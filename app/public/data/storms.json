@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-19T18:00:00Z",
- "fetchedAt": "2026-11-19T20:40:25Z",
+ "fetchedAt": "2026-11-20T00:20:17Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-19T12:00:00Z",
+   "cycle": "2026-11-19T18:00:00Z",
    "storms": 2,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261119/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261119/18/atmos/gfs.t18z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -154,7 +154,8 @@
      "t": "2026-11-19T18:00:00Z",
      "lat": -10.7,
      "lon": -162.8,
-     "kt": 100
+     "kt": 100,
+     "hpa": 957
     }
    ],
    "forecast": [
@@ -220,7 +221,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Thu, 19 Nov 2026 20:06:00 GMT"
+    "modified": "Thu, 19 Nov 2026 22:05:06 GMT"
    },
    "codes": {
     "atcf": "sh042026",
@@ -308,14 +309,14 @@
      "t": "2026-11-19T12:00:00Z",
      "lat": 16.0,
      "lon": 85.3,
-     "kt": 35,
-     "hpa": 1002
+     "kt": 35
     },
     {
      "t": "2026-11-19T18:00:00Z",
      "lat": 17.2,
      "lon": 84.7,
-     "kt": 30
+     "kt": 30,
+     "hpa": 1007
     }
    ],
    "forecast": [
@@ -345,7 +346,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Thu, 19 Nov 2026 19:35:47 GMT"
+    "modified": "Thu, 19 Nov 2026 23:35:10 GMT"
    },
    "codes": {
     "atcf": "io052026",
