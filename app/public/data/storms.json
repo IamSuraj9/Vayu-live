@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-21T06:00:00Z",
- "fetchedAt": "2026-11-21T11:07:26Z",
+ "snapshot": "2026-11-21T12:00:00Z",
+ "fetchedAt": "2026-11-21T15:20:09Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-21T06:00:00Z",
+   "cycle": "2026-11-21T12:00:00Z",
    "storms": 1,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261121/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261121/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -31,7 +31,7 @@
    "basin": "South Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-21T06:00:00Z",
+   "updated": "2026-11-21T12:00:00Z",
    "track": [
     {
      "t": "2026-11-15T06:00:00Z",
@@ -188,52 +188,58 @@
     },
     {
      "t": "2026-11-21T06:00:00Z",
-     "lat": -11.7,
+     "lat": -11.6,
      "lon": -164.7,
-     "kt": 40,
+     "kt": 40
+    },
+    {
+     "t": "2026-11-21T12:00:00Z",
+     "lat": -11.8,
+     "lon": -165.2,
+     "kt": 45,
      "hpa": 996
     }
    ],
    "forecast": [
     {
      "h": 12,
-     "lat": -12.0,
-     "lon": -165.9,
-     "kt": 40
+     "lat": -12.1,
+     "lon": -166.5,
+     "kt": 45
     },
     {
      "h": 24,
-     "lat": -12.4,
-     "lon": -167.2,
-     "kt": 40
+     "lat": -12.5,
+     "lon": -167.9,
+     "kt": 45
     },
     {
      "h": 36,
-     "lat": -12.8,
-     "lon": -168.5,
+     "lat": -12.9,
+     "lon": -169.0,
      "kt": 40
     },
     {
      "h": 48,
-     "lat": -13.0,
-     "lon": -169.5,
+     "lat": -13.1,
+     "lon": -169.8,
      "kt": 35
     },
     {
      "h": 60,
      "lat": -12.9,
-     "lon": -170.4,
+     "lon": -170.8,
      "kt": 35
     },
     {
      "h": 72,
-     "lat": -12.5,
-     "lon": -171.4,
+     "lat": -12.4,
+     "lon": -172.2,
      "kt": 30
     }
    ],
-   "forecastIssued": "2026-11-21T06:00:00Z",
-   "forecastBase": "2026-11-21T06:00:00Z",
+   "forecastIssued": "2026-11-21T12:00:00Z",
+   "forecastBase": "2026-11-21T12:00:00Z",
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001350",
    "authority": "JTWC",
@@ -245,143 +251,12 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Sat, 21 Nov 2026 09:50:14 GMT"
+    "modified": "Sat, 21 Nov 2026 14:20:33 GMT"
    },
    "codes": {
     "atcf": "sh042026",
     "gdacs": 1001350,
     "code": "04P"
-   }
-  },
-  {
-   "id": "io052026",
-   "name": "Akvan",
-   "rawName": "AKVAN",
-   "kind": "cyclone",
-   "basin": "Bay of Bengal",
-   "status": "ended",
-   "stale": false,
-   "updated": "2026-11-20T00:00:00Z",
-   "track": [
-    {
-     "t": "2026-11-16T18:00:00Z",
-     "lat": 11.3,
-     "lon": 86.7,
-     "kt": 35
-    },
-    {
-     "t": "2026-11-17T00:00:00Z",
-     "lat": 11.6,
-     "lon": 87.2,
-     "kt": 40
-    },
-    {
-     "t": "2026-11-17T06:00:00Z",
-     "lat": 12.0,
-     "lon": 87.3,
-     "kt": 40
-    },
-    {
-     "t": "2026-11-17T12:00:00Z",
-     "lat": 12.2,
-     "lon": 87.3,
-     "kt": 40
-    },
-    {
-     "t": "2026-11-17T18:00:00Z",
-     "lat": 13.1,
-     "lon": 87.3,
-     "kt": 45
-    },
-    {
-     "t": "2026-11-18T00:00:00Z",
-     "lat": 13.0,
-     "lon": 86.9,
-     "kt": 45
-    },
-    {
-     "t": "2026-11-18T06:00:00Z",
-     "lat": 13.1,
-     "lon": 86.9,
-     "kt": 40
-    },
-    {
-     "t": "2026-11-18T12:00:00Z",
-     "lat": 13.6,
-     "lon": 86.5,
-     "kt": 40
-    },
-    {
-     "t": "2026-11-18T18:00:00Z",
-     "lat": 13.8,
-     "lon": 86.4,
-     "kt": 35
-    },
-    {
-     "t": "2026-11-19T00:00:00Z",
-     "lat": 14.6,
-     "lon": 86.2,
-     "kt": 35
-    },
-    {
-     "t": "2026-11-19T06:00:00Z",
-     "lat": 15.1,
-     "lon": 85.4,
-     "kt": 35
-    },
-    {
-     "t": "2026-11-19T12:00:00Z",
-     "lat": 16.0,
-     "lon": 85.3,
-     "kt": 35
-    },
-    {
-     "t": "2026-11-19T18:00:00Z",
-     "lat": 17.2,
-     "lon": 84.7,
-     "kt": 30
-    },
-    {
-     "t": "2026-11-20T00:00:00Z",
-     "lat": 18.4,
-     "lon": 84.0,
-     "kt": 30,
-     "hpa": 1007
-    }
-   ],
-   "forecast": [
-    {
-     "h": 6,
-     "lat": 19.3,
-     "lon": 84.4,
-     "kt": 30
-    },
-    {
-     "h": 18,
-     "lat": 21.0,
-     "lon": 84.7,
-     "kt": 20
-    }
-   ],
-   "forecastIssued": "2026-11-19T18:00:00Z",
-   "forecastBase": "2026-11-20T00:00:00Z",
-   "source": "JTWC via GDACS",
-   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001351",
-   "authority": "JTWC",
-   "official": [
-    "IMD (India Meteorological Department)",
-    "https://mausam.imd.gov.in/"
-   ],
-   "windAvg": "1-minute",
-   "people": {
-    "count": 0,
-    "alert": "Green",
-    "modified": "Fri, 20 Nov 2026 17:35:12 GMT"
-   },
-   "codes": {
-    "atcf": "io052026",
-    "gdacs": 1001351,
-    "code": null
    }
   }
  ]
