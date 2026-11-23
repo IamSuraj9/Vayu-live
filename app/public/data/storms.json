@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-23T06:00:00Z",
- "fetchedAt": "2026-11-23T12:20:11Z",
+ "snapshot": "2026-11-23T12:00:00Z",
+ "fetchedAt": "2026-11-23T15:20:10Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -16,9 +16,9 @@
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-23T06:00:00Z",
+   "cycle": "2026-11-23T12:00:00Z",
    "storms": 1,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261123/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261123/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -31,7 +31,7 @@
    "basin": "South Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-23T06:00:00Z",
+   "updated": "2026-11-23T12:00:00Z",
    "track": [
     {
      "t": "2026-11-15T06:00:00Z",
@@ -240,18 +240,18 @@
      "lon": -168.9,
      "kt": 30,
      "hpa": 1002
-    }
-   ],
-   "forecast": [
+    },
     {
-     "h": 6,
+     "t": "2026-11-23T12:00:00Z",
      "lat": -11.9,
-     "lon": -169.6,
-     "kt": 30
+     "lon": -169.0,
+     "kt": 25,
+     "hpa": 1003
     }
    ],
-   "forecastIssued": "2026-11-23T00:00:00Z",
-   "forecastBase": "2026-11-23T06:00:00Z",
+   "forecast": [],
+   "forecastIssued": null,
+   "forecastBase": null,
    "source": "JTWC via GDACS + NOAA tcvitals",
    "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001350",
    "authority": "JTWC",
