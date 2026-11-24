@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-24T06:00:00Z",
- "fetchedAt": "2026-11-24T15:20:10Z",
+ "fetchedAt": "2026-11-24T18:20:11Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -29,7 +29,7 @@
    "rawName": "03-20262027",
    "kind": "cyclone",
    "basin": "South-West Indian Ocean",
-   "status": "active",
+   "status": "ended",
    "stale": false,
    "updated": "2026-11-24T06:00:00Z",
    "track": [
@@ -92,7 +92,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Tue, 24 Nov 2026 15:05:32 GMT"
+    "modified": "Tue, 24 Nov 2026 18:06:00 GMT"
    },
    "codes": {
     "atcf": null,
@@ -106,7 +106,7 @@
    "rawName": "XAVIER",
    "kind": "cyclone",
    "basin": "South Pacific",
-   "status": "active",
+   "status": "ended",
    "stale": false,
    "updated": "2026-11-24T06:00:00Z",
    "track": [
