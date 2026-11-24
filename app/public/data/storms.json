@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-24T00:00:00Z",
- "fetchedAt": "2026-11-24T06:20:12Z",
+ "snapshot": "2026-11-24T06:00:00Z",
+ "fetchedAt": "2026-11-24T09:20:09Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -10,19 +10,96 @@
   },
   "gdacs": {
    "ok": true,
-   "events": 1,
-   "used": 1,
+   "events": 2,
+   "used": 2,
    "errors": []
   },
   "tcvitals": {
    "ok": true,
-   "cycle": "2026-11-24T00:00:00Z",
+   "cycle": "2026-11-24T06:00:00Z",
    "storms": 1,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261124/00/atmos/gfs.t00z.syndata.tcvitals.tm00"
+   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261124/06/atmos/gfs.t06z.syndata.tcvitals.tm00"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
  "storms": [
+  {
+   "id": "gdacs-1001352",
+   "name": "03-20262027",
+   "rawName": "03-20262027",
+   "kind": "cyclone",
+   "basin": "South-West Indian Ocean",
+   "status": "active",
+   "stale": false,
+   "updated": "2026-11-24T06:00:00Z",
+   "track": [
+    {
+     "t": "2026-11-24T06:00:00Z",
+     "lat": -10.08,
+     "lon": 77.27,
+     "kt": 35,
+     "hpa": 1003
+    }
+   ],
+   "forecast": [
+    {
+     "h": 12,
+     "lat": -10.84,
+     "lon": 76.64,
+     "kt": 35
+    },
+    {
+     "h": 24,
+     "lat": -11.47,
+     "lon": 76.16,
+     "kt": 35
+    },
+    {
+     "h": 36,
+     "lat": -12.04,
+     "lon": 75.58,
+     "kt": 35
+    },
+    {
+     "h": 48,
+     "lat": -12.78,
+     "lon": 74.25,
+     "kt": 30
+    },
+    {
+     "h": 60,
+     "lat": -13.15,
+     "lon": 73.22,
+     "kt": 30
+    },
+    {
+     "h": 72,
+     "lat": -13.81,
+     "lon": 71.72,
+     "kt": 30
+    }
+   ],
+   "forecastIssued": "2026-11-24T06:00:00Z",
+   "forecastBase": "2026-11-24T06:00:00Z",
+   "source": "RSMC via GDACS",
+   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001352",
+   "authority": "RSMC",
+   "official": [
+    "Météo-France La Réunion",
+    "https://meteofrance.re/fr/cyclone"
+   ],
+   "windAvg": "1-minute",
+   "people": {
+    "count": 0,
+    "alert": "Green",
+    "modified": "Tue, 24 Nov 2026 07:35:03 GMT"
+   },
+   "codes": {
+    "atcf": null,
+    "gdacs": 1001352,
+    "code": null
+   }
+  },
   {
    "id": "sh042026",
    "name": "Xavier",
@@ -31,7 +108,7 @@
    "basin": "South Pacific",
    "status": "active",
    "stale": false,
-   "updated": "2026-11-24T00:00:00Z",
+   "updated": "2026-11-24T06:00:00Z",
    "track": [
     {
      "t": "2026-11-15T06:00:00Z",
@@ -259,6 +336,13 @@
      "t": "2026-11-24T00:00:00Z",
      "lat": -11.9,
      "lon": -170.3,
+     "kt": 25,
+     "hpa": 1004
+    },
+    {
+     "t": "2026-11-24T06:00:00Z",
+     "lat": -11.5,
+     "lon": -170.9,
      "kt": 25,
      "hpa": 1004
     }
