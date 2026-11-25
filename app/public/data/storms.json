@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-24T06:00:00Z",
- "fetchedAt": "2026-11-24T23:54:48Z",
+ "fetchedAt": "2026-11-25T03:20:10Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -10,8 +10,8 @@
   },
   "gdacs": {
    "ok": true,
-   "events": 2,
-   "used": 2,
+   "events": 1,
+   "used": 1,
    "errors": []
   },
   "tcvitals": {
@@ -92,7 +92,7 @@
    "people": {
     "count": 0,
     "alert": "Green",
-    "modified": "Tue, 24 Nov 2026 23:05:05 GMT"
+    "modified": "Wed, 25 Nov 2026 00:05:06 GMT"
    },
    "codes": {
     "atcf": null,
@@ -350,8 +350,8 @@
    "forecast": [],
    "forecastIssued": null,
    "forecastBase": null,
-   "source": "JTWC via GDACS + NOAA tcvitals",
-   "sourceUrl": "https://www.gdacs.org/report.aspx?eventtype=TC&eventid=1001350",
+   "source": "NOAA tcvitals",
+   "sourceUrl": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261124/12/atmos/gfs.t12z.syndata.tcvitals.tm00",
    "authority": "JTWC",
    "official": [
     "Fiji Meteorological Service",
@@ -365,7 +365,7 @@
    },
    "codes": {
     "atcf": "sh042026",
-    "gdacs": 1001350,
+    "gdacs": null,
     "code": "04P"
    }
   }
