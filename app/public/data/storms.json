@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "snapshot": "2026-11-24T06:00:00Z",
- "fetchedAt": "2026-11-25T08:39:14Z",
+ "fetchedAt": "2026-11-25T12:20:20Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -15,10 +15,8 @@
    "errors": []
   },
   "tcvitals": {
-   "ok": true,
-   "cycle": "2026-11-24T12:00:00Z",
-   "storms": 1,
-   "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261124/12/atmos/gfs.t12z.syndata.tcvitals.tm00"
+   "ok": false,
+   "error": "no tcvitals cycle available: HTTP 403 for https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261125/12/atmos/gfs.t12z.syndata.tcvitals.tm00; https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261125/06/atmos/gfs.t06z.syndata.tcvitals.tm00: not a tcvitals file (cycle not publish"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
@@ -107,7 +105,7 @@
    "kind": "cyclone",
    "basin": "South Pacific",
    "status": "ended",
-   "stale": false,
+   "stale": true,
    "updated": "2026-11-24T06:00:00Z",
    "track": [
     {
