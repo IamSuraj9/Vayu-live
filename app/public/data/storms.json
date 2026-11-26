@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "snapshot": "2026-11-26T00:20:10Z",
- "fetchedAt": "2026-11-26T00:20:10Z",
+ "snapshot": "2026-11-26T03:20:14Z",
+ "fetchedAt": "2026-11-26T03:20:14Z",
  "sources": {
   "nhc": {
    "ok": true,
@@ -9,14 +9,12 @@
    "errors": []
   },
   "gdacs": {
-   "ok": true,
-   "events": 1,
-   "used": 1,
-   "errors": []
+   "ok": false,
+   "error": "https://www.gdacs.org/xml/rss.xml: <urlopen error timed out>"
   },
   "tcvitals": {
    "ok": false,
-   "error": "no tcvitals cycle available: HTTP 404 for https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261126/00/atmos/gfs.t00z.syndata.tcvitals.tm00; https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261125/18/atmos/gfs.t18z.syndata.tcvitals.tm00: not a tcvitals file (cycle not publish"
+   "error": "no tcvitals cycle available: https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261126/00/atmos/gfs.t00z.syndata.tcvitals.tm00: not a tcvitals file (cycle not published yet?); https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.20261125/18/atmos/gfs.t18z.syndata.tcvitals.tm00: not"
   }
  },
  "credits": "Storm data: NOAA/NCEP tcvitals, US National Hurricane Center, GDACS (European Commission JRC, UN OCHA).",
